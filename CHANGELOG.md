@@ -4,6 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/). All notable c
 ## [Unreleased]
 Nothing yet.
 
+## [2.0.1] - 2018-02-19
+### Fixed
+- [#98](https://github.com/Kashoo/synctos/issues/98): Final argument of custom validation constraint receives incorrect value
+
 ## [2.0.0] - 2018-02-16
 ### Added
 - [#43](https://github.com/Kashoo/synctos/issues/43): Tool to validate structure and semantics of a document definitions file
@@ -147,7 +151,8 @@ Nothing yet.
 ## [1.0.0] - 2016-07-12
 First public release
 
-[Unreleased]: https://github.com/Kashoo/synctos/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/Kashoo/synctos/compare/v2.0.1...HEAD
+[2.0.1]: https://github.com/Kashoo/synctos/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/Kashoo/synctos/compare/v1.10.0...v2.0.0
 [1.10.0]: https://github.com/Kashoo/synctos/compare/v1.9.4...v1.10.0
 [1.9.4]: https://github.com/Kashoo/synctos/compare/v1.9.3...v1.9.4
