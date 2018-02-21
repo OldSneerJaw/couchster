@@ -1,21 +1,20 @@
-function makeValidationEnvironment(_, simple) {
+function makeValidationEnvironment(simpleMock) {
   var doc = { };
   var oldDoc = { };
   var typeIdValidator = { type: 'string' };
-  var simpleTypeFilter = simple.stub();
-  var isDocumentMissingOrDeleted = simple.stub();
-  var isValueNullOrUndefined = simple.stub();
-  var requireAccess = simple.stub();
-  var requireRole = simple.stub();
-  var requireUser = simple.stub();
-  var channel = simple.stub();
-  var access = simple.stub();
-  var role = simple.stub();
+  var simpleTypeFilter = simpleMock.stub();
+  var isDocumentMissingOrDeleted = simpleMock.stub();
+  var isValueNullOrUndefined = simpleMock.stub();
+  var requireAccess = simpleMock.stub();
+  var requireRole = simpleMock.stub();
+  var requireUser = simpleMock.stub();
+  var channel = simpleMock.stub();
+  var access = simpleMock.stub();
+  var role = simpleMock.stub();
 
-  var customActionStub = simple.stub();
+  var customActionStub = simpleMock.stub();
 
   return {
-    _: _,
     doc: doc,
     oldDoc: oldDoc,
     typeIdValidator: typeIdValidator,

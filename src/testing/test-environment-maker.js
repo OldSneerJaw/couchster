@@ -11,7 +11,6 @@ exports.init = init;
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
-const underscore = require('../../lib/underscore/underscore-min');
 const simpleMock = require('../../lib/simple-mock/index');
 
 function init(rawValidationFunction, validationFunctionFile) {
@@ -35,5 +34,5 @@ function init(rawValidationFunction, validationFunctionFile) {
   // "channel", "customActionStub", etc. stubs with the test-helper module
   const environmentFunction = vm.runInThisContext(environmentStatement, options);
 
-  return environmentFunction(underscore, simpleMock);
+  return environmentFunction(simpleMock);
 }
