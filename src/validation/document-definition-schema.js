@@ -38,7 +38,7 @@ module.exports = exports = joi.object().options({ convert: false }).keys({
       {
         requireAttachmentReferences: dynamicConstraintSchema(joi.boolean()),
         maximumAttachmentCount: dynamicConstraintSchema(integerSchema.min(1)),
-        maximumIndividualSize: dynamicConstraintSchema(integerSchema.min(1).max(20971520)),
+        maximumIndividualSize: dynamicConstraintSchema(integerSchema.min(1)),
         maximumTotalSize: dynamicConstraintSchema(
           integerSchema.when(
             // This property must be greater or equal to "maximumIndividualSize" if it's defined
@@ -99,7 +99,7 @@ module.exports = exports = joi.object().options({ convert: false }).keys({
 
   propertyValidators: dynamicConstraintSchema(
     joi.object().pattern(
-      /^[^_].*$/, // Sync Gateway does not allow top-level document property names to start with an underscore
+      /^[^_].*$/, // CouchDB does not allow top-level document property names to start with an underscore
       propertyValidatorSchema)).required()
 })
   // At least one of "channels", "authorizedRoles" or "authorizedUsers" must be defined

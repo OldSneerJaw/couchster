@@ -17,6 +17,6 @@ function makeTestEnvironment(_, simple) {
     access: access,
     role: role,
     customActionStub: customActionStub,
-    syncFunction: %SYNC_FUNC_PLACEHOLDER%
+    validationFunction: %VALIDATION_FUNC_PLACEHOLDER%
   };
 }

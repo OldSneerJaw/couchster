@@ -3,7 +3,7 @@ const testHelper = require('../src/testing/test-helper');
 
 describe('User and role access assignment:', () => {
   beforeEach(() => {
-    testHelper.initSyncFunction('build/sync-functions/test-access-assignment-sync-function.js');
+    testHelper.initValidationFunction('build/validation-functions/test-access-assignment-validation-function.js');
   });
 
   describe('Static assignment of channels to users and roles', () => {
@@ -57,7 +57,7 @@ describe('User and role access assignment:', () => {
       };
 
       expect(() => {
-        testHelper.syncFunction(doc);
+        testHelper.validationFunction(doc);
       }).to.throw();
       expect(testHelper.access.callCount).to.equal(0);
     });
@@ -70,7 +70,7 @@ describe('User and role access assignment:', () => {
       const oldDoc = { _id: 'staticAccessDoc' };
 
       expect(() => {
-        testHelper.syncFunction(doc, oldDoc);
+        testHelper.validationFunction(doc, oldDoc);
       }).to.throw();
       expect(testHelper.access.callCount).to.equal(0);
     });
@@ -117,7 +117,7 @@ describe('User and role access assignment:', () => {
       };
 
       // The access assignment functions for this document type are set up to return different values if they receive an oldDoc parameter
-      // that has _deleted set to true. However, that should never happen because the sync function template is supposed to replace such
+      // that has _deleted set to true. However, that should never happen because the validation function template is supposed to replace such
       // cases with a null value. This test verifies that replacement occurs as expected.
       testHelper.verifyDocumentAccepted(doc, oldDoc, 'write', expectedDynamicAssignments);
     });
@@ -167,7 +167,7 @@ describe('User and role access assignment:', () => {
       };
 
       expect(() => {
-        testHelper.syncFunction(doc);
+        testHelper.validationFunction(doc);
       }).to.throw();
       expect(testHelper.access.callCount).to.equal(0);
     });
@@ -182,7 +182,7 @@ describe('User and role access assignment:', () => {
       const oldDoc = { _id: 'dynamicAccessDoc' };
 
       expect(() => {
-        testHelper.syncFunction(doc, oldDoc);
+        testHelper.validationFunction(doc, oldDoc);
       }).to.throw();
       expect(testHelper.access.callCount).to.equal(0);
     });

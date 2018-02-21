@@ -4,7 +4,7 @@ const validator = require('./document-definitions-validator');
 
 describe('Document definitions validator:', () => {
   it('performs validation on the sample document definitions file', () => {
-    const filePath = 'samples/sample-sync-doc-definitions.js';
+    const filePath = 'samples/sample-doc-definitions.js';
     const sampleDocDefinitions = docDefinitionsLoader.load(filePath);
 
     const results = validator.validate(sampleDocDefinitions, filePath);
@@ -60,8 +60,8 @@ describe('Document definitions validator:', () => {
           allowAttachments: false, // Must be true since "attachmentConstraints" is defined
           attachmentConstraints: {
             maximumAttachmentCount: 0, // Must be at least 1
-            maximumIndividualSize: 20971521, // Must be no greater than 20971520 (the max Sync Gateway attachment size)
-            maximumTotalSize: 20971520, // Must be greater or equal to "maximumIndividualSize"
+            maximumIndividualSize: -1500, // Must be a positive number
+            maximumTotalSize: -1501, // Must be greater or equal to "maximumIndividualSize"
             supportedExtensions: (doc, oldDoc, extraParam) => { // Has too many params
               return [ extraParam ];
             },
@@ -82,7 +82,7 @@ describe('Document definitions validator:', () => {
               maximumValueExclusive: '19:00', // Must have a positive or negative sign
               mustEqual: 'barfoo' // Must be a valid timezone string
             },
-            _invalidName: { // Sync Gateway does not allow top-level property names to start with underscore
+            _invalidName: { // CouchDB does not allow top-level property names to start with underscore
               type: 'string'
             },
             nestedObject: {
@@ -215,8 +215,8 @@ describe('Document definitions validator:', () => {
         'myDoc1.immutable: \"immutable\" conflict with forbidden peer \"cannotReplace\"',
         'myDoc1.allowAttachments: \"allowAttachments\" must be one of [true]',
         'myDoc1.attachmentConstraints.maximumAttachmentCount: \"maximumAttachmentCount\" must be larger than or equal to 1',
-        'myDoc1.attachmentConstraints.maximumIndividualSize: \"maximumIndividualSize\" must be less than or equal to 20971520',
-        'myDoc1.attachmentConstraints.maximumTotalSize: \"maximumTotalSize\" must be larger than or equal to 20971521',
+        'myDoc1.attachmentConstraints.maximumIndividualSize: \"maximumIndividualSize\" must be larger than or equal to 1',
+        'myDoc1.attachmentConstraints.maximumTotalSize: \"maximumTotalSize\" must be larger than or equal to -1500',
         'myDoc1.attachmentConstraints.supportedExtensions: "supportedExtensions" must have an arity lesser or equal to 2',
         'myDoc1.attachmentConstraints.supportedContentTypes: \"supportedContentTypes\" must contain at least 1 items',
         'myDoc1.customActions: \"customActions\" must have at least 1 children',

@@ -3,12 +3,12 @@ const { expect } = require('chai');
 const simpleMock = require('../../lib/simple-mock/index');
 const mockRequire = require('mock-require');
 
-describe('Sync function loader', () => {
-  let syncFunctionLoader, fsMock, indentMock, fileFragmentLoaderMock, docDefinitionsLoaderMock;
+describe('Validation function loader', () => {
+  let validationFunctionLoader, fsMock, indentMock, fileFragmentLoaderMock, docDefinitionsLoaderMock;
 
-  const expectedMacroName = 'importSyncFunctionFragment';
-  const syncFuncTemplateDir = path.resolve(__dirname, '../../templates/sync-function');
-  const syncFuncTemplateFile = path.resolve(syncFuncTemplateDir, 'template.js');
+  const expectedMacroName = 'importValidationFunctionFragment';
+  const validationFuncTemplateDir = path.resolve(__dirname, '../../templates/validation-function');
+  const validationFuncTemplateFile = path.resolve(validationFuncTemplateDir, 'template.js');
 
   beforeEach(() => {
     // Mock out the "require" calls in the module under test
@@ -24,7 +24,7 @@ describe('Sync function loader', () => {
     docDefinitionsLoaderMock = { load: simpleMock.stub() };
     mockRequire('./document-definitions-loader.js', docDefinitionsLoaderMock);
 
-    syncFunctionLoader = mockRequire.reRequire('./sync-function-loader');
+    validationFunctionLoader = mockRequire.reRequire('./validation-function-loader');
   });
 
   afterEach(() => {
@@ -32,37 +32,37 @@ describe('Sync function loader', () => {
     mockRequire.stopAll();
   });
 
-  it('should load a sync function', () => {
+  it('should load a validation function', () => {
     const docDefinitionsFile = 'my/doc-definitions.js';
     const docDefinitionsContent = 'my-doc-definitions';
-    const originalSyncFuncTemplate = 'my-original-sync-fync-template';
-    const updatedSyncFuncTemplate = 'function my-sync-func-template() { %SYNC_DOCUMENT_DEFINITIONS%; }';
-    const indentedSyncFunc = 'my\n  \r\nfinal\rsync `func`';
+    const originalValidationFuncTemplate = 'my-original-validation-func-template';
+    const updatedValidationFuncTemplate = 'function my-validation-func-template() { %DOCUMENT_DEFINITIONS%; }';
+    const indentedValidationFunc = 'my\n  \r\nfinal\rsync `func`';
 
-    fsMock.readFileSync.returnWith(originalSyncFuncTemplate);
-    fileFragmentLoaderMock.load.returnWith(updatedSyncFuncTemplate);
+    fsMock.readFileSync.returnWith(originalValidationFuncTemplate);
+    fileFragmentLoaderMock.load.returnWith(updatedValidationFuncTemplate);
     docDefinitionsLoaderMock.load.returnWith(docDefinitionsContent);
-    indentMock.js.returnWith(indentedSyncFunc);
+    indentMock.js.returnWith(indentedValidationFunc);
 
-    const result = syncFunctionLoader.load(docDefinitionsFile);
+    const result = validationFunctionLoader.load(docDefinitionsFile);
 
-    expect(result).to.equal('my\n\nfinal\nsync \\`func\\`');
+    expect(result).to.equal('my\n\nfinal\nsync `func`');
 
     expect(fsMock.readFileSync.callCount).to.equal(1);
-    expect(fsMock.readFileSync.calls[0].args).to.eql([ syncFuncTemplateFile, 'utf8' ]);
+    expect(fsMock.readFileSync.calls[0].args).to.eql([ validationFuncTemplateFile, 'utf8' ]);
 
     expect(fileFragmentLoaderMock.load.callCount).to.equal(1);
-    expect(fileFragmentLoaderMock.load.calls[0].args).to.eql([ syncFuncTemplateDir, expectedMacroName, originalSyncFuncTemplate ]);
+    expect(fileFragmentLoaderMock.load.calls[0].args).to.eql([ validationFuncTemplateDir, expectedMacroName, originalValidationFuncTemplate ]);
 
     expect(docDefinitionsLoaderMock.load.callCount).to.equal(1);
     expect(docDefinitionsLoaderMock.load.calls[0].args).to.eql([ docDefinitionsFile ]);
 
     expect(indentMock.js.callCount).to.equal(1);
     expect(indentMock.js.calls[0].args).to.eql(
-      [ `function my-sync-func-template() { ${docDefinitionsContent}; }`, { tabString: '  ' } ]);
+      [ `function my-validation-func-template() { ${docDefinitionsContent}; }`, { tabString: '  ' } ]);
   });
 
-  it('should throw an exception if the sync function template file does not exist', () => {
+  it('should throw an exception if the validation function template file does not exist', () => {
     const docDefinitionsFile = 'my/doc-definitions.js';
     const expectedException = new Error('my-expected-exception');
 
@@ -72,11 +72,11 @@ describe('Sync function loader', () => {
     indentMock.js.returnWith('');
 
     expect(() => {
-      syncFunctionLoader.load(docDefinitionsFile);
+      validationFunctionLoader.load(docDefinitionsFile);
     }).to.throw(expectedException.message);
 
     expect(fsMock.readFileSync.callCount).to.equal(1);
-    expect(fsMock.readFileSync.calls[0].args).to.eql([ syncFuncTemplateFile, 'utf8' ]);
+    expect(fsMock.readFileSync.calls[0].args).to.eql([ validationFuncTemplateFile, 'utf8' ]);
 
     expect(fileFragmentLoaderMock.load.callCount).to.equal(0);
 

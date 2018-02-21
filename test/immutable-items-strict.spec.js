@@ -3,7 +3,7 @@ const errorFormatter = testHelper.validationErrorFormatter;
 
 describe('Strict immutable item constraint:', () => {
   beforeEach(() => {
-    testHelper.initSyncFunction('build/sync-functions/test-immutable-items-strict-sync-function.js');
+    testHelper.initValidationFunction('build/validation-functions/test-immutable-items-strict-validation-function.js');
   });
 
   describe('array type with static property validation', () => {

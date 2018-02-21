@@ -3,7 +3,7 @@ const errorFormatter = testHelper.validationErrorFormatter;
 
 describe('Date/time validation type', () => {
   beforeEach(() => {
-    testHelper.initSyncFunction('build/sync-functions/test-datetime-sync-function.js');
+    testHelper.initValidationFunction('build/validation-functions/test-datetime-validation-function.js');
   });
 
   describe('format validation', () => {

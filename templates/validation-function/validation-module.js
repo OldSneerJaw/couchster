@@ -1,6 +1,6 @@
 function validationModule(utils, simpleTypeFilter, typeIdValidator) {
-  var timeModule = importSyncFunctionFragment('time-module.js')(utils);
-  var comparisonModule = importSyncFunctionFragment('comparison-module.js')(utils, buildItemPath, timeModule);
+  var timeModule = importValidationFunctionFragment('time-module.js')(utils);
+  var comparisonModule = importValidationFunctionFragment('comparison-module.js')(utils, buildItemPath, timeModule);
 
   function isUuid(value) {
     var regex = /^[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}$/;
@@ -85,7 +85,7 @@ function validationModule(utils, simpleTypeFilter, typeIdValidator) {
     }
 
     var attachmentModule =
-      importSyncFunctionFragment('attachment-module.js')(utils, buildItemPath, resolveDocConstraint, resolveItemConstraint);
+      importValidationFunctionFragment('attachment-module.js')(utils, buildItemPath, resolveDocConstraint, resolveItemConstraint);
 
     // Execute each of the document's property validators while ignoring internal document properties at the root level
     validateProperties(

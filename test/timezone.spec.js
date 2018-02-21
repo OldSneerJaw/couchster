@@ -3,7 +3,7 @@ const errorFormatter = testHelper.validationErrorFormatter;
 
 describe('Time zone validation type:', () => {
   beforeEach(() => {
-    testHelper.initSyncFunction('build/sync-functions/test-timezone-sync-function.js');
+    testHelper.initValidationFunction('build/validation-functions/test-timezone-validation-function.js');
   });
 
   describe('format', () => {

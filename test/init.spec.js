@@ -2,9 +2,9 @@ const { expect } = require('chai');
 const testHelper = require('../src/testing/test-helper');
 
 describe('Test helper module initialization', () => {
-  describe('when initialized from a generated sync function file', () => {
-    it('loads the sync function successfully for a valid path', () => {
-      testHelper.initSyncFunction('build/sync-functions/test-init-sync-function.js');
+  describe('when initialized from a generated validation function file', () => {
+    it('loads the validation function successfully for a valid path', () => {
+      testHelper.initValidationFunction('build/validation-functions/test-init-validation-function.js');
 
       const doc = {
         _id: 'foobar',
@@ -15,24 +15,24 @@ describe('Test helper module initialization', () => {
       testHelper.verifyDocumentCreated(doc);
     });
 
-    it('fails to load the sync function for a file that does not exist', () => {
-      let syncFuncError = null;
+    it('fails to load the validation function for a file that does not exist', () => {
+      let validationFuncError = null;
       expect(() => {
         try {
-          testHelper.initSyncFunction('build/sync-functions/test-nonexistant-sync-function.js');
+          testHelper.initValidationFunction('build/validation-functions/test-nonexistant-validation-function.js');
         } catch (ex) {
-          syncFuncError = ex;
+          validationFuncError = ex;
 
           throw ex;
         }
       }).to.throw();
 
-      expect(syncFuncError.code).to.equal('ENOENT');
+      expect(validationFuncError.code).to.equal('ENOENT');
     });
   });
 
   describe('when initialized from a document definitions file', () => {
-    it('loads the sync function successfully for a valid path', () => {
+    it('loads the validation function successfully for a valid path', () => {
       testHelper.initDocumentDefinitions('test/resources/init-doc-definitions.js');
 
       const doc = {
@@ -44,19 +44,19 @@ describe('Test helper module initialization', () => {
       testHelper.verifyDocumentCreated(doc);
     });
 
-    it('fails to load the sync function for a file that does not exist', () => {
-      let syncFuncError = null;
+    it('fails to load the validation function for a file that does not exist', () => {
+      let validationFuncError = null;
       expect(() => {
         try {
           testHelper.initDocumentDefinitions('test/resources/nonexistant-doc-definitions.js');
         } catch (ex) {
-          syncFuncError = ex;
+          validationFuncError = ex;
 
           throw ex;
         }
       }).to.throw();
 
-      expect(syncFuncError.code).to.equal('ENOENT');
+      expect(validationFuncError.code).to.equal('ENOENT');
     });
   });
 });

@@ -4,43 +4,43 @@ const errorFormatter = testHelper.validationErrorFormatter;
 
 describe('Functionality that is common to all documents:', () => {
   beforeEach(() => {
-    testHelper.initSyncFunction('build/sync-functions/test-general-sync-function.js');
+    testHelper.initValidationFunction('build/validation-functions/test-general-validation-function.js');
   });
 
   describe('the document type identifier', () => {
     it('rejects document creation with an unrecognized doc type', () => {
       const doc = { _id: 'my-invalid-doc' };
 
-      let syncFuncError = null;
+      let validationFuncError = null;
       expect(() => {
         try {
-          testHelper.syncFunction(doc);
+          testHelper.validationFunction(doc);
         } catch (ex) {
-          syncFuncError = ex;
+          validationFuncError = ex;
 
           throw ex;
         }
       }).to.throw();
 
-      expect(syncFuncError).to.eql({ forbidden: 'Unknown document type' });
+      expect(validationFuncError).to.eql({ forbidden: 'Unknown document type' });
     });
 
     it('rejects document replacement with an unrecognized doc type', () => {
       const doc = { _id: 'my-invalid-doc', foo: 'bar' };
       const oldDoc = { _id: 'my-invalid-doc' };
 
-      let syncFuncError = null;
+      let validationFuncError = null;
       expect(() => {
         try {
-          testHelper.syncFunction(doc, oldDoc);
+          testHelper.validationFunction(doc, oldDoc);
         } catch (ex) {
-          syncFuncError = ex;
+          validationFuncError = ex;
 
           throw ex;
         }
       }).to.throw();
 
-      expect(syncFuncError).to.eql({ forbidden: 'Unknown document type' });
+      expect(validationFuncError).to.eql({ forbidden: 'Unknown document type' });
     });
 
     it('allows a missing document to be "deleted" even if the type is unrecognized', () => {
@@ -63,7 +63,7 @@ describe('Functionality that is common to all documents:', () => {
 
   describe('type validation', () => {
     beforeEach(() => {
-      testHelper.initSyncFunction('build/sync-functions/test-general-sync-function.js');
+      testHelper.initValidationFunction('build/validation-functions/test-general-validation-function.js');
     });
 
     it('rejects an array property value that is not the right type', () => {
@@ -239,12 +239,12 @@ describe('Functionality that is common to all documents:', () => {
         }
       };
 
-      let syncFuncError = null;
+      let validationFuncError = null;
       expect(() => {
         try {
-          testHelper.syncFunction(doc);
+          testHelper.validationFunction(doc);
         } catch (ex) {
-          syncFuncError = ex;
+          validationFuncError = ex;
 
           throw ex;
         }
@@ -259,7 +259,7 @@ describe('Functionality that is common to all documents:', () => {
           errorFormatter.unsupportedProperty('objectProp._revisions'),
           errorFormatter.unsupportedProperty('objectProp._attachments')
         ],
-        syncFuncError);
+        validationFuncError);
     });
   });
 
@@ -274,17 +274,17 @@ describe('Functionality that is common to all documents:', () => {
       }
     };
 
-    let syncFuncError = null;
+    let validationFuncError = null;
     expect(() => {
       try {
-        testHelper.syncFunction(doc);
+        testHelper.validationFunction(doc);
       } catch (ex) {
-        syncFuncError = ex;
+        validationFuncError = ex;
 
         throw ex;
       }
     }).to.throw();
 
-    testHelper.verifyValidationErrors('generalDoc', errorFormatter.allowAttachmentsViolation(), syncFuncError);
+    testHelper.verifyValidationErrors('generalDoc', errorFormatter.allowAttachmentsViolation(), validationFuncError);
   });
 });

@@ -10,8 +10,7 @@ function() {
 
   // Creates a RegExp to match the ID of an entity that belongs to a business
   function createBusinessEntityRegex(suffixPattern) {
-    // Note that this regex uses double quotes rather than single quotes as a workaround to https://github.com/Kashoo/synctos/issues/116
-    return new RegExp("^biz\\.\\d+\\." + suffixPattern + "$");
+    return new RegExp('^biz\\.\\d+\\.' + suffixPattern + '$');
   }
 
   // Checks that a business ID is valid (an integer greater than 0) and is not changed from the old version of the document

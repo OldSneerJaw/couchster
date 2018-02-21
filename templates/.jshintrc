@@ -1,13 +1,13 @@
 {
   "extends": "../.jshintrc",
-  "esversion": 3,
+  "esversion": 5,
   "node": false,
   "globals": {
     "_": false,
     "access": false,
     "channel": false,
     "customActionStub": false,
-    "importSyncFunctionFragment": false,
+    "importValidationFunctionFragment": false,
     "requireAccess": false,
     "requireRole": false,
     "requireUser": false,

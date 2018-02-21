@@ -2,7 +2,7 @@ const testHelper = require('../src/testing/test-helper');
 
 describe('Simple type filter:', () => {
   beforeEach(() => {
-    testHelper.initSyncFunction('build/sync-functions/test-simple-type-filter-sync-function.js');
+    testHelper.initValidationFunction('build/validation-functions/test-simple-type-filter-validation-function.js');
   });
 
   function testSimpleTypeFilter(docTypeId) {

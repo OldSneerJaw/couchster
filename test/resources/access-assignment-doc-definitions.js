@@ -46,7 +46,7 @@
       {
         type: 'role',
         users: function(doc, oldDoc) {
-          // The sync function template should automatically replace the oldDoc param value with null if its _deleted property is true
+          // The validation function template should automatically replace the oldDoc param value with null if its _deleted property is true
           return (oldDoc && oldDoc._deleted) ? 'this-should-never-happen' : doc.users;
         },
         roles: function(doc, oldDoc) {

@@ -5,7 +5,7 @@ const { expect } = require('chai');
 
 describe('Sample business notification transport doc definition', () => {
   beforeEach(() => {
-    testHelper.initSyncFunction('build/sync-functions/test-sample-sync-function.js');
+    testHelper.initValidationFunction('build/validation-functions/test-sample-validation-function.js');
   });
 
   const expectedDocType = 'notificationTransport';

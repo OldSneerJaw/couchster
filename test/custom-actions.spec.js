@@ -10,7 +10,7 @@ describe('Custom actions:', () => {
   };
 
   beforeEach(() => {
-    testHelper.initSyncFunction('build/sync-functions/test-custom-actions-sync-function.js');
+    testHelper.initValidationFunction('build/validation-functions/test-custom-actions-validation-function.js');
   });
 
   describe('the onTypeIdentificationSucceeded event', () => {
@@ -37,18 +37,18 @@ describe('Custom actions:', () => {
       const unknownDocType = 'foo';
       const doc = { _id: unknownDocType };
 
-      let syncFuncError = null;
+      let validationFuncError = null;
       expect(() => {
         try {
-          testHelper.syncFunction(doc, expectedAuthorization);
+          testHelper.validationFunction(doc, expectedAuthorization);
         } catch (ex) {
-          syncFuncError = ex;
+          validationFuncError = ex;
 
           throw ex;
         }
       }).to.throw();
 
-      testHelper.verifyValidationErrors(unknownDocType, errorFormatter.unknownDocumentType(), syncFuncError);
+      testHelper.verifyValidationErrors(unknownDocType, errorFormatter.unknownDocumentType(), validationFuncError);
       verifyCustomActionNotExecuted();
     });
   });
@@ -171,7 +171,7 @@ describe('Custom actions:', () => {
       testHelper.channel.throwWith(expectedError);
 
       expect(() => {
-        testHelper.syncFunction(doc);
+        testHelper.validationFunction(doc);
       }).to.throw(expectedError);
 
       verifyCustomActionNotExecuted();

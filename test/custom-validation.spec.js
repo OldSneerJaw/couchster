@@ -2,7 +2,7 @@ const testHelper = require('../src/testing/test-helper.js');
 
 describe('Custom validation constraint:', () => {
   beforeEach(() => {
-    testHelper.initSyncFunction('build/sync-functions/test-custom-validation-sync-function.js');
+    testHelper.initValidationFunction('build/validation-functions/test-custom-validation-validation-function.js');
   });
 
   it('allows a document if custom validation succeeds', () => {

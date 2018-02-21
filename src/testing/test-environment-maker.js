@@ -1,10 +1,10 @@
 /**
- * Creates simulated Sync Gateway sync function environments for use in tests.
+ * Creates simulated CouchDB document validation function environments for use in tests.
  *
- * @param {string} rawSyncFunction The raw string contents of the sync function
- * @param {string} [syncFunctionFile] The optional path to the sync function file, to be used to generate stack traces when errors occur
+ * @param {string} rawValidationFunction The raw string contents of the validation function
+ * @param {string} [validationFunctionFile] The optional path to the validation function file, to be used to generate stack traces when errors occur
  *
- * @returns {Object} The simulated environment created for the sync function
+ * @returns {Object} The simulated environment created for the validation function
  */
 exports.init = init;
 
@@ -14,20 +14,18 @@ const vm = require('vm');
 const underscore = require('../../lib/underscore/underscore-min');
 const simpleMock = require('../../lib/simple-mock/index');
 
-function init(rawSyncFunction, syncFunctionFile) {
+function init(rawValidationFunction, validationFunctionFile) {
   const options = {
-    filename: syncFunctionFile,
+    filename: validationFunctionFile,
     displayErrors: true
   };
 
   const filePath = path.resolve(__dirname, '../../templates/test-environment-template.js');
   const environmentTemplate = fs.readFileSync(filePath, 'utf8').trim();
 
-  // The test environment includes a placeholder string called "%SYNC_FUNC_PLACEHOLDER%" that is to be replaced with the contents of
-  // the sync function
-  const environmentString = environmentTemplate.replace(
-    '%SYNC_FUNC_PLACEHOLDER%',
-    () => unescapeBackticks(rawSyncFunction));
+  // The test environment includes a placeholder string called "%VALIDATION_FUNC_PLACEHOLDER%" that is to be replaced with the contents of
+  // the validation function
+  const environmentString = environmentTemplate.replace('%VALIDATION_FUNC_PLACEHOLDER%', () => rawValidationFunction);
 
   // The code that is compiled must be an expression or a sequence of one or more statements. Surrounding it with parentheses makes it a
   // valid statement.
@@ -38,12 +36,4 @@ function init(rawSyncFunction, syncFunctionFile) {
   const environmentFunction = vm.runInThisContext(environmentStatement, options);
 
   return environmentFunction(underscore, simpleMock);
-}
-
-// Sync Gateway configuration files use the backtick character to denote the beginning and end of a multiline string. The sync function
-// generator script automatically escapes backtick characters with the sequence "\`" so that it produces a valid multiline string.
-// However, when loaded by the test helper, a sync function is not inserted into a Sync Gateway configuration file so we must "unescape"
-// backtick characters to preserve the original intention.
-function unescapeBackticks(originalString) {
-  return originalString.replace(/\\`/g, () => '`');
 }

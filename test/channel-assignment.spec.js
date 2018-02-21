@@ -3,7 +3,7 @@ const testHelper = require('../src/testing/test-helper');
 describe('Channel assignment:', () => {
 
   beforeEach(() => {
-    testHelper.initSyncFunction('build/sync-functions/test-authorization-sync-function.js');
+    testHelper.initValidationFunction('build/validation-functions/test-authorization-validation-function.js');
   });
 
   describe('for a document with explicit channel definitions', () => {

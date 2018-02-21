@@ -3,7 +3,7 @@ const errorFormatter = testHelper.validationErrorFormatter;
 
 describe('Immutable document validation:', () => {
   beforeEach(() => {
-    testHelper.initSyncFunction('build/sync-functions/test-immutable-docs-sync-function.js');
+    testHelper.initValidationFunction('build/validation-functions/test-immutable-docs-validation-function.js');
   });
 
   describe('full document immutability constraint', () => {
@@ -28,7 +28,7 @@ describe('Immutable document validation:', () => {
       });
 
       it('allows a document to be deleted if the old document was already deleted', () => {
-        // There doesn't seem to be much point in deleting something that is already deleted, but since Sync Gateway allows you to do it, check
+        // There doesn't seem to be much point in deleting something that is already deleted, but since CouchDB allows you to do it, check
         // that it works properly
         const oldDoc = { _id: 'staticImmutableDoc', _deleted: true };
 
@@ -36,7 +36,7 @@ describe('Immutable document validation:', () => {
       });
 
       it('allows a document to be deleted if the old document does not exist', () => {
-        // There doesn't seem to be much point in deleting something that doesn't exist, but since Sync Gateway allows you to do it, check
+        // There doesn't seem to be much point in deleting something that doesn't exist, but since CouchDB allows you to do it, check
         // that it works properly
         const doc = {
           _id: 'staticImmutableDoc',
@@ -186,7 +186,7 @@ describe('Immutable document validation:', () => {
       });
 
       it('allows a document to be deleted if the old document was already deleted', () => {
-        // There doesn't seem to be much point in deleting something that is already deleted, but since Sync Gateway allows you to do it, check
+        // There doesn't seem to be much point in deleting something that is already deleted, but since CouchDB allows you to do it, check
         // that it works properly
         const oldDoc = { _id: 'staticCannotReplaceDoc', _deleted: true };
 
@@ -194,7 +194,7 @@ describe('Immutable document validation:', () => {
       });
 
       it('allows a document to be deleted if the old document does not exist', () => {
-        // There doesn't seem to be much point in deleting something that doesn't exist, but since Sync Gateway allows you to do it, check
+        // There doesn't seem to be much point in deleting something that doesn't exist, but since CouchDB allows you to do it, check
         // that it works properly
         const doc = {
           _id: 'staticCannotReplaceDoc',
@@ -316,7 +316,7 @@ describe('Immutable document validation:', () => {
       });
 
       it('allows a document to be deleted if the old document was already deleted', () => {
-        // There doesn't seem to be much point in deleting something that is already deleted, but since Sync Gateway allows you to do it, check
+        // There doesn't seem to be much point in deleting something that is already deleted, but since CouchDB allows you to do it, check
         // that it works properly
         const oldDoc = { _id: 'staticCannotDeleteDoc', _deleted: true };
 
@@ -324,7 +324,7 @@ describe('Immutable document validation:', () => {
       });
 
       it('allows a document to be deleted if the old document does not exist', () => {
-        // There doesn't seem to be much point in deleting something that doesn't exist, but since Sync Gateway allows you to do it, check
+        // There doesn't seem to be much point in deleting something that doesn't exist, but since CouchDB allows you to do it, check
         // that it works properly
         const doc = {
           _id: 'staticCannotDeleteDoc',

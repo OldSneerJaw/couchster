@@ -2,7 +2,7 @@ const testHelper = require('../src/testing/test-helper');
 
 describe('Array validation type', () => {
   beforeEach(() => {
-    testHelper.initSyncFunction('build/sync-functions/test-underscore-js-sync-function.js');
+    testHelper.initValidationFunction('build/validation-functions/test-underscore-js-validation-function.js');
   });
 
   it('allows a document that satisfies a custom validation constraint implemented with Underscore.js', () => {

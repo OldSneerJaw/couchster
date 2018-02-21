@@ -1,13 +1,12 @@
 {
-  "name": "synctos",
-  "version": "2.0.1",
-  "description": "The Syncmaker. A tool to build comprehensive sync functions for Couchbase Sync Gateway.",
+  "name": "couchster",
+  "version": "0.1.0",
+  "description": "A tool to build comprehensive validation functions for Apache CouchDB",
   "keywords": [
-    "couchbase",
-    "couchbase-sync-gateway",
-    "couchbase-mobile",
-    "sync-gateway",
-    "synchronization",
+    "apache",
+    "apache-couchdb",
+    "couchdb",
+    "couchster",
     "synctos",
     "validation"
   ],
@@ -21,17 +20,17 @@
     "nyc": "^11.4.1"
   },
   "scripts": {
-    "test": "etc/prepare-tests.sh && nyc mocha \"**/*.spec.js\"",
-    "test-report": "etc/prepare-tests.sh && mkdir -p build/test-reports/ && nyc mocha -R xunit \"**/*.spec.js\" > build/test-reports/synctos.xml"
+    "clean": "rm -rf build .nyc_output",
+    "test": "etc/prepare-tests.sh && nyc mocha \"**/*.spec.js\""
   },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Kashoo/synctos"
+    "url": "https://github.com/OldSneerJaw/couchster"
   },
   "bin": {
-    "synctos": "./make-sync-function",
-    "synctos-validate": "./validate-document-definitions"
+    "couchster": "./make-validation-function",
+    "couchster-validate": "./validate-document-definitions"
   },
   "engines": {
     "node": ">=8.9.0"

@@ -3,7 +3,7 @@ const errorFormatter = testHelper.validationErrorFormatter;
 
 describe('Non-null value constraint', () => {
   beforeEach(() => {
-    testHelper.initSyncFunction('build/sync-functions/test-must-not-be-null-sync-function.js');
+    testHelper.initValidationFunction('build/validation-functions/test-must-not-be-null-validation-function.js');
   });
 
   describe('with static validation', () => {

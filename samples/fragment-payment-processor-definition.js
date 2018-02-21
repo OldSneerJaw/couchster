@@ -3,8 +3,7 @@
   authorizedRoles: defaultAuthorizedRoles,
   authorizedUsers: defaultAuthorizedUsers,
   typeFilter: function(doc, oldDoc) {
-    // Note that this regex uses double quotes rather than single quotes as a workaround to https://github.com/Kashoo/synctos/issues/116
-    return createBusinessEntityRegex("paymentProcessor\\.[A-Za-z0-9_-]+$").test(doc._id);
+    return createBusinessEntityRegex('paymentProcessor\\.[A-Za-z0-9_-]+$').test(doc._id);
   },
   propertyValidators: {
     provider: {

@@ -1,9 +1,9 @@
 /**
- * Initializes the module with the sync function at the specified file path.
+ * Initializes the module with the validation function at the specified file path.
  *
- * @param {string} filePath The path to the sync function to load
+ * @param {string} filePath The path to the validation function to load
  */
-exports.initSyncFunction = initSyncFunction;
+exports.initValidationFunction = initValidationFunction;
 
 /**
  * Initializes the test helper module with the document definitions at the specified file path.
@@ -170,7 +170,7 @@ exports.verifyDocumentNotDeleted = verifyDocumentNotDeleted;
  * @param {Object} docType The document's type as specified in the document definition
  * @param {string[]} expectedErrorMessages The list of validation error messages that should be contained in the exception. May be a string
  *                                         if only one validation error is expected.
- * @param {Object} exception The exception that was thrown by the sync function. Should include a "forbidden" property of type string.
+ * @param {Object} exception The exception that was thrown by the validation function. Should include a "forbidden" property of type string.
  */
 exports.verifyValidationErrors = verifyValidationErrors;
 
@@ -207,7 +207,7 @@ exports.verifyRequireUser = verifyRequireUser;
 exports.verifyChannelAssignment = verifyChannelAssignment;
 
 /**
- * Verifies that the sync function throws an error when authorization is denied to create/replace/delete a document.
+ * Verifies that the validation function throws an error when authorization is denied to create/replace/delete a document.
  *
  * @param {Object} doc The document to attempt to write. May include property "_deleted=true" to simulate a delete operation.
  * @param {Object} oldDoc The document to replace or delete. May be null or undefined or include property "_deleted=true" to simulate a
@@ -233,25 +233,25 @@ exports.verifyUnknownDocumentType = verifyUnknownDocumentType;
 // Implementation begins here
 const assert = require('assert');
 const fs = require('fs');
-const syncFunctionLoader = require('../loading/sync-function-loader');
+const validationFunctionLoader = require('../loading/validation-function-loader');
 const testEnvironmentMaker = require('./test-environment-maker');
 
 const defaultWriteChannel = 'write';
 
-function initSyncFunction(filePath) {
-  const rawSyncFunction = fs.readFileSync(filePath, 'utf8').toString();
+function initValidationFunction(filePath) {
+  const rawValidationFunction = fs.readFileSync(filePath, 'utf8').toString();
 
-  init(rawSyncFunction, filePath);
+  init(rawValidationFunction, filePath);
 }
 
 function initDocumentDefinitions(filePath) {
-  const rawSyncFunction = syncFunctionLoader.load(filePath);
+  const rawValidationFunction = validationFunctionLoader.load(filePath);
 
-  init(rawSyncFunction);
+  init(rawValidationFunction);
 }
 
-function init(rawSyncFunction, syncFunctionFile) {
-  const testHelperEnvironment = testEnvironmentMaker.init(rawSyncFunction, syncFunctionFile);
+function init(rawValidationFunction, validationFunctionFile) {
+  const testHelperEnvironment = testEnvironmentMaker.init(rawValidationFunction, validationFunctionFile);
 
   exports.requireAccess = testHelperEnvironment.requireAccess;
   exports.requireRole = testHelperEnvironment.requireRole;
@@ -263,7 +263,7 @@ function init(rawSyncFunction, syncFunctionFile) {
   // A function stub that can be used in document definitions for test cases to verify custom actions
   exports.customActionStub = testHelperEnvironment.customActionStub;
 
-  exports.syncFunction = testHelperEnvironment.syncFunction;
+  exports.validationFunction = testHelperEnvironment.validationFunction;
 }
 
 function verifyRequireAccess(expectedChannels) {
@@ -474,7 +474,7 @@ function verifyAuthorization(expectedAuthorization) {
 }
 
 function verifyDocumentAccepted(doc, oldDoc, expectedAuthorization, expectedAccessAssignments) {
-  exports.syncFunction(doc, oldDoc);
+  exports.validationFunction(doc, oldDoc);
 
   if (expectedAccessAssignments) {
     verifyAccessAssignments(expectedAccessAssignments);
@@ -498,15 +498,15 @@ function verifyDocumentDeleted(oldDoc, expectedAuthorization, expectedAccessAssi
 }
 
 function verifyDocumentRejected(doc, oldDoc, docType, expectedErrorMessages, expectedAuthorization) {
-  let syncFuncError = null;
+  let validationFuncError = null;
   try {
-    exports.syncFunction(doc, oldDoc);
+    exports.validationFunction(doc, oldDoc);
   } catch (ex) {
-    syncFuncError = ex;
+    validationFuncError = ex;
   }
 
-  if (syncFuncError) {
-    verifyValidationErrors(docType, expectedErrorMessages, syncFuncError);
+  if (validationFuncError) {
+    verifyValidationErrors(docType, expectedErrorMessages, validationFuncError);
     verifyAuthorization(expectedAuthorization);
 
     assert.equal(exports.channel.callCount, 0, `Document was erroneously assigned to channels: ${JSON.stringify(exports.channel.calls)}`);
@@ -591,41 +591,41 @@ function verifyAccessDenied(doc, oldDoc, expectedAuthorization) {
   exports.requireRole.throwWith(roleAccessDeniedError);
   exports.requireUser.throwWith(userAccessDeniedError);
 
-  let syncFuncError = null;
+  let validationFuncError = null;
   try {
-    exports.syncFunction(doc, oldDoc);
+    exports.validationFunction(doc, oldDoc);
   } catch (ex) {
-    syncFuncError = ex;
+    validationFuncError = ex;
   }
 
-  if (syncFuncError) {
+  if (validationFuncError) {
     if (typeof expectedAuthorization === 'string' || expectedAuthorization instanceof Array) {
       assert.equal(
-        syncFuncError,
+        validationFuncError,
         channelAccessDeniedError,
-        `Document authorization error does not indicate channel access was denied. Actual: ${JSON.stringify(syncFuncError)}`);
+        `Document authorization error does not indicate channel access was denied. Actual: ${JSON.stringify(validationFuncError)}`);
     } else if (countAuthorizationTypes(expectedAuthorization) === 0) {
       verifyRequireAccess([ ]);
     } else if (countAuthorizationTypes(expectedAuthorization) > 1) {
       assert.equal(
-        syncFuncError.forbidden,
+        validationFuncError.forbidden,
         generalAuthFailedMessage,
-        `Document authorization error does not indicate that channel, role and user access were all denied. Actual: ${JSON.stringify(syncFuncError)}`);
+        `Document authorization error does not indicate that channel, role and user access were all denied. Actual: ${JSON.stringify(validationFuncError)}`);
     } else if (expectedAuthorization.expectedChannels) {
       assert.equal(
-        syncFuncError,
+        validationFuncError,
         channelAccessDeniedError,
-        `Document authorization error does not indicate channel access was denied. Actual: ${JSON.stringify(syncFuncError)}`);
+        `Document authorization error does not indicate channel access was denied. Actual: ${JSON.stringify(validationFuncError)}`);
     } else if (expectedAuthorization.expectedRoles) {
       assert.equal(
-        syncFuncError,
+        validationFuncError,
         roleAccessDeniedError,
-        `Document authorization error does not indicate role access was denied. Actual: ${JSON.stringify(syncFuncError)}`);
+        `Document authorization error does not indicate role access was denied. Actual: ${JSON.stringify(validationFuncError)}`);
     } else {
       assert.ok(
-        syncFuncError,
+        validationFuncError,
         userAccessDeniedError,
-        `Document authorization error does not indicate user access was denied. Actual: ${JSON.stringify(syncFuncError)}`);
+        `Document authorization error does not indicate user access was denied. Actual: ${JSON.stringify(validationFuncError)}`);
     }
 
     verifyAuthorization(expectedAuthorization);
@@ -635,18 +635,18 @@ function verifyAccessDenied(doc, oldDoc, expectedAuthorization) {
 }
 
 function verifyUnknownDocumentType(doc, oldDoc) {
-  let syncFuncError = null;
+  let validationFuncError = null;
   try {
-    exports.syncFunction(doc, oldDoc);
+    exports.validationFunction(doc, oldDoc);
   } catch (ex) {
-    syncFuncError = ex;
+    validationFuncError = ex;
   }
 
-  if (syncFuncError) {
+  if (validationFuncError) {
     assert.equal(
-      syncFuncError.forbidden,
+      validationFuncError.forbidden,
       'Unknown document type',
-      `Document validation error does not indicate the document type is unrecognized. Actual: ${JSON.stringify(syncFuncError)}`);
+      `Document validation error does not indicate the document type is unrecognized. Actual: ${JSON.stringify(validationFuncError)}`);
 
     assert.equal(exports.channel.callCount, 0, `Document was erroneously assigned to channels: ${JSON.stringify(exports.channel.calls)}`);
     assert.equal(exports.requireAccess.callCount, 0, `Unexpected attempt to specify required channels: ${JSON.stringify(exports.requireAccess.calls)}`);

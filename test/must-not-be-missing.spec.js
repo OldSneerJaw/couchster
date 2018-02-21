@@ -3,7 +3,7 @@ const errorFormatter = testHelper.validationErrorFormatter;
 
 describe('Non-missing value constraint', () => {
   beforeEach(() => {
-    testHelper.initSyncFunction('build/sync-functions/test-must-not-be-missing-sync-function.js');
+    testHelper.initValidationFunction('build/validation-functions/test-must-not-be-missing-validation-function.js');
   });
 
   describe('with static validation', () => {

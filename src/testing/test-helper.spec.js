@@ -3,10 +3,10 @@ const simpleMock = require('../../lib/simple-mock/index');
 const mockRequire = require('mock-require');
 
 describe('Test helper:', () => {
-  let testHelper, fsMock, syncFunctionLoaderMock, testEnvironmentMakerMock, fakeTestEnvironment;
+  let testHelper, fsMock, validationFunctionLoaderMock, testEnvironmentMakerMock, fakeTestEnvironment;
 
   const fakeFilePath = 'my-file-path';
-  const fakeSyncFunctionContents = 'my-sync-function';
+  const fakeValidationFunctionContents = 'my-validation-function';
 
   beforeEach(() => {
     fakeTestEnvironment = {
@@ -18,17 +18,17 @@ describe('Test helper:', () => {
       access: simpleMock.stub(),
       role: simpleMock.stub(),
       customActionStub: simpleMock.stub(),
-      syncFunction: simpleMock.stub()
+      validationFunction: simpleMock.stub()
     };
 
     // Stub out the "require" calls in the module under test
     fsMock = { readFileSync: simpleMock.stub() };
-    fsMock.readFileSync.returnWith(fakeSyncFunctionContents);
+    fsMock.readFileSync.returnWith(fakeValidationFunctionContents);
     mockRequire('fs', fsMock);
 
-    syncFunctionLoaderMock = { load: simpleMock.stub() };
-    syncFunctionLoaderMock.load.returnWith(fakeSyncFunctionContents);
-    mockRequire('../loading/sync-function-loader', syncFunctionLoaderMock);
+    validationFunctionLoaderMock = { load: simpleMock.stub() };
+    validationFunctionLoaderMock.load.returnWith(fakeValidationFunctionContents);
+    mockRequire('../loading/validation-function-loader', validationFunctionLoaderMock);
 
     testEnvironmentMakerMock = { init: simpleMock.stub() };
     testEnvironmentMakerMock.init.returnWith(fakeTestEnvironment);
@@ -42,30 +42,30 @@ describe('Test helper:', () => {
   });
 
   describe('when initializing a test environment', () => {
-    it('can initialize from a sync function', () => {
-      fsMock.readFileSync.returnWith(fakeSyncFunctionContents);
+    it('can initialize from a validation function', () => {
+      fsMock.readFileSync.returnWith(fakeValidationFunctionContents);
 
-      testHelper.initSyncFunction(fakeFilePath);
+      testHelper.initValidationFunction(fakeFilePath);
 
       expect(fsMock.readFileSync.callCount).to.equal(1);
       expect(fsMock.readFileSync.calls[0].args).to.eql([ fakeFilePath, 'utf8' ]);
 
       expect(testEnvironmentMakerMock.init.callCount).to.equal(1);
-      expect(testEnvironmentMakerMock.init.calls[0].args).to.eql([ fakeSyncFunctionContents, fakeFilePath ]);
+      expect(testEnvironmentMakerMock.init.calls[0].args).to.eql([ fakeValidationFunctionContents, fakeFilePath ]);
 
       verifyTestEnvironment();
     });
 
     it('can initialize directly from document definitions', () => {
-      syncFunctionLoaderMock.load.returnWith(fakeSyncFunctionContents);
+      validationFunctionLoaderMock.load.returnWith(fakeValidationFunctionContents);
 
       testHelper.initDocumentDefinitions(fakeFilePath);
 
-      expect(syncFunctionLoaderMock.load.callCount).to.equal(1);
-      expect(syncFunctionLoaderMock.load.calls[0].args).to.eql([ fakeFilePath ]);
+      expect(validationFunctionLoaderMock.load.callCount).to.equal(1);
+      expect(validationFunctionLoaderMock.load.calls[0].args).to.eql([ fakeFilePath ]);
 
       expect(testEnvironmentMakerMock.init.callCount).to.equal(1);
-      expect(testEnvironmentMakerMock.init.calls[0].args).to.eql([ fakeSyncFunctionContents, void 0 ]);
+      expect(testEnvironmentMakerMock.init.calls[0].args).to.eql([ fakeValidationFunctionContents, void 0 ]);
 
       verifyTestEnvironment();
     });
@@ -78,7 +78,7 @@ describe('Test helper:', () => {
       expect(testHelper.access).to.equal(fakeTestEnvironment.access);
       expect(testHelper.role).to.equal(fakeTestEnvironment.role);
       expect(testHelper.customActionStub).to.equal(fakeTestEnvironment.customActionStub);
-      expect(testHelper.syncFunction).to.equal(fakeTestEnvironment.syncFunction);
+      expect(testHelper.validationFunction).to.equal(fakeTestEnvironment.validationFunction);
     }
   });
 
@@ -91,7 +91,7 @@ describe('Test helper:', () => {
       const actualChannels = [ 'my-channel-1', 'my-channel-2' ];
       const expectedChannels = [ 'my-channel-1' ];
 
-      testHelper.syncFunction = () => {
+      testHelper.validationFunction = () => {
         testHelper.requireAccess(actualChannels);
       };
 
@@ -104,7 +104,7 @@ describe('Test helper:', () => {
       const actualChannels = [ 'my-channel-1' ];
       const expectedChannels = [ 'my-channel-1', 'my-channel-2' ];
 
-      testHelper.syncFunction = () => {
+      testHelper.validationFunction = () => {
         testHelper.requireAccess(actualChannels);
       };
 
@@ -113,8 +113,8 @@ describe('Test helper:', () => {
       }).to.throw(`Expected channel was not encountered: my-channel-2. Actual channels: ${actualChannels.join(',')}`);
     });
 
-    it('fails if the sync function does not throw an error', () => {
-      testHelper.syncFunction = () => { };
+    it('fails if the validation function does not throw an error', () => {
+      testHelper.validationFunction = () => { };
 
       expect(() => {
         testHelper.verifyAccessDenied({ }, void 0, [ ]);
@@ -122,7 +122,7 @@ describe('Test helper:', () => {
     });
 
     it('succeeds if there are no expected channels, roles or users allowed', () => {
-      testHelper.syncFunction = () => {
+      testHelper.validationFunction = () => {
         testHelper.requireAccess([ ]);
       };
 
@@ -138,7 +138,7 @@ describe('Test helper:', () => {
     });
 
     it('fails if the document type is recognized', () => {
-      testHelper.syncFunction = () => { };
+      testHelper.validationFunction = () => { };
 
       expect(() => {
         testHelper.verifyUnknownDocumentType({ });
@@ -151,8 +151,8 @@ describe('Test helper:', () => {
       testHelper.initDocumentDefinitions(fakeFilePath);
     });
 
-    it('fails if the sync function does not throw an error', () => {
-      testHelper.syncFunction = () => { };
+    it('fails if the validation function does not throw an error', () => {
+      testHelper.validationFunction = () => { };
 
       expect(() => {
         testHelper.verifyDocumentRejected({ }, void 0, 'my-doc-type', [ ], { });
@@ -162,7 +162,7 @@ describe('Test helper:', () => {
     it('fails if the validation error message format is invalid', () => {
       const errorMessage = 'Foo: bar';
 
-      testHelper.syncFunction = () => {
+      testHelper.validationFunction = () => {
         throw { forbidden: errorMessage };
       };
 
@@ -176,7 +176,7 @@ describe('Test helper:', () => {
       const expectedErrors = [ 'my-error-1', 'my-error-2' ];
       const errorMessage = `Invalid ${docType} document: ${expectedErrors[0]}`;
 
-      testHelper.syncFunction = () => {
+      testHelper.validationFunction = () => {
         throw { forbidden: errorMessage };
       };
 
@@ -192,7 +192,7 @@ describe('Test helper:', () => {
       const expectedErrors = [ actualErrors[0] ];
       const expectedErrorMessage = `Invalid ${docType} document: ${expectedErrors[0]}`;
 
-      testHelper.syncFunction = () => {
+      testHelper.validationFunction = () => {
         throw { forbidden: actualErrorMessage };
       };
 
@@ -208,7 +208,7 @@ describe('Test helper:', () => {
     });
 
     it('fails if the channel assignment function was not called', () => {
-      testHelper.syncFunction = () => {
+      testHelper.validationFunction = () => {
         testHelper.requireAccess([ ]);
       };
 
@@ -232,7 +232,7 @@ describe('Test helper:', () => {
       };
       const expectedEffectiveRoles = expectedChannelAccessAssignment.expectedRoles.map((role) => `role:${role}`);
 
-      testHelper.syncFunction = () => {
+      testHelper.validationFunction = () => {
         testHelper.access(expectedEffectiveRoles, actualChannels);
       };
 
@@ -250,7 +250,7 @@ describe('Test helper:', () => {
       const expectedEffectiveRoles = expectedRoleAccessAssignment.expectedRoles.map((role) => `role:${role}`);
       const actualUsers = [ 'my-user-1', 'my-user-2', 'my-user-2' ];
 
-      testHelper.syncFunction = () => {
+      testHelper.validationFunction = () => {
         testHelper.role(actualUsers, expectedEffectiveRoles);
       };
 
@@ -260,7 +260,7 @@ describe('Test helper:', () => {
     });
 
     it('fails if there is a call to assign channel access when none is expected', () => {
-      testHelper.syncFunction = () => {
+      testHelper.validationFunction = () => {
         testHelper.access();
       };
 
@@ -270,7 +270,7 @@ describe('Test helper:', () => {
     });
 
     it('fails if there is a call to assign role access when none is expected', () => {
-      testHelper.syncFunction = () => {
+      testHelper.validationFunction = () => {
         testHelper.role();
       };
 
@@ -286,7 +286,7 @@ describe('Test helper:', () => {
         expectedUsers: [ 'my-user-1' ]
       };
 
-      testHelper.syncFunction = () => { };
+      testHelper.validationFunction = () => { };
 
       expect(() => {
         testHelper.verifyDocumentAccepted({ }, void 0, [ ], [ expectedInvalidAccessAssignment ]);
