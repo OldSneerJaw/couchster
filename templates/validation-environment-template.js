@@ -5,7 +5,6 @@ function makeValidationEnvironment(_, simple) {
   var simpleTypeFilter = simple.stub();
   var isDocumentMissingOrDeleted = simple.stub();
   var isValueNullOrUndefined = simple.stub();
-  var jsonStringify = simple.stub();
   var requireAccess = simple.stub();
   var requireRole = simple.stub();
   var requireUser = simple.stub();
@@ -23,7 +22,6 @@ function makeValidationEnvironment(_, simple) {
     simpleTypeFilter: simpleTypeFilter,
     isDocumentMissingOrDeleted: isDocumentMissingOrDeleted,
     isValueNullOrUndefined: isValueNullOrUndefined,
-    jsonStringify: jsonStringify,
     requireAccess: requireAccess,
     requireRole: requireRole,
     requireUser: requireUser,

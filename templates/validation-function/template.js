@@ -52,14 +52,10 @@ function couchster(doc, oldDoc) {
     return typeof value === 'number' && isFinite(value) && Math.floor(value) === value;
   }
 
-  // Converts a given value to a JSON string. Exists because JSON.stringify is not supported by CouchDB's JavaScript engine.
-  var jsonStringify = importValidationFunctionFragment('json-stringify-module.js');
-
   var utils = {
     isDocumentMissingOrDeleted: isDocumentMissingOrDeleted,
     isValueAnInteger: isValueAnInteger,
     isValueNullOrUndefined: isValueNullOrUndefined,
-    jsonStringify: jsonStringify,
     padRight: padRight,
     resolveOldDoc: resolveOldDoc
   };
