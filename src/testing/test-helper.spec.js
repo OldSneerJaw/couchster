@@ -10,7 +10,6 @@ describe('Test helper:', () => {
 
   beforeEach(() => {
     fakeTestEnvironment = {
-      _: simpleMock.stub(),
       requireAccess: simpleMock.stub(),
       requireRole: simpleMock.stub(),
       requireUser: simpleMock.stub(),

@@ -1,14 +1,17 @@
 {
-  "extends": "../.jshintrc",
+  "extends": "../../.jshintrc",
   "esversion": 5,
   "node": false,
   "globals": {
-    "_": false,
     "channel": false,
     "customActionStub": false,
     "importValidationFunctionFragment": false,
+    "isArray": false,
+    "log": false,
     "requireAccess": false,
     "requireRole": false,
-    "requireUser": false
+    "requireUser": false,
+    "sum": false,
+    "toJSON": false
   }
 }

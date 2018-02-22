@@ -4,11 +4,14 @@
   "node": false,
   "unused": false,
   "globals": {
-    "_": false,
     "channel": false,
     "customActionStub": false,
+    "isArray": false,
+    "log": false,
     "requireAccess": false,
     "requireRole": false,
-    "requireUser": false
+    "requireUser": false,
+    "sum": false,
+    "toJSON": false
   }
 }
