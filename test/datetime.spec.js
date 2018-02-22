@@ -222,13 +222,22 @@ describe('Date/time validation type', () => {
 
       testHelper.verifyDocumentNotCreated(doc, 'datetimeDoc', errorFormatter.datetimeFormatInvalid('formatValidationProp'));
     });
+
+    it('rejects a date/time without a colon separator in the time zone component', () => {
+      const doc = {
+        _id: 'datetimeDoc',
+        formatValidationProp: '2016-07-17T15:20:09.348-0700'
+      };
+
+      testHelper.verifyDocumentNotCreated(doc, 'datetimeDoc', errorFormatter.datetimeFormatInvalid('formatValidationProp'));
+    });
   });
 
   describe('inclusive range validation for min and max dates with time and time zone components', () => {
     it('can create a doc with a date/time that is within the minimum and maximum values', () => {
       const doc = {
         _id: 'datetimeDoc',
-        inclusiveRangeValidationAsDatetimesProp: '2016-06-24T08:22:17.123+0230'  // Same date/time as the min and max values, different time zone
+        inclusiveRangeValidationAsDatetimesProp: '2016-06-24T08:22:17.123+02:30'  // Same date/time as the min and max values, different time zone
       };
 
       testHelper.verifyDocumentCreated(doc);
@@ -496,12 +505,12 @@ describe('Date/time validation type', () => {
     it('rejects a datetime that does not match the existing datetime', () => {
       const oldDoc = {
         _id: 'datetimeDoc',
-        immutabilityValidationProp: '1999-12-31T23:59:59.999-0800'
+        immutabilityValidationProp: '1999-12-31T23:59:59.999-08:00'
       };
 
       const doc = {
         _id: 'datetimeDoc',
-        immutabilityValidationProp: '1999-12-31T23:59:59.999-0700'
+        immutabilityValidationProp: '1999-12-31T23:59:59.999-07:00'
       };
 
       testHelper.verifyDocumentNotReplaced(
