@@ -13,7 +13,6 @@ const authorizationSchema = dynamicConstraintSchema(
       remove: arrayOrSingleItemSchema(nonEmptyStringSchema),
       write: arrayOrSingleItemSchema(nonEmptyStringSchema)
     }));
-const accessAssignmentEntryPropertySchema = dynamicConstraintSchema(arrayOrSingleItemSchema(nonEmptyStringSchema, 1));
 
 /**
  * The full schema for a single document definition object.
@@ -64,36 +63,10 @@ module.exports = exports = joi.object().options({ convert: false }).keys({
   authorizedRoles: authorizationSchema,
   authorizedUsers: authorizationSchema,
 
-  accessAssignments: joi.array().items(
-    joi.object().keys({ type: joi.string().only([ 'channel', 'role', null ]) })
-      // Each access assignment may be either a role assignment
-      .when(
-        joi.object().unknown().keys({ type: joi.string().required().only('role') }),
-        {
-          then: joi.object().keys({
-            type: joi.string(),
-            roles: accessAssignmentEntryPropertySchema.required(),
-            users: accessAssignmentEntryPropertySchema.required()
-          })
-        })
-
-      // ... or a channel assignment
-      .when(
-        joi.object().unknown().keys({ type: joi.string().optional().only([ 'channel', null ]) }),
-        {
-          then: joi.object().keys({
-            type: joi.string(),
-            channels: accessAssignmentEntryPropertySchema.required(),
-            roles: accessAssignmentEntryPropertySchema,
-            users: accessAssignmentEntryPropertySchema
-          }).or('roles', 'users') // At least one of "roles" or "users" must be provided
-        })),
-
   customActions: joi.object().min(1).keys({
     onTypeIdentificationSucceeded: customActionEventSchema,
     onAuthorizationSucceeded: customActionEventSchema,
     onValidationSucceeded: customActionEventSchema,
-    onAccessAssignmentsSucceeded: customActionEventSchema,
     onDocumentChannelAssignmentSucceeded: customActionEventSchema
   }),
 

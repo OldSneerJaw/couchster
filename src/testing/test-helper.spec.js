@@ -15,8 +15,6 @@ describe('Test helper:', () => {
       requireRole: simpleMock.stub(),
       requireUser: simpleMock.stub(),
       channel: simpleMock.stub(),
-      access: simpleMock.stub(),
-      role: simpleMock.stub(),
       customActionStub: simpleMock.stub(),
       validationFunction: simpleMock.stub()
     };
@@ -75,8 +73,6 @@ describe('Test helper:', () => {
       expect(testHelper.requireRole).to.equal(fakeTestEnvironment.requireRole);
       expect(testHelper.requireUser).to.equal(fakeTestEnvironment.requireUser);
       expect(testHelper.channel).to.equal(fakeTestEnvironment.channel);
-      expect(testHelper.access).to.equal(fakeTestEnvironment.access);
-      expect(testHelper.role).to.equal(fakeTestEnvironment.role);
       expect(testHelper.customActionStub).to.equal(fakeTestEnvironment.customActionStub);
       expect(testHelper.validationFunction).to.equal(fakeTestEnvironment.validationFunction);
     }
@@ -215,82 +211,6 @@ describe('Test helper:', () => {
       expect(() => {
         testHelper.verifyDocumentAccepted({ }, void 0, [ ]);
       }).to.throw('Document channels were not assigned');
-    });
-  });
-
-  describe('when verifying access assignments', () => {
-    beforeEach(() => {
-      testHelper.initDocumentDefinitions(fakeFilePath);
-    });
-
-    it('fails if a different set of channel access is assigned than what was expected', () => {
-      const actualChannels = [ 'my-channel-1' ];
-      const expectedChannelAccessAssignment = {
-        expectedType: 'channel',
-        expectedRoles: [ 'my-role-1' ],
-        foo: [ 'bar' ] // This should be ignored
-      };
-      const expectedEffectiveRoles = expectedChannelAccessAssignment.expectedRoles.map((role) => `role:${role}`);
-
-      testHelper.validationFunction = () => {
-        testHelper.access(expectedEffectiveRoles, actualChannels);
-      };
-
-      expect(() => {
-        testHelper.verifyDocumentAccepted({ }, void 0, [ ], [ expectedChannelAccessAssignment ]);
-      }).to.throw(`Missing expected call to assign channel access (${JSON.stringify([ ])}) to users and roles (${JSON.stringify(expectedEffectiveRoles)})`);
-    });
-
-    it('fails if a different set of role access is assigned than what was expected', () => {
-      const expectedRoleAccessAssignment = {
-        expectedType: 'role',
-        expectedRoles: [ 'my-role-1', 'my-role-2' ],
-        expectedUsers: [ 'my-user-1', 'my-user-2', 'my-user-3' ]
-      };
-      const expectedEffectiveRoles = expectedRoleAccessAssignment.expectedRoles.map((role) => `role:${role}`);
-      const actualUsers = [ 'my-user-1', 'my-user-2', 'my-user-2' ];
-
-      testHelper.validationFunction = () => {
-        testHelper.role(actualUsers, expectedEffectiveRoles);
-      };
-
-      expect(() => {
-        testHelper.verifyDocumentAccepted({ }, void 0, [ ], [ expectedRoleAccessAssignment ]);
-      }).to.throw(`Missing expected call to assign role access (${JSON.stringify(expectedEffectiveRoles)}) to users (${JSON.stringify(expectedRoleAccessAssignment.expectedUsers)})`);
-    });
-
-    it('fails if there is a call to assign channel access when none is expected', () => {
-      testHelper.validationFunction = () => {
-        testHelper.access();
-      };
-
-      expect(() => {
-        testHelper.verifyDocumentAccepted({ }, void 0, [ ], [ ]);
-      }).to.throw('Number of calls to assign channel access (1) does not match expected (0)');
-    });
-
-    it('fails if there is a call to assign role access when none is expected', () => {
-      testHelper.validationFunction = () => {
-        testHelper.role();
-      };
-
-      expect(() => {
-        testHelper.verifyDocumentAccepted({ }, void 0, [ ], [ ]);
-      }).to.throw('Number of calls to assign role access (1) does not match expected (0)');
-    });
-
-    it('fails if there is an unrecognized access assignment type', () => {
-      const expectedInvalidAccessAssignment = {
-        expectedType: 'invalid-type',
-        expectedRoles: [ 'my-role-1' ],
-        expectedUsers: [ 'my-user-1' ]
-      };
-
-      testHelper.validationFunction = () => { };
-
-      expect(() => {
-        testHelper.verifyDocumentAccepted({ }, void 0, [ ], [ expectedInvalidAccessAssignment ]);
-      }).to.throw(`Unrecognized expected access assignment type ("${expectedInvalidAccessAssignment.expectedType}")`);
     });
   });
 });

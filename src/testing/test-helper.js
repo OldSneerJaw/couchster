@@ -30,12 +30,6 @@ exports.validationErrorFormatter = require('./validation-error-formatter');
  *                                                  - expectedChannels: an optional list of channels that are authorized
  *                                                  - expectedRoles: an optional list of roles that are authorized
  *                                                  - expectedUsers: an optional list of users that are authorized
- * @param {Object[]} [expectedAccessAssignments] An optional list of expected user and role channel assignments. Each entry is an object
- *                                               that contains the following fields:
- *                                               - expectedType: an optional string that indicates whether this is a "channel" (default) or "role" assignment
- *                                               - expectedChannels: an optional list of channels to assign to the users and roles
- *                                               - expectedUsers: an optional list of users to which to assign the channels
- *                                               - expectedRoles: an optional list of roles to which to assign the channels
  */
 exports.verifyDocumentAccepted = verifyDocumentAccepted;
 
@@ -49,12 +43,6 @@ exports.verifyDocumentAccepted = verifyDocumentAccepted;
  *                                                    - expectedChannels: an optional list of channels that are authorized
  *                                                    - expectedRoles: an optional list of roles that are authorized
  *                                                    - expectedUsers: an optional list of users that are authorized
- * @param {Object[]} [expectedAccessAssignments] An optional list of expected user and role channel assignments. Each entry is an object
- *                                               that contains the following fields:
- *                                               - expectedType: an optional string that indicates whether this is a "channel" (default) or "role" assignment
- *                                               - expectedChannels: an optional list of channels to assign to the users and roles
- *                                               - expectedUsers: an optional list of users to which to assign the channels
- *                                               - expectedRoles: an optional list of roles to which to assign the channels
  */
 exports.verifyDocumentCreated = verifyDocumentCreated;
 
@@ -69,12 +57,6 @@ exports.verifyDocumentCreated = verifyDocumentCreated;
  *                                                    - expectedChannels: an optional list of channels that are authorized
  *                                                    - expectedRoles: an optional list of roles that are authorized
  *                                                    - expectedUsers: an optional list of users that are authorized
- * @param {Object[]} [expectedAccessAssignments] An optional list of expected user and role channel assignments. Each entry is an object
- *                                               that contains the following fields:
- *                                               - expectedType: an optional string that indicates whether this is a "channel" (default) or "role" assignment
- *                                               - expectedChannels: an optional list of channels to assign to the users and roles
- *                                               - expectedUsers: an optional list of users to which to assign the channels
- *                                               - expectedRoles: an optional list of roles to which to assign the channels
  */
 exports.verifyDocumentReplaced = verifyDocumentReplaced;
 
@@ -88,12 +70,6 @@ exports.verifyDocumentReplaced = verifyDocumentReplaced;
  *                                                    - expectedChannels: an optional list of channels that are authorized
  *                                                    - expectedRoles: an optional list of roles that are authorized
  *                                                    - expectedUsers: an optional list of users that are authorized
- * @param {Object[]} [expectedAccessAssignments] An optional list of expected user and role channel assignments. Each entry is an object
- *                                               that contains the following fields:
- *                                               - expectedType: an optional string that indicates whether this is a "channel" (default) or "role" assignment
- *                                               - expectedChannels: an optional list of channels to assign to the users and roles
- *                                               - expectedUsers: an optional list of users to which to assign the channels
- *                                               - expectedRoles: an optional list of roles to which to assign the channels
  */
 exports.verifyDocumentDeleted = verifyDocumentDeleted;
 
@@ -257,8 +233,6 @@ function init(rawValidationFunction, validationFunctionFile) {
   exports.requireRole = testHelperEnvironment.requireRole;
   exports.requireUser = testHelperEnvironment.requireUser;
   exports.channel = testHelperEnvironment.channel;
-  exports.access = testHelperEnvironment.access;
-  exports.role = testHelperEnvironment.role;
 
   // A function stub that can be used in document definitions for test cases to verify custom actions
   exports.customActionStub = testHelperEnvironment.customActionStub;
@@ -312,111 +286,6 @@ function checkAuthorizations(expectedAuthorizations, actualAuthorizations, autho
       assert.fail(`Unexpected ${authorizationType} encountered: ${actualAuth}. Expected ${authorizationType}s: ${expectedAuthorizations}`);
     }
   });
-}
-
-function areUnorderedListsEqual(list1, list2) {
-  return list1.length === list2.length &&
-    list1.every((element) => list2.includes(element)) &&
-    list2.every((element) => list1.includes(element));
-}
-
-function accessAssignmentCallExists(accessFunction, expectedAssignees, expectedPermissions) {
-  // Try to find an actual channel/role access assignment call that matches the expected call
-  return accessFunction.calls.some((accessCall) => {
-    return areUnorderedListsEqual(accessCall.args[0], expectedAssignees) && areUnorderedListsEqual(accessCall.args[1], expectedPermissions);
-  });
-}
-
-function prefixRoleName(role) {
-  return `role:${role}`;
-}
-
-function verifyChannelAccessAssignment(expectedAssignment) {
-  const expectedUsersAndRoles = [ ];
-  if (expectedAssignment.expectedUsers) {
-    if (expectedAssignment.expectedUsers instanceof Array) {
-      expectedUsersAndRoles.push(...expectedAssignment.expectedUsers);
-    } else {
-      expectedUsersAndRoles.push(expectedAssignment.expectedUsers);
-    }
-  }
-
-  if (expectedAssignment.expectedRoles) {
-    // The prefix "role:" must be applied to roles when calling the access function, as specified by
-    // http://developer.couchbase.com/documentation/mobile/current/guides/sync-gateway/sync-function-api-guide/index.html#access-username-channelname
-    if (expectedAssignment.expectedRoles instanceof Array) {
-      expectedAssignment.expectedRoles.forEach((expectedRole) => {
-        expectedUsersAndRoles.push(prefixRoleName(expectedRole));
-      });
-    } else {
-      expectedUsersAndRoles.push(prefixRoleName(expectedAssignment.expectedRoles));
-    }
-  }
-
-  const expectedChannels = [ ];
-  if (expectedAssignment.expectedChannels) {
-    if (expectedAssignment.expectedChannels instanceof Array) {
-      expectedChannels.push(...expectedAssignment.expectedChannels);
-    } else {
-      expectedChannels.push(expectedAssignment.expectedChannels);
-    }
-  }
-
-  if (!accessAssignmentCallExists(exports.access, expectedUsersAndRoles, expectedChannels)) {
-    assert.fail(`Missing expected call to assign channel access (${JSON.stringify(expectedChannels)}) to users and roles (${JSON.stringify(expectedUsersAndRoles)})`);
-  }
-}
-
-function verifyRoleAccessAssignment(expectedAssignment) {
-  const expectedUsers = [ ];
-  if (expectedAssignment.expectedUsers) {
-    if (expectedAssignment.expectedUsers instanceof Array) {
-      expectedUsers.push(...expectedAssignment.expectedUsers);
-    } else {
-      expectedUsers.push(expectedAssignment.expectedUsers);
-    }
-  }
-
-  const expectedRoles = [ ];
-  if (expectedAssignment.expectedRoles) {
-    // The prefix "role:" must be applied to roles when calling the role function, as specified by
-    // http://developer.couchbase.com/documentation/mobile/current/guides/sync-gateway/sync-function-api-guide/index.html#role-username-rolename
-    if (expectedAssignment.expectedRoles instanceof Array) {
-      expectedAssignment.expectedRoles.forEach((expectedRole) => {
-        expectedRoles.push(prefixRoleName(expectedRole));
-      });
-    } else {
-      expectedRoles.push(prefixRoleName(expectedAssignment.expectedRoles));
-    }
-  }
-
-  if (!accessAssignmentCallExists(exports.role, expectedUsers, expectedRoles)) {
-    assert.fail(`Missing expected call to assign role access (${JSON.stringify(expectedRoles)}) to users (${JSON.stringify(expectedUsers)})`);
-  }
-}
-
-function verifyAccessAssignments(expectedAccessAssignments) {
-  let expectedAccessCalls = 0;
-  let expectedRoleCalls = 0;
-  expectedAccessAssignments.forEach((expectedAssignment) => {
-    if (expectedAssignment.expectedType === 'role') {
-      verifyRoleAccessAssignment(expectedAssignment);
-      expectedRoleCalls++;
-    } else if (expectedAssignment.expectedType === 'channel' || !expectedAssignment.expectedType) {
-      verifyChannelAccessAssignment(expectedAssignment);
-      expectedAccessCalls++;
-    } else {
-      assert.fail(`Unrecognized expected access assignment type ("${expectedAssignment.expectedType}")`);
-    }
-  });
-
-  if (exports.access.callCount !== expectedAccessCalls) {
-    assert.fail(`Number of calls to assign channel access (${exports.access.callCount}) does not match expected (${expectedAccessCalls})`);
-  }
-
-  if (exports.role.callCount !== expectedRoleCalls) {
-    assert.fail(`Number of calls to assign role access (${exports.role.callCount}) does not match expected (${expectedRoleCalls})`);
-  }
 }
 
 function verifyOperationChannelsAssigned(doc, oldDoc, expectedChannels) {
@@ -473,28 +342,24 @@ function verifyAuthorization(expectedAuthorization) {
   return expectedOperationChannels;
 }
 
-function verifyDocumentAccepted(doc, oldDoc, expectedAuthorization, expectedAccessAssignments) {
+function verifyDocumentAccepted(doc, oldDoc, expectedAuthorization) {
   exports.validationFunction(doc, oldDoc);
-
-  if (expectedAccessAssignments) {
-    verifyAccessAssignments(expectedAccessAssignments);
-  }
 
   const expectedOperationChannels = verifyAuthorization(expectedAuthorization);
 
   verifyOperationChannelsAssigned(doc, oldDoc, expectedOperationChannels);
 }
 
-function verifyDocumentCreated(doc, expectedAuthorization, expectedAccessAssignments) {
-  verifyDocumentAccepted(doc, void 0, expectedAuthorization || defaultWriteChannel, expectedAccessAssignments);
+function verifyDocumentCreated(doc, expectedAuthorization) {
+  verifyDocumentAccepted(doc, void 0, expectedAuthorization || defaultWriteChannel);
 }
 
-function verifyDocumentReplaced(doc, oldDoc, expectedAuthorization, expectedAccessAssignments) {
-  verifyDocumentAccepted(doc, oldDoc, expectedAuthorization || defaultWriteChannel, expectedAccessAssignments);
+function verifyDocumentReplaced(doc, oldDoc, expectedAuthorization) {
+  verifyDocumentAccepted(doc, oldDoc, expectedAuthorization || defaultWriteChannel);
 }
 
-function verifyDocumentDeleted(oldDoc, expectedAuthorization, expectedAccessAssignments) {
-  verifyDocumentAccepted({ _id: oldDoc._id, _deleted: true }, oldDoc, expectedAuthorization || defaultWriteChannel, expectedAccessAssignments);
+function verifyDocumentDeleted(oldDoc, expectedAuthorization) {
+  verifyDocumentAccepted({ _id: oldDoc._id, _deleted: true }, oldDoc, expectedAuthorization || defaultWriteChannel);
 }
 
 function verifyDocumentRejected(doc, oldDoc, docType, expectedErrorMessages, expectedAuthorization) {

@@ -9,8 +9,6 @@ function makeValidationEnvironment(simpleMock) {
   var requireRole = simpleMock.stub();
   var requireUser = simpleMock.stub();
   var channel = simpleMock.stub();
-  var access = simpleMock.stub();
-  var role = simpleMock.stub();
 
   var customActionStub = simpleMock.stub();
 
@@ -25,8 +23,6 @@ function makeValidationEnvironment(simpleMock) {
     requireRole: requireRole,
     requireUser: requireUser,
     channel: channel,
-    access: access,
-    role: role,
     customActionStub: customActionStub,
     documentDefinitions: %DOC_DEFINITIONS_PLACEHOLDER%
   };

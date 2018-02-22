@@ -15,17 +15,6 @@
   typeFilter: function(doc, oldDoc) {
     return createBusinessEntityRegex('notification\\.[A-Za-z0-9_-]+$').test(doc._id);
   },
-  accessAssignments: [
-    {
-      users: function(doc, oldDoc) {
-        return doc.users;
-      },
-      roles: function(doc, oldDoc) {
-        return doc.groups;
-      },
-      channels: [ doc._id + '-VIEW' ]
-    }
-  ],
   propertyValidators: {
     eventId: {
       type: 'uuid',

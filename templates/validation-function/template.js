@@ -66,9 +66,6 @@ function couchster(doc, oldDoc) {
   // The document validation module is responsible for verifying the document's contents
   var validationModule = importValidationFunctionFragment('./validation-module.js')(utils, simpleTypeFilter, typeIdValidator);
 
-  // The access assignment module is responsible for dynamically assigning channels and roles to users
-  var accessAssignmentModule = importValidationFunctionFragment('./access-assignment-module.js')(utils);
-
   var rawDocDefinitions = %DOCUMENT_DEFINITIONS%;
 
   var docDefinitions;
@@ -129,14 +126,6 @@ function couchster(doc, oldDoc) {
 
   if (theDocDefinition.customActions && typeof theDocDefinition.customActions.onValidationSucceeded === 'function') {
     theDocDefinition.customActions.onValidationSucceeded(doc, oldDoc, customActionMetadata);
-  }
-
-  if (theDocDefinition.accessAssignments && theDocDefinition.accessAssignments.length > 0) {
-    customActionMetadata.accessAssignments = accessAssignmentModule.assignUserAccess(doc, oldDoc, theDocDefinition.accessAssignments);
-
-    if (theDocDefinition.customActions && typeof theDocDefinition.customActions.onAccessAssignmentsSucceeded === 'function') {
-      theDocDefinition.customActions.onAccessAssignmentsSucceeded(doc, oldDoc, customActionMetadata);
-    }
   }
 
   // Getting here means the document revision is authorized and valid, and the appropriate channel(s) should now be assigned

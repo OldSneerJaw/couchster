@@ -110,41 +110,6 @@ describe('Custom actions:', () => {
     });
   });
 
-  describe('the onAccessAssignmentsSucceeded event', () => {
-    const docType = 'onAccessAssignmentsDoc';
-    const doc = { _id: docType };
-    const oldDoc = { _id: docType };
-
-    it('executes a custom action when a document is created', () => {
-      testHelper.verifyDocumentCreated(doc, expectedAuthorization);
-      verifyCustomActionExecuted(doc, void 0, 'onAccessAssignmentsSucceeded');
-    });
-
-    it('executes a custom action when a document is replaced', () => {
-      testHelper.verifyDocumentReplaced(doc, oldDoc, expectedAuthorization);
-      verifyCustomActionExecuted(doc, oldDoc, 'onAccessAssignmentsSucceeded');
-    });
-
-    it('executes a custom action when a document is deleted', () => {
-      testHelper.verifyDocumentDeleted(oldDoc, expectedAuthorization);
-      verifyCustomActionExecuted(getDeletedDoc(docType), oldDoc, 'onAccessAssignmentsSucceeded');
-    });
-
-    it('does not execute a custom action if the document definition does not define access assignments', () => {
-      const doc = { _id: 'missingAccessAssignmentsDoc' };
-
-      testHelper.verifyDocumentCreated(doc, expectedAuthorization);
-      verifyCustomActionNotExecuted();
-    });
-
-    it('does not execute a custom action if the document definition has an empty access assignments definition', () => {
-      const doc = { _id: 'emptyAccessAssignmentsDoc' };
-
-      testHelper.verifyDocumentCreated(doc, expectedAuthorization);
-      verifyCustomActionNotExecuted();
-    });
-  });
-
   describe('the onDocumentChannelAssignmentSucceeded event', () => {
     const docType = 'onDocChannelsAssignedDoc';
     const doc = { _id: docType };
@@ -194,7 +159,6 @@ function verifyCustomActionNotExecuted() {
 function verifyCustomActionMetadata(actualMetadata, docType, expectedActionType) {
   verifyTypeMetadata(actualMetadata, docType);
   verifyAuthorizationMetadata(actualMetadata);
-  verifyAccessAssignmentMetadata(actualMetadata);
   verifyDocChannelsMetadata(actualMetadata);
   verifyCustomActionTypeMetadata(actualMetadata, expectedActionType);
 }
@@ -211,20 +175,6 @@ function verifyAuthorizationMetadata(actualMetadata) {
     users: [ 'write-user' ]
   };
   expect(actualMetadata.authorization).to.eql(expectedAuthMetadata);
-}
-
-function verifyAccessAssignmentMetadata(actualMetadata) {
-  if (actualMetadata.documentDefinition.accessAssignments) {
-    const expectedAssignments = actualMetadata.documentDefinition.accessAssignments.map((assignment) => ({
-      type: 'channel',
-      channels: [ assignment.channels ],
-      usersAndRoles: [ assignment.users, `role:${assignment.roles}` ]
-    }));
-
-    expect(actualMetadata.accessAssignments).to.eql(expectedAssignments);
-  } else {
-    expect(actualMetadata.accessAssignments).to.equal(void 0);
-  }
 }
 
 function verifyDocChannelsMetadata(actualMetadata) {

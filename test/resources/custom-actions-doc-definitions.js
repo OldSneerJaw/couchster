@@ -43,44 +43,6 @@ function() {
       propertyValidators: { },
       customActions: { onValidationSucceeded: customAction('onValidationSucceeded') }
     },
-    onAccessAssignmentsDoc: {
-      typeFilter: function(doc, oldDoc) {
-        return doc._id === 'onAccessAssignmentsDoc';
-      },
-      channels: channels,
-      authorizedRoles: authorizedRoles,
-      authorizedUsers: authorizedUsers,
-      propertyValidators: { },
-      accessAssignments: [
-        {
-          users: 'user1',
-          roles: 'role1',
-          channels: 'channel1'
-        }
-      ],
-      customActions: { onAccessAssignmentsSucceeded: customAction('onAccessAssignmentsSucceeded') }
-    },
-    missingAccessAssignmentsDoc: {
-      typeFilter: function(doc, oldDoc) {
-        return doc._id === 'missingAccessAssignmentsDoc';
-      },
-      channels: channels,
-      authorizedRoles: authorizedRoles,
-      authorizedUsers: authorizedUsers,
-      propertyValidators: { },
-      customActions: { onAccessAssignmentsSucceeded: customAction('onAccessAssignmentsSucceeded') }
-    },
-    emptyAccessAssignmentsDoc: {
-      typeFilter: function(doc, oldDoc) {
-        return doc._id === 'emptyAccessAssignmentsDoc';
-      },
-      channels: channels,
-      authorizedRoles: authorizedRoles,
-      authorizedUsers: authorizedUsers,
-      propertyValidators: { },
-      accessAssignments: [ ],
-      customActions: { onAccessAssignmentsSucceeded: customAction('onAccessAssignmentsSucceeded') }
-    },
     onDocChannelsAssignedDoc: {
       typeFilter: function(doc, oldDoc) {
         return doc._id === 'onDocChannelsAssignedDoc';

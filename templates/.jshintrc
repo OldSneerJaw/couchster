@@ -4,13 +4,11 @@
   "node": false,
   "globals": {
     "_": false,
-    "access": false,
     "channel": false,
     "customActionStub": false,
     "importValidationFunctionFragment": false,
     "requireAccess": false,
     "requireRole": false,
-    "requireUser": false,
-    "role": false
+    "requireUser": false
   }
 }
