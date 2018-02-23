@@ -15,19 +15,6 @@ describe('Simple type filter:', () => {
       testHelper.verifyDocumentCreated(doc);
     });
 
-    it('identifies a new document that is replacing a deleted document by its type property', () => {
-      const doc = {
-        _id: 'my-doc',
-        type: docTypeId
-      };
-      const oldDoc = {
-        _id: 'my-doc',
-        _deleted: true
-      };
-
-      testHelper.verifyDocumentAccepted(doc, oldDoc, 'write');
-    });
-
     it('identifies an updated document by its type property when it matches that of the old document', () => {
       const doc = {
         _id: 'my-doc',

@@ -32,12 +32,6 @@ function couchster(doc, oldDoc) {
     }
   }
 
-  // Retrieves the old doc's effective value. If it is null, undefined or its "_deleted" property is true, returns null. Otherwise, returns
-  // the value of the "oldDoc" parameter.
-  function resolveOldDoc(oldDoc) {
-    return !isDocumentMissingOrDeleted(oldDoc) ? oldDoc : null;
-  }
-
   // Add the specified padding to the right of the given string value until its length matches the desired length
   function padRight(value, desiredLength, padding) {
     while (value.length < desiredLength) {
@@ -56,8 +50,7 @@ function couchster(doc, oldDoc) {
     isDocumentMissingOrDeleted: isDocumentMissingOrDeleted,
     isValueAnInteger: isValueAnInteger,
     isValueNullOrUndefined: isValueNullOrUndefined,
-    padRight: padRight,
-    resolveOldDoc: resolveOldDoc
+    padRight: padRight
   };
 
   // The document authorization module is responsible for verifying the user's permissions (e.g. roles, channels)
@@ -76,11 +69,9 @@ function couchster(doc, oldDoc) {
   }
 
   function getDocumentType(doc, oldDoc) {
-    var effectiveOldDoc = resolveOldDoc(oldDoc);
-
     for (var docType in docDefinitions) {
       var docDefn = docDefinitions[docType];
-      if (docDefn.typeFilter(doc, effectiveOldDoc, docType)) {
+      if (docDefn.typeFilter(doc, oldDoc, docType)) {
         return docType;
       }
     }

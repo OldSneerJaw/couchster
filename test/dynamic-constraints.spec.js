@@ -37,26 +37,6 @@ describe('Dynamic constraints', () => {
     testHelper.verifyDocumentReplaced(doc, oldDoc);
   });
 
-  it('allows a deleted doc to be replaced when the property constraints are satisfied', () => {
-    const doc = {
-      _id: 'my-doc',
-      type: 'myDoc',
-      dynamicReferenceId: 34,
-      validationByDocProperty: 'foo-34-bar',
-      validationByValueProperty: 7
-    };
-    const oldDoc = {
-      _id: 'my-doc',
-      _deleted: true,
-      type: 'myDoc',
-      dynamicReferenceId: 9,
-      validationByDocProperty: 'foo-9-bar',
-      validationByValueProperty: 500
-    };
-
-    testHelper.verifyDocumentReplaced(doc, oldDoc);
-  });
-
   it('blocks a doc from being created when the property constraints are violated', () => {
     const doc = {
       _id: 'my-doc',

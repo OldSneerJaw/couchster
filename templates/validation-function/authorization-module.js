@@ -19,7 +19,7 @@ function authorizationModule(utils) {
   // A document definition may define its authorized channels, roles or users as either a function or an object/hashtable
   function getAuthorizationMap(doc, oldDoc, authorizationDefinition) {
     if (typeof authorizationDefinition === 'function') {
-      return authorizationDefinition(doc, utils.resolveOldDoc(oldDoc));
+      return authorizationDefinition(doc, oldDoc);
     } else {
       return authorizationDefinition;
     }

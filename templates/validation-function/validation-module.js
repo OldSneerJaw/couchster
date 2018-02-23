@@ -29,7 +29,7 @@ function validationModule(utils, simpleTypeFilter, typeIdValidator) {
 
   // Resolves a constraint defined at the document level (e.g. `propertyValidators`, `allowUnknownProperties`, `immutable`).
   function resolveDocConstraint(doc, oldDoc, constraintDefinition) {
-    return (typeof constraintDefinition === 'function') ? constraintDefinition(doc, utils.resolveOldDoc(oldDoc)) : constraintDefinition;
+    return (typeof constraintDefinition === 'function') ? constraintDefinition(doc, oldDoc) : constraintDefinition;
   }
 
   // Ensures the document structure and content are valid
@@ -103,7 +103,7 @@ function validationModule(utils, simpleTypeFilter, typeIdValidator) {
       if (typeof constraintDefinition === 'function') {
         var currentItemEntry = itemStack[itemStack.length - 1];
 
-        return constraintDefinition(doc, utils.resolveOldDoc(oldDoc), currentItemEntry.itemValue, currentItemEntry.oldItemValue);
+        return constraintDefinition(doc, oldDoc, currentItemEntry.itemValue, currentItemEntry.oldItemValue);
       } else {
         return constraintDefinition;
       }
