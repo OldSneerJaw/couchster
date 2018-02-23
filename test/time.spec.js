@@ -37,6 +37,26 @@ describe('Time validation type:', () => {
       testHelper.verifyDocumentCreated(doc);
     });
 
+    it('accepts midnight represented as hour 0', () => {
+      const doc = {
+        _id: 'my-doc',
+        type: 'timeDoc',
+        formatValidationProp: '00:00'
+      };
+
+      testHelper.verifyDocumentCreated(doc);
+    });
+
+    it('accepts midnight represented as hour 24', () => {
+      const doc = {
+        _id: 'my-doc',
+        type: 'timeDoc',
+        formatValidationProp: '24:00:00.0'
+      };
+
+      testHelper.verifyDocumentCreated(doc);
+    });
+
     it('rejects a time without the minute, second and millisecond components', () => {
       const doc = {
         _id: 'my-doc',
@@ -51,7 +71,7 @@ describe('Time validation type:', () => {
       const doc = {
         _id: 'my-doc',
         type: 'timeDoc',
-        formatValidationProp: '24:00:00.000'
+        formatValidationProp: '24:00:00.001'
       };
 
       testHelper.verifyDocumentNotCreated(doc, 'timeDoc', errorFormatter.timeFormatInvalid('formatValidationProp'));

@@ -10,13 +10,14 @@ const regexSchema = joi.object().type(RegExp);
 // date-time strings that cannot be parsed when a generated validation function is used in CouchDB, strings with explicit
 // regular expression definitions are used for the "date" and "datetime" types rather than `joi.date().iso()`.
 const datetimeStringSchema = joi.string()
-  .regex(/^(([0-9]{4})(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01]))?)?)(T([01][0-9]|2[0-3])(:[0-5][0-9])(:[0-5][0-9](\.[0-9]{1,3})?)?(Z|([+-])([01][0-9]|2[0-3]):([0-5][0-9]))?)?$/);
+  .regex(/^(([0-9]{4})(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01]))?)?)(T((([01][0-9]|2[0-3])(:[0-5][0-9])(:[0-5][0-9](\.[0-9]{1,3})?)?)|(24:00(:00(\.0{1,3})?)?))(Z|([+-])([01][0-9]|2[0-3]):([0-5][0-9]))?)?$/);
 const datetimeSchema = joi.any().when(
   joi.string(),
   {
     then: datetimeStringSchema,
     otherwise: joi.date().options({ convert: false })
   });
+
 const dateOnlyStringSchema = joi.string().regex(/^([0-9]{4})(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01]))?)?$/);
 const dateOnlySchema = joi.any().when(
   joi.string(),
@@ -25,7 +26,7 @@ const dateOnlySchema = joi.any().when(
     otherwise: joi.date().options({ convert: false })
   });
 
-const timeOnlySchema = joi.string().regex(/^([01][0-9]|2[0-3])(:[0-5][0-9])(:[0-5][0-9](\.[0-9]{1,3})?)?$/);
+const timeOnlySchema = joi.string().regex(/^((([01][0-9]|2[0-3])(:[0-5][0-9])(:[0-5][0-9](\.[0-9]{1,3})?)?)|(24:00(:00(\.0{1,3})?)?))$/);
 const timezoneSchema = joi.string().regex(/^(Z|([+-])([01][0-9]|2[0-3]):([0-5][0-9]))$/);
 
 const typeEqualitySchemas = {
