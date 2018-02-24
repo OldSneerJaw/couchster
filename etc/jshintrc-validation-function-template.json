@@ -1,5 +1,6 @@
 {
   "extends": "../../.jshintrc",
+  "-W025": true,
   "esversion": 5,
   "node": false,
   "unused": false,
