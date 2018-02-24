@@ -3,6 +3,7 @@
   "esversion": 5,
   "node": false,
   "unused": false,
+  "varstmt": false,
   "globals": {
     "channel": false,
     "customActionStub": false,

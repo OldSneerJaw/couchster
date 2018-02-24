@@ -2,6 +2,7 @@
   "extends": "../../.jshintrc",
   "esversion": 5,
   "node": false,
+  "varstmt": false,
   "globals": {
     "channel": false,
     "customActionStub": false,
