@@ -42,16 +42,6 @@ function() {
       authorizedUsers: authorizedUsers,
       propertyValidators: { },
       customActions: { onValidationSucceeded: customAction('onValidationSucceeded') }
-    },
-    onDocChannelsAssignedDoc: {
-      typeFilter: function(doc, oldDoc) {
-        return doc._id === 'onDocChannelsAssignedDoc';
-      },
-      channels: channels,
-      authorizedRoles: authorizedRoles,
-      authorizedUsers: authorizedUsers,
-      propertyValidators: { },
-      customActions: { onDocumentChannelAssignmentSucceeded: customAction('onDocumentChannelAssignmentSucceeded') }
     }
   };
 }

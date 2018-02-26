@@ -109,39 +109,6 @@ describe('Custom actions:', () => {
       verifyCustomActionNotExecuted();
     });
   });
-
-  describe('the onDocumentChannelAssignmentSucceeded event', () => {
-    const docType = 'onDocChannelsAssignedDoc';
-    const doc = { _id: docType };
-    const oldDoc = { _id: docType };
-
-    it('executes a custom action when a document is created', () => {
-      testHelper.verifyDocumentCreated(doc, expectedAuthorization);
-      verifyCustomActionExecuted(doc, void 0, 'onDocumentChannelAssignmentSucceeded');
-    });
-
-    it('executes a custom action when a document is replaced', () => {
-
-      testHelper.verifyDocumentReplaced(doc, oldDoc, expectedAuthorization);
-      verifyCustomActionExecuted(doc, oldDoc, 'onDocumentChannelAssignmentSucceeded');
-    });
-
-    it('executes a custom action when a document is deleted', () => {
-      testHelper.verifyDocumentDeleted(oldDoc, expectedAuthorization);
-      verifyCustomActionExecuted(getDeletedDoc(docType), oldDoc, 'onDocumentChannelAssignmentSucceeded');
-    });
-
-    it('does not execute a custom action if doc channel assignment fails', () => {
-      const expectedError = new Error('bad channels!');
-      testHelper.channel.throwWith(expectedError);
-
-      expect(() => {
-        testHelper.validationFunction(doc);
-      }).to.throw(expectedError);
-
-      verifyCustomActionNotExecuted();
-    });
-  });
 });
 
 function verifyCustomActionExecuted(doc, oldDoc, expectedActionType) {

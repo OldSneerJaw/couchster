@@ -123,8 +123,4 @@ function(doc, oldDoc) {
   var allDocChannels = authorizationModule.getAllDocChannels(doc, oldDoc, theDocDefinition);
   channel(allDocChannels);
   customActionMetadata.documentChannels = allDocChannels;
-
-  if (theDocDefinition.customActions && typeof theDocDefinition.customActions.onDocumentChannelAssignmentSucceeded === 'function') {
-    theDocDefinition.customActions.onDocumentChannelAssignmentSucceeded(doc, oldDoc, customActionMetadata);
-  }
 }

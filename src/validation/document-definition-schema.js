@@ -66,8 +66,7 @@ module.exports = exports = joi.object().options({ convert: false }).keys({
   customActions: joi.object().min(1).keys({
     onTypeIdentificationSucceeded: customActionEventSchema,
     onAuthorizationSucceeded: customActionEventSchema,
-    onValidationSucceeded: customActionEventSchema,
-    onDocumentChannelAssignmentSucceeded: customActionEventSchema
+    onValidationSucceeded: customActionEventSchema
   }),
 
   propertyValidators: dynamicConstraintSchema(
