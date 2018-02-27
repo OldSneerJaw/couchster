@@ -33,7 +33,7 @@ function validationModule(utils, simpleTypeFilter, typeIdValidator) {
   }
 
   // Ensures the document structure and content are valid
-  function validateDoc(doc, oldDoc, docDefinition, docType) {
+  function validateDoc(doc, oldDoc, userContext, securityInfo, docDefinition, docType) {
     var validationErrors = [ ];
 
     validateDocImmutability(doc, oldDoc, docDefinition, validationErrors);
@@ -43,6 +43,8 @@ function validationModule(utils, simpleTypeFilter, typeIdValidator) {
       validateDocContents(
         doc,
         oldDoc,
+        userContext,
+        securityInfo,
         docDefinition,
         validationErrors);
     }
@@ -68,7 +70,7 @@ function validationModule(utils, simpleTypeFilter, typeIdValidator) {
     }
   }
 
-  function validateDocContents(doc, oldDoc, docDefinition, validationErrors) {
+  function validateDocContents(doc, oldDoc, userContext, securityInfo, docDefinition, validationErrors) {
     var itemStack = [
       {
         itemValue: doc,
@@ -461,7 +463,8 @@ function validationModule(utils, simpleTypeFilter, typeIdValidator) {
       // Copy all but the last/top element so that the item's parent is at the top of the stack for the custom validation function
       var customValidationItemStack = itemStack.slice(0, -1);
 
-      var customValidationErrors = validator.customValidation(doc, oldDoc, currentItemEntry, customValidationItemStack);
+      var customValidationErrors =
+        validator.customValidation(doc, oldDoc, currentItemEntry, customValidationItemStack, userContext, securityInfo);
 
       if (customValidationErrors instanceof Array) {
         for (var errorIndex = 0; errorIndex < customValidationErrors.length; errorIndex++) {

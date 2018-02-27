@@ -4,7 +4,7 @@ const makeConstraintSchemaDynamic = require('./dynamic-constraint-schema-maker')
 
 const integerSchema = joi.number().integer();
 const nonEmptyStringSchema = joi.string().min(1);
-const customActionEventSchema = joi.func().maxArity(3); // Function parameters: doc, oldDoc, customActionMetadata
+const customActionEventSchema = joi.func().maxArity(5); // Function parameters: doc, oldDoc, customActionMetadata, userContext, securityInfo
 const authorizationSchema = dynamicConstraintSchema(
   joi.object().min(1).keys(
     {

@@ -34,7 +34,7 @@ function init(docDefinitionsString, originalFilename) {
   const envStatement = `(${envString});`;
 
   // Compile the document definitions environment function within the current virtual machine context so it can share access to the
-  // "requireAccess", "channel", "customActionStub", etc. stubs
+  // "isArray", "toJSON", etc. stubs
   const envFunction = vm.runInThisContext(envStatement, options);
 
   return envFunction(simpleMock);

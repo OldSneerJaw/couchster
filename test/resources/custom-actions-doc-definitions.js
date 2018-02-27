@@ -1,10 +1,10 @@
 function() {
   function customAction(actionType) {
-    return function(doc, oldDoc, customActionMetadata) {
+    return function(doc, oldDoc, customActionMetadata, userContext, securityInfo) {
       customActionMetadata.actionType = actionType;
 
       // This function is defined as a stub by the test-helper module to make it easy to verify whether a custom action has been executed
-      customActionStub(doc, oldDoc, customActionMetadata);
+      customActionStub(doc, oldDoc, customActionMetadata, userContext, securityInfo);
     };
   }
 

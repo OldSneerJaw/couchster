@@ -30,8 +30,8 @@ function init(rawValidationFunction, validationFunctionFile) {
   // valid statement.
   const environmentStatement = `(${environmentString});`;
 
-  // Compile the test environment function within the current virtual machine context so it can share access to the "requireAccess",
-  // "channel", "customActionStub", etc. stubs with the test-helper module
+  // Compile the test environment function within the current virtual machine context so it can share access to the "isArray", "toJSON",
+  // etc. stubs with the test-helper module
   const environmentFunction = vm.runInThisContext(environmentStatement, options);
 
   return environmentFunction(simpleMock);

@@ -20,7 +20,7 @@ describe('Document definitions validator:', () => {
         cannotDelete: true, // Must not be defined if "immutable" is also defined
         attachmentConstraints: (a, b) => b, // "allowAttachments" must also be defined,
         customActions: {
-          onTypeIdentificationSucceeded: (a, b, c, extraParam) => { // Too many parameters
+          onTypeIdentificationSucceeded: (a, b, c, d, e, extraParam) => { // Too many parameters
             return extraParam;
           },
           onAuthorizationSucceeded: 5, // Must be a function
@@ -41,7 +41,7 @@ describe('Document definitions validator:', () => {
         'myDoc1.allowUnknownProperties: \"allowUnknownProperties\" must be a boolean',
         'myDoc1.immutable: \"immutable\" conflict with forbidden peer \"cannotDelete\"',
         'myDoc1.allowAttachments: \"allowAttachments\" is required',
-        'myDoc1.customActions.onTypeIdentificationSucceeded: \"onTypeIdentificationSucceeded\" must have an arity lesser or equal to 3',
+        'myDoc1.customActions.onTypeIdentificationSucceeded: \"onTypeIdentificationSucceeded\" must have an arity lesser or equal to 5',
         'myDoc1.customActions.onAuthorizationSucceeded: \"onAuthorizationSucceeded\" must be a Function',
         'myDoc1.customActions.invalidEvent: \"invalidEvent\" is not allowed'
       ]);
@@ -99,7 +99,7 @@ describe('Document definitions validator:', () => {
                   immutableWhenSet: false, // Must not be defined in conjunction with "immutable"
                   maximumValue: '2018-01-31T17:31:27.283-08:00', // Should not include time and time zone components
                   mustEqualStrict: new Date('1578-11-30'), // Must be a date string for equality
-                  customValidation: (a, b, c, d, extraParam) => { // Too many parameters
+                  customValidation: (a, b, c, d, e, f, extraParam) => { // Too many parameters
                     return extraParam;
                   }
                 },
@@ -238,7 +238,7 @@ describe('Document definitions validator:', () => {
         'myDoc1.propertyValidators.nestedObject.propertyValidators.dateProperty.maximumValue: "maximumValue" with value "2018-01-31T17:31:27.283-08:00" fails to match the required pattern: /^([0-9]{4})(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01]))?)?$/',
         'myDoc1.propertyValidators.nestedObject.propertyValidators.dateProperty.maximumValue: \"maximumValue\" conflict with forbidden peer \"mustEqualStrict\"',
         'myDoc1.propertyValidators.nestedObject.propertyValidators.dateProperty.mustEqualStrict: \"mustEqualStrict\" must be a string',
-        'myDoc1.propertyValidators.nestedObject.propertyValidators.dateProperty.customValidation: \"customValidation\" must have an arity lesser or equal to 4',
+        'myDoc1.propertyValidators.nestedObject.propertyValidators.dateProperty.customValidation: \"customValidation\" must have an arity lesser or equal to 6',
         'myDoc1.propertyValidators.nestedObject.propertyValidators.enumProperty.predefinedValues.3: \"predefinedValues\" at position 3 does not match any of the allowed types',
         'myDoc1.propertyValidators.nestedObject.propertyValidators.enumProperty.mustEqual: \"mustEqual\" conflict with forbidden peer \"mustEqualStrict\"',
         'myDoc1.propertyValidators.nestedObject.propertyValidators.enumProperty.mustEqual: \"mustEqual\" must be a string',

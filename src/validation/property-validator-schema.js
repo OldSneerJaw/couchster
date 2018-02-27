@@ -236,7 +236,7 @@ function universalConstraintSchemas(typeEqualitySchema) {
     immutableWhenSetStrict: dynamicConstraintSchema(joi.boolean()),
     mustEqual: dynamicConstraintSchema(mustEqualConstraintSchema(typeEqualitySchema)),
     mustEqualStrict: dynamicConstraintSchema(mustEqualConstraintSchema(typeEqualitySchema)),
-    customValidation: joi.func().maxArity(4) // Function parameters: doc, oldDoc, currentItemEntry, validationItemStack
+    customValidation: joi.func().maxArity(6) // Function parameters: doc, oldDoc, currentItemEntry, validationItemStack, userContext, securityInfo
   };
 }
 
