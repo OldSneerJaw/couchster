@@ -10,15 +10,12 @@ function() {
     typeFilter: function(doc, oldDoc) {
       return typeRegex.test(doc._id);
     },
-    channels: function(doc, oldDoc) {
+    authorizedRoles: function(doc, oldDoc) {
       // Only staff/service users can create, replace or delete payment processor settlements to prevent regular users from tampering
       return {
-        view: toSyncChannel(docBusinessId, 'VIEW_PAYMENT_PROCESSOR_SETTLEMENTS'),
         write: 'payment-settlement-write'
       };
     },
-    authorizedRoles: defaultAuthorizedRoles,
-    authorizedUsers: defaultAuthorizedUsers,
     immutable: true,
     propertyValidators: {
       businessId: {

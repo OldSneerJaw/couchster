@@ -3,12 +3,12 @@ function() {
     return doc._id === docType;
   }
 
-  var docChannels = { write: 'write' };
+  var authorizedRoles = { write: 'write' };
 
   return {
     staticAllowUnknownDoc: {
       typeFilter: docTypeFilter,
-      channels: docChannels,
+      authorizedRoles: authorizedRoles,
       allowUnknownProperties: true,
       propertyValidators: {
         preventUnknownProp: {
@@ -24,7 +24,7 @@ function() {
     },
     staticPreventUnknownDoc: {
       typeFilter: docTypeFilter,
-      channels: docChannels,
+      authorizedRoles: authorizedRoles,
       allowUnknownProperties: false,
       propertyValidators: {
         allowUnknownProp: {
@@ -40,7 +40,7 @@ function() {
     },
     dynamicPropertiesValidationDoc: {
       typeFilter: simpleTypeFilter,
-      channels: docChannels,
+      authorizedRoles: authorizedRoles,
       allowUnknownProperties: function(doc, oldDoc) {
         return doc.unknownPropertiesAllowed;
       },
@@ -60,7 +60,7 @@ function() {
     },
     dynamicObjectValidationDoc: {
       typeFilter: simpleTypeFilter,
-      channels: docChannels,
+      authorizedRoles: authorizedRoles,
       propertyValidators: {
         subObject: {
           type: 'object',

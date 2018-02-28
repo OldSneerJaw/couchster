@@ -6,13 +6,8 @@
   "unused": false,
   "varstmt": false,
   "globals": {
-    "channel": false,
-    "customActionStub": false,
     "isArray": false,
     "log": false,
-    "requireAccess": false,
-    "requireRole": false,
-    "requireUser": false,
     "sum": false,
     "toJSON": false
   }

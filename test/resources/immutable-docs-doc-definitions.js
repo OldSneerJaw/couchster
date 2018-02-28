@@ -7,12 +7,12 @@ function() {
     return oldDoc ? oldDoc.applyImmutability : doc.applyImmutability;
   }
 
-  var docChannels = { write: 'write' };
+  var authorizedRoles = { write: 'write' };
 
   return {
     staticImmutableDoc: {
       typeFilter: docTypeFilter,
-      channels: docChannels,
+      authorizedRoles: authorizedRoles,
       propertyValidators: {
         stringProp: {
           type: 'string'
@@ -23,7 +23,7 @@ function() {
     },
     dynamicImmutableDoc: {
       typeFilter: docTypeFilter,
-      channels: docChannels,
+      authorizedRoles: authorizedRoles,
       propertyValidators: {
         integerProp: {
           type: 'integer'
@@ -36,7 +36,7 @@ function() {
     },
     staticCannotReplaceDoc: {
       typeFilter: docTypeFilter,
-      channels: docChannels,
+      authorizedRoles: authorizedRoles,
       propertyValidators: {
         stringProp: {
           type: 'string'
@@ -47,7 +47,7 @@ function() {
     },
     dynamicCannotReplaceDoc: {
       typeFilter: docTypeFilter,
-      channels: docChannels,
+      authorizedRoles: authorizedRoles,
       propertyValidators: {
         integerProp: {
           type: 'integer'
@@ -60,7 +60,7 @@ function() {
     },
     staticCannotDeleteDoc: {
       typeFilter: docTypeFilter,
-      channels: docChannels,
+      authorizedRoles: authorizedRoles,
       propertyValidators: {
         stringProp: {
           type: 'string'
@@ -71,7 +71,7 @@ function() {
     },
     dynamicCannotDeleteDoc: {
       typeFilter: docTypeFilter,
-      channels: docChannels,
+      authorizedRoles: authorizedRoles,
       propertyValidators: {
         integerProp: {
           type: 'integer'

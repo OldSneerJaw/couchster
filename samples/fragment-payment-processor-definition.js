@@ -1,7 +1,5 @@
 {
-  channels: toDefaultSyncChannels(doc, oldDoc, 'CUSTOMER_PAYMENT_PROCESSORS'),
-  authorizedRoles: defaultAuthorizedRoles,
-  authorizedUsers: defaultAuthorizedUsers,
+  authorizedRoles: toDefaultDbRoles(doc, oldDoc, 'CUSTOMER_PAYMENT_PROCESSORS'),
   typeFilter: function(doc, oldDoc) {
     return createBusinessEntityRegex('paymentProcessor\\.[A-Za-z0-9_-]+$').test(doc._id);
   },

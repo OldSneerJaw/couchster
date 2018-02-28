@@ -4,7 +4,6 @@ const { expect } = require('chai');
 
 describe('Custom actions:', () => {
   const expectedAuthorization = {
-    expectedChannels: [ 'write-channel' ],
     expectedRoles: [ 'write-role' ],
     expectedUsers: [ 'write-user' ]
   };
@@ -19,18 +18,15 @@ describe('Custom actions:', () => {
     const oldDoc = { _id: docType };
 
     it('executes a custom action when a document is created', () => {
-      testHelper.verifyDocumentCreated(doc, expectedAuthorization);
-      verifyCustomActionExecuted(doc, void 0, 'onTypeIdentificationSucceeded');
+      verifyCustomActionExecuted(doc, null, docType, 'onTypeIdentificationSucceeded');
     });
 
     it('executes a custom action when a document is replaced', () => {
-      testHelper.verifyDocumentReplaced(doc, oldDoc, expectedAuthorization);
-      verifyCustomActionExecuted(doc, oldDoc, 'onTypeIdentificationSucceeded');
+      verifyCustomActionExecuted(doc, oldDoc, docType, 'onTypeIdentificationSucceeded');
     });
 
     it('executes a custom action when a document is deleted', () => {
-      testHelper.verifyDocumentDeleted(oldDoc, expectedAuthorization);
-      verifyCustomActionExecuted(getDeletedDoc(docType), oldDoc, 'onTypeIdentificationSucceeded');
+      verifyCustomActionExecuted({ _id: doc._id, _deleted: true }, oldDoc, docType, 'onTypeIdentificationSucceeded');
     });
 
     it('does not execute a custom action if the type cannot be identified', () => {
@@ -40,7 +36,7 @@ describe('Custom actions:', () => {
       let validationFuncError = null;
       expect(() => {
         try {
-          testHelper.validationFunction(doc, expectedAuthorization);
+          testHelper.validationFunction(doc, null, { });
         } catch (ex) {
           validationFuncError = ex;
 
@@ -49,7 +45,6 @@ describe('Custom actions:', () => {
       }).to.throw();
 
       testHelper.verifyValidationErrors(unknownDocType, errorFormatter.unknownDocumentType(), validationFuncError);
-      verifyCustomActionNotExecuted();
     });
   });
 
@@ -59,23 +54,19 @@ describe('Custom actions:', () => {
     const oldDoc = { _id: docType };
 
     it('executes a custom action when a document is created', () => {
-      testHelper.verifyDocumentCreated(doc, expectedAuthorization);
-      verifyCustomActionExecuted(doc, void 0, 'onAuthorizationSucceeded');
+      verifyCustomActionExecuted(doc, null, docType, 'onAuthorizationSucceeded');
     });
 
     it('executes a custom action when a document is replaced', () => {
-      testHelper.verifyDocumentReplaced(doc, oldDoc, expectedAuthorization);
-      verifyCustomActionExecuted(doc, oldDoc, 'onAuthorizationSucceeded');
+      verifyCustomActionExecuted(doc, oldDoc, docType, 'onAuthorizationSucceeded');
     });
 
     it('executes a custom action when a document is deleted', () => {
-      testHelper.verifyDocumentDeleted(oldDoc, expectedAuthorization);
-      verifyCustomActionExecuted(getDeletedDoc(docType), oldDoc, 'onAuthorizationSucceeded');
+      verifyCustomActionExecuted({ _id: doc._id, _deleted: true }, oldDoc, docType, 'onAuthorizationSucceeded');
     });
 
     it('does not execute a custom action if authorization was denied', () => {
-      testHelper.verifyAccessDenied(doc, null, expectedAuthorization);
-      verifyCustomActionNotExecuted();
+      testHelper.verifyAccessDenied(doc, null, { name: 'me' });
     });
   });
 
@@ -85,18 +76,15 @@ describe('Custom actions:', () => {
     const oldDoc = { _id: docType };
 
     it('executes a custom action when a document is created', () => {
-      testHelper.verifyDocumentCreated(doc, expectedAuthorization);
-      verifyCustomActionExecuted(doc, void 0, 'onValidationSucceeded');
+      verifyCustomActionExecuted(doc, null, docType, 'onValidationSucceeded');
     });
 
     it('executes a custom action when a document is replaced', () => {
-      testHelper.verifyDocumentReplaced(doc, oldDoc, expectedAuthorization);
-      verifyCustomActionExecuted(doc, oldDoc, 'onValidationSucceeded');
+      verifyCustomActionExecuted(doc, oldDoc, docType, 'onValidationSucceeded');
     });
 
     it('executes a custom action when a document is deleted', () => {
-      testHelper.verifyDocumentDeleted(oldDoc, expectedAuthorization);
-      verifyCustomActionExecuted(getDeletedDoc(docType), oldDoc, 'onValidationSucceeded');
+      verifyCustomActionExecuted({ _id: doc._id, _deleted: true }, oldDoc, docType, 'onValidationSucceeded');
     });
 
     it('does not execute a custom action if the document contents are invalid', () => {
@@ -106,28 +94,43 @@ describe('Custom actions:', () => {
       };
 
       testHelper.verifyDocumentNotCreated(doc, docType, errorFormatter.unsupportedProperty('unsupportedProperty'), expectedAuthorization);
-      verifyCustomActionNotExecuted();
     });
   });
 });
 
-function verifyCustomActionExecuted(doc, oldDoc, expectedActionType) {
-  expect(testHelper.customActionStub.callCount).to.equal(1);
-  expect(testHelper.customActionStub.calls[0].args[0]).to.eql(doc);
-  expect(testHelper.customActionStub.calls[0].args[1]).to.eql(oldDoc);
+function verifyCustomActionExecuted(doc, oldDoc, docType, expectedActionType) {
+  const userContext = { name: 'me', roles: [ 'write-role' ] };
+  const securityInfo = {
+    members: { names: 'me' }
+  };
+  let validationFuncError = null;
+  expect(() => {
+    try {
+      testHelper.validationFunction(doc, oldDoc, userContext, securityInfo);
+    } catch (ex) {
+      validationFuncError = ex;
+      throw ex;
+    }
+  }).to.throw();
 
-  verifyCustomActionMetadata(testHelper.customActionStub.calls[0].args[2], doc._id, expectedActionType);
-}
+  expect(validationFuncError.doc).to.eql(doc);
+  expect(validationFuncError.oldDoc).to.eql(oldDoc);
+  expect(validationFuncError.userContext).to.eql(userContext);
+  expect(validationFuncError.securityInfo).to.eql(securityInfo);
+  expect(validationFuncError.actionType).to.eql(expectedActionType);
 
-function verifyCustomActionNotExecuted() {
-  expect(testHelper.customActionStub.callCount).to.equal(0);
+  verifyCustomActionMetadata(validationFuncError.customActionMetadata, docType, expectedActionType);
 }
 
 function verifyCustomActionMetadata(actualMetadata, docType, expectedActionType) {
-  verifyTypeMetadata(actualMetadata, docType);
-  verifyAuthorizationMetadata(actualMetadata);
-  verifyDocChannelsMetadata(actualMetadata);
-  verifyCustomActionTypeMetadata(actualMetadata, expectedActionType);
+  if (expectedActionType === 'onTypeIdentificationSucceeded') {
+    verifyTypeMetadata(actualMetadata, docType);
+  } else if (expectedActionType === 'onAuthorizationSucceeded' || expectedActionType === 'onValidationSucceeded') {
+    verifyTypeMetadata(actualMetadata, docType);
+    verifyAuthorizationMetadata(actualMetadata);
+  } else {
+    expect.fail(null, null, `Unrecognized custom action type: ${expectedActionType}`);
+  }
 }
 
 function verifyTypeMetadata(actualMetadata, docType) {
@@ -137,24 +140,8 @@ function verifyTypeMetadata(actualMetadata, docType) {
 
 function verifyAuthorizationMetadata(actualMetadata) {
   const expectedAuthMetadata = {
-    channels: [ 'write-channel' ],
     roles: [ 'write-role' ],
     users: [ 'write-user' ]
   };
   expect(actualMetadata.authorization).to.eql(expectedAuthMetadata);
-}
-
-function verifyDocChannelsMetadata(actualMetadata) {
-  expect(actualMetadata.documentChannels).to.eql([ 'write-channel' ]);
-}
-
-function verifyCustomActionTypeMetadata(actualMetadata, expectedActionType) {
-  expect(actualMetadata.actionType).to.equal(expectedActionType);
-}
-
-function getDeletedDoc(docType) {
-  return {
-    _id: docType,
-    _deleted: true
-  };
 }

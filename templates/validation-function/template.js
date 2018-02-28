@@ -53,7 +53,7 @@ function(doc, oldDoc, userContext, securityInfo) {
     padRight: padRight
   };
 
-  // The document authorization module is responsible for verifying the user's permissions (e.g. roles, channels)
+  // The document authorization module is responsible for verifying the user's permissions (e.g. roles, usernames)
   var authorizationModule = importValidationFunctionFragment('./authorization-module.js')(utils);
 
   // The document validation module is responsible for verifying the document's contents
@@ -80,20 +80,11 @@ function(doc, oldDoc, userContext, securityInfo) {
     return null;
   }
 
-
   // Now put the pieces together
   var theDocType = getDocumentType(doc, oldDoc);
 
   if (isValueNullOrUndefined(theDocType)) {
-    if (isDocumentMissingOrDeleted(oldDoc) && isDocumentMissingOrDeleted(doc)) {
-      // Attempting to delete a document that does not exist. Carry on.
-      requireAccess('!');
-      channel('!');
-
-      return;
-    } else {
-      throw { forbidden: 'Unknown document type' };
-    }
+    throw { forbidden: 'Unknown document type' };
   }
 
   var theDocDefinition = docDefinitions[theDocType];
@@ -107,7 +98,7 @@ function(doc, oldDoc, userContext, securityInfo) {
     theDocDefinition.customActions.onTypeIdentificationSucceeded(doc, oldDoc, customActionMetadata, userContext, securityInfo);
   }
 
-  customActionMetadata.authorization = authorizationModule.authorize(doc, oldDoc, theDocDefinition);
+  customActionMetadata.authorization = authorizationModule.authorize(doc, oldDoc, userContext, securityInfo, theDocDefinition);
 
   if (theDocDefinition.customActions && typeof theDocDefinition.customActions.onAuthorizationSucceeded === 'function') {
     theDocDefinition.customActions.onAuthorizationSucceeded(doc, oldDoc, customActionMetadata, userContext, securityInfo);
@@ -118,9 +109,4 @@ function(doc, oldDoc, userContext, securityInfo) {
   if (theDocDefinition.customActions && typeof theDocDefinition.customActions.onValidationSucceeded === 'function') {
     theDocDefinition.customActions.onValidationSucceeded(doc, oldDoc, customActionMetadata, userContext, securityInfo);
   }
-
-  // Getting here means the document revision is authorized and valid, and the appropriate channel(s) should now be assigned
-  var allDocChannels = authorizationModule.getAllDocChannels(doc, oldDoc, theDocDefinition);
-  channel(allDocChannels);
-  customActionMetadata.documentChannels = allDocChannels;
 }

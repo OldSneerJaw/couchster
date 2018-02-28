@@ -1,4 +1,3 @@
-const { expect } = require('chai');
 const testHelper = require('../src/testing/test-helper');
 const errorFormatter = testHelper.validationErrorFormatter;
 
@@ -75,21 +74,7 @@ describe('File attachment constraints:', () => {
             attachmentRefProp: 'bar.html' // The attachmentReference's maximum size of 40 overrides the document's maximum individual size of 25
           };
 
-          let validationFuncError = null;
-          expect(() => {
-            try {
-              testHelper.validationFunction(doc);
-            } catch (ex) {
-              validationFuncError = ex;
-
-              throw ex;
-            }
-          }).to.throw();
-
-          testHelper.verifyValidationErrors(
-            'staticRegularAttachmentsDoc',
-            errorFormatter.maximumTotalAttachmentSizeViolation(40),
-            validationFuncError);
+          testHelper.verifyDocumentNotCreated(doc, 'staticRegularAttachmentsDoc', errorFormatter.maximumTotalAttachmentSizeViolation(40));
         });
 
         it('should block replacement when document attachments exceed the limits', () => {
@@ -108,21 +93,14 @@ describe('File attachment constraints:', () => {
             type: 'staticRegularAttachmentsDoc'
           };
 
-          let validationFuncError = null;
-          expect(() => {
-            try {
-              testHelper.validationFunction(doc, oldDoc);
-            } catch (ex) {
-              validationFuncError = ex;
-
-              throw ex;
-            }
-          }).to.throw();
-
-          testHelper.verifyValidationErrors(
+          testHelper.verifyDocumentNotReplaced(
+            doc,
+            oldDoc,
             'staticRegularAttachmentsDoc',
-            [ errorFormatter.maximumTotalAttachmentSizeViolation(40), errorFormatter.maximumIndividualAttachmentSizeViolation('foo.xml', 25) ],
-            validationFuncError);
+            [
+              errorFormatter.maximumTotalAttachmentSizeViolation(40),
+              errorFormatter.maximumIndividualAttachmentSizeViolation('foo.xml', 25)
+            ]);
         });
       });
 
@@ -151,18 +129,7 @@ describe('File attachment constraints:', () => {
             type: 'staticRegularAttachmentsDoc'
           };
 
-          let validationFuncError = null;
-          expect(() => {
-            try {
-              testHelper.validationFunction(doc);
-            } catch (ex) {
-              validationFuncError = ex;
-
-              throw ex;
-            }
-          }).to.throw();
-
-          testHelper.verifyValidationErrors('staticRegularAttachmentsDoc', errorFormatter.maximumAttachmentCountViolation(3), validationFuncError);
+          testHelper.verifyDocumentNotCreated(doc, 'staticRegularAttachmentsDoc', errorFormatter.maximumAttachmentCountViolation(3));
         });
 
         it('should block replacement when document attachments exceed the limit', () => {
@@ -193,18 +160,11 @@ describe('File attachment constraints:', () => {
             type: 'staticRegularAttachmentsDoc'
           };
 
-          let validationFuncError = null;
-          expect(() => {
-            try {
-              testHelper.validationFunction(doc, oldDoc);
-            } catch (ex) {
-              validationFuncError = ex;
-
-              throw ex;
-            }
-          }).to.throw();
-
-          testHelper.verifyValidationErrors('staticRegularAttachmentsDoc', errorFormatter.maximumAttachmentCountViolation(3), validationFuncError);
+          testHelper.verifyDocumentNotReplaced(
+            doc,
+            oldDoc,
+            'staticRegularAttachmentsDoc',
+            errorFormatter.maximumAttachmentCountViolation(3));
         });
       });
 
@@ -231,24 +191,13 @@ describe('File attachment constraints:', () => {
             type: 'staticRegularAttachmentsDoc'
           };
 
-          let validationFuncError = null;
-          expect(() => {
-            try {
-              testHelper.validationFunction(doc);
-            } catch (ex) {
-              validationFuncError = ex;
-
-              throw ex;
-            }
-          }).to.throw();
-
-          testHelper.verifyValidationErrors(
+          testHelper.verifyDocumentNotCreated(
+            doc,
             'staticRegularAttachmentsDoc',
             [
               errorFormatter.supportedExtensionsRawAttachmentViolation('baz.unknown', expectedExtensions),
               errorFormatter.supportedExtensionsRawAttachmentViolation('foo.invalid', expectedExtensions)
-            ],
-            validationFuncError);
+            ]);
         });
 
         it('should block replacement when document attachments have unsupported extensions', () => {
@@ -272,21 +221,11 @@ describe('File attachment constraints:', () => {
             type: 'staticRegularAttachmentsDoc'
           };
 
-          let validationFuncError = null;
-          expect(() => {
-            try {
-              testHelper.validationFunction(doc, oldDoc);
-            } catch (ex) {
-              validationFuncError = ex;
-
-              throw ex;
-            }
-          }).to.throw();
-
-          testHelper.verifyValidationErrors(
+          testHelper.verifyDocumentNotReplaced(
+            doc,
+            oldDoc,
             'staticRegularAttachmentsDoc',
-            errorFormatter.supportedExtensionsRawAttachmentViolation('foo.invalid', expectedExtensions),
-            validationFuncError);
+            errorFormatter.supportedExtensionsRawAttachmentViolation('foo.invalid', expectedExtensions));
         });
       });
 
@@ -313,24 +252,13 @@ describe('File attachment constraints:', () => {
             type: 'staticRegularAttachmentsDoc'
           };
 
-          let validationFuncError = null;
-          expect(() => {
-            try {
-              testHelper.validationFunction(doc);
-            } catch (ex) {
-              validationFuncError = ex;
-
-              throw ex;
-            }
-          }).to.throw();
-
-          testHelper.verifyValidationErrors(
+          testHelper.verifyDocumentNotCreated(
+            doc,
             'staticRegularAttachmentsDoc',
             [
               errorFormatter.supportedContentTypesRawAttachmentViolation('baz.xml', expectedContentTypes),
               errorFormatter.supportedContentTypesRawAttachmentViolation('foo.txt', expectedContentTypes)
-            ],
-            validationFuncError);
+            ]);
         });
 
         it('should block replacement when document attachments have unsupported content types', () => {
@@ -354,21 +282,11 @@ describe('File attachment constraints:', () => {
             type: 'staticRegularAttachmentsDoc'
           };
 
-          let validationFuncError = null;
-          expect(() => {
-            try {
-              testHelper.validationFunction(doc, oldDoc);
-            } catch (ex) {
-              validationFuncError = ex;
-
-              throw ex;
-            }
-          }).to.throw();
-
-          testHelper.verifyValidationErrors(
+          testHelper.verifyDocumentNotReplaced(
+            doc,
+            oldDoc,
             'staticRegularAttachmentsDoc',
-            errorFormatter.supportedContentTypesRawAttachmentViolation('foo.jpg', expectedContentTypes),
-            validationFuncError);
+            errorFormatter.supportedContentTypesRawAttachmentViolation('foo.jpg', expectedContentTypes));
         });
       });
     });
@@ -407,21 +325,10 @@ describe('File attachment constraints:', () => {
           attachmentRefProp: 'foo.pdf'
         };
 
-        let validationFuncError = null;
-        expect(() => {
-          try {
-            testHelper.validationFunction(doc);
-          } catch (ex) {
-            validationFuncError = ex;
-
-            throw ex;
-          }
-        }).to.throw();
-
-        testHelper.verifyValidationErrors(
+        testHelper.verifyDocumentNotCreated(
+          doc,
           'staticAttachmentRefsOnlyDoc',
-          errorFormatter.requireAttachmentReferencesViolation('bar.txt'),
-          validationFuncError);
+          errorFormatter.requireAttachmentReferencesViolation('bar.txt'));
       });
 
       it('should allow replacement when document attachments do not violate the constraint', () => {
@@ -465,21 +372,11 @@ describe('File attachment constraints:', () => {
           type: 'staticAttachmentRefsOnlyDoc'
         };
 
-        let validationFuncError = null;
-        expect(() => {
-          try {
-            testHelper.validationFunction(doc, oldDoc);
-          } catch (ex) {
-            validationFuncError = ex;
-
-            throw ex;
-          }
-        }).to.throw();
-
-        testHelper.verifyValidationErrors(
+        testHelper.verifyDocumentNotReplaced(
+          doc,
+          oldDoc,
           'staticAttachmentRefsOnlyDoc',
-          errorFormatter.requireAttachmentReferencesViolation('baz.jpg'),
-          validationFuncError);
+          errorFormatter.requireAttachmentReferencesViolation('baz.jpg'));
       });
     });
   });

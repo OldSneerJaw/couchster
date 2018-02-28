@@ -1,5 +1,5 @@
 function authorizationModule(utils) {
-  // A document definition may define its authorizations (channels, roles or users) for each operation type (view, add, replace, delete or
+  // A document definition may define its authorizations (roles or users) for each operation type (add, replace, delete or
   // write) as either a string or an array of strings. In either case, add them to the list if they are not already present.
   function appendToAuthorizationList(allAuthorizations, authorizationsToAdd) {
     if (!utils.isValueNullOrUndefined(authorizationsToAdd)) {
@@ -16,7 +16,7 @@ function authorizationModule(utils) {
     }
   }
 
-  // A document definition may define its authorized channels, roles or users as either a function or an object/hashtable
+  // A document definition may define its authorized roles or users as either a function or an object/hashtable
   function getAuthorizationMap(doc, oldDoc, authorizationDefinition) {
     if (typeof authorizationDefinition === 'function') {
       return authorizationDefinition(doc, oldDoc);
@@ -25,28 +25,12 @@ function authorizationModule(utils) {
     }
   }
 
-  // Retrieves a list of channels the document belongs to based on its specified type
-  function getAllDocChannels(doc, oldDoc, docDefinition) {
-    var docChannelMap = getAuthorizationMap(doc, oldDoc, docDefinition.channels);
-
-    var allChannels = [ ];
-    if (docChannelMap) {
-      appendToAuthorizationList(allChannels, docChannelMap.view);
-      appendToAuthorizationList(allChannels, docChannelMap.write);
-      appendToAuthorizationList(allChannels, docChannelMap.add);
-      appendToAuthorizationList(allChannels, docChannelMap.replace);
-      appendToAuthorizationList(allChannels, docChannelMap.remove);
-    }
-
-    return allChannels;
-  }
-
-  // Retrieves a list of authorizations (e.g. channels, roles, users) for the current document write operation type (add, replace or remove)
+  // Retrieves a list of authorizations (e.g. roles, users) for the current document write operation type (add, replace or remove)
   function getRequiredAuthorizations(doc, oldDoc, authorizationDefinition) {
     var authorizationMap = getAuthorizationMap(doc, oldDoc, authorizationDefinition);
 
     if (utils.isValueNullOrUndefined(authorizationMap)) {
-      // This document type does not define any authorizations (channels, roles, users) at all
+      // This document type does not define any authorizations (roles, users) at all
       return null;
     }
 
@@ -62,90 +46,104 @@ function authorizationModule(utils) {
         writeAuthorizationFound = true;
         appendToAuthorizationList(requiredAuthorizations, authorizationMap.remove);
       }
-    } else if (!utils.isDocumentMissingOrDeleted(oldDoc) && authorizationMap.replace) {
-      writeAuthorizationFound = true;
-      appendToAuthorizationList(requiredAuthorizations, authorizationMap.replace);
-    } else if (utils.isDocumentMissingOrDeleted(oldDoc) && authorizationMap.add) {
-      writeAuthorizationFound = true;
-      appendToAuthorizationList(requiredAuthorizations, authorizationMap.add);
+    } else if (!utils.isDocumentMissingOrDeleted(oldDoc)) {
+      if (authorizationMap.replace) {
+        writeAuthorizationFound = true;
+        appendToAuthorizationList(requiredAuthorizations, authorizationMap.replace);
+      }
+    } else {
+      if (authorizationMap.add) {
+        writeAuthorizationFound = true;
+        appendToAuthorizationList(requiredAuthorizations, authorizationMap.add);
+      }
     }
 
     if (writeAuthorizationFound) {
       return requiredAuthorizations;
     } else {
-      // This document type does not define any authorizations (channels, roles, users) that apply to this particular write operation type
+      // This document type does not define any authorizations (roles, users) that apply to this particular write operation type
       return null;
     }
   }
 
   // Ensures the user is authorized to create/replace/delete this document
-  function authorize(doc, oldDoc, docDefinition) {
-    var authorizedChannels = getRequiredAuthorizations(doc, oldDoc, docDefinition.channels);
+  function authorize(doc, oldDoc, userContext, securityInfo, docDefinition) {
+    if (utils.isValueNullOrUndefined(userContext)) {
+      throw { unauthorized: 'Not authenticated' };
+    }
+
     var authorizedRoles = getRequiredAuthorizations(doc, oldDoc, docDefinition.authorizedRoles);
     var authorizedUsers = getRequiredAuthorizations(doc, oldDoc, docDefinition.authorizedUsers);
 
-    var channelMatch = false;
-    if (authorizedChannels) {
-      try {
-        requireAccess(authorizedChannels);
-        channelMatch = true;
-      } catch (ex) {
-        // The user has none of the authorized channels
-        if (!authorizedRoles && !authorizedUsers) {
-          // ... and the document definition does not specify any authorized roles or users
-          throw ex;
-        }
+    if (isAdminUser(userContext, securityInfo)) {
+      // Database admins have unrestricted access
+      return authorizationSuccessResult(authorizedRoles, authorizedUsers);
+    } else if (!authorizedRoles && !authorizedUsers) {
+      // The document type does not define any authorized roles or users
+      throw forbiddenResult();
+    }
+
+    var roleMatch = hasAuthorizedRole(authorizedRoles, userContext.roles);
+    var usernameMatch = hasAuthorizedUsername(authorizedUsers, userContext.name);
+    if (!roleMatch && !usernameMatch) {
+      // None of the required authorizations were satisfied
+      throw forbiddenResult();
+    } else {
+      return authorizationSuccessResult(authorizedRoles, authorizedUsers);
+    }
+  }
+
+  function hasAuthorizedRole(authorizedRoles, userRoles) {
+    var effectiveUserRoles = userRoles || [ ];
+    var effectiveAuthorizedRoles = authorizedRoles || [ ];
+    for (var userRoleIndex = 0; userRoleIndex < effectiveUserRoles.length; userRoleIndex++) {
+      if (effectiveAuthorizedRoles.indexOf(effectiveUserRoles[userRoleIndex]) >= 0) {
+        return true;
       }
     }
 
-    var roleMatch = false;
-    if (authorizedRoles) {
-      try {
-        requireRole(authorizedRoles);
-        roleMatch = true;
-      } catch (ex) {
-        // The user belongs to none of the authorized roles
-        if (!authorizedChannels && !authorizedUsers) {
-          // ... and the document definition does not specify any authorized channels or users
-          throw ex;
-        }
+    // If we got here, the user does not have an authorized role
+    return false;
+  }
+
+  function hasAuthorizedUsername(authorizedUsers, username) {
+    var effectiveAuthorizedUsers = authorizedUsers || [ ];
+
+    return effectiveAuthorizedUsers.indexOf(username) >= 0;
+  }
+
+  function isAdminUser(userContext, securityInfo) {
+    var dbAdminUsers = (securityInfo && securityInfo.admins && securityInfo.admins.names) ? securityInfo.admins.names : [ ];
+    if (dbAdminUsers.indexOf(userContext.name) >= 0) {
+      return true;
+    }
+
+    // See if the user belongs to the server admin role ("_admin") or a DB admin role
+    var userRoles = userContext.roles || [ ];
+    var dbAdminRoles = (securityInfo && securityInfo.admins && securityInfo.admins.roles) ? securityInfo.admins.roles : [ ];
+    for (var userRoleIndex = 0; userRoleIndex < userRoles.length; userRoleIndex++) {
+      var userRole = userRoles[userRoleIndex];
+      if (userRole === '_admin' || dbAdminRoles.indexOf(userRole) >= 0) {
+        return true;
       }
     }
 
-    var userMatch = false;
-    if (authorizedUsers) {
-      try {
-        requireUser(authorizedUsers);
-        userMatch = true;
-      } catch (ex) {
-        // The user does not match any of the authorized usernames
-        if (!authorizedChannels && !authorizedRoles) {
-          // ... and the document definition does not specify any authorized channels or roles
-          throw ex;
-        }
-      }
-    }
+    // If we got here, then the user is not an administrator
+    return false;
+  }
 
-    if (!authorizedChannels && !authorizedRoles && !authorizedUsers) {
-      // The document type does not define any channels, roles or users that apply to this particular write operation type, so fall back to
-      // Sync Gateway's default behaviour for an empty channel list: 403 Forbidden for requests via the public API and either 200 OK or 201
-      // Created for requests via the admin API. That way, the admin API will always be able to create, replace or remove documents,
-      // regardless of their authorized channels, roles or users, as intended.
-      requireAccess([ ]);
-    } else if (!channelMatch && !roleMatch && !userMatch) {
-      // None of the authorization methods (e.g. channels, roles, users) succeeded
-      throw { forbidden: 'missing channel access' };
-    }
-
+  function authorizationSuccessResult(authorizedRoles, authorizedUsers) {
     return {
-      channels: authorizedChannels,
       roles: authorizedRoles,
       users: authorizedUsers
     };
   }
 
+  function forbiddenResult() {
+    return { forbidden: 'Access denied' };
+  }
+
   return {
-    authorize: authorize,
-    getAllDocChannels: getAllDocChannels
+    authorize: authorize
   };
 }

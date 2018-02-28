@@ -1,6 +1,6 @@
 {
   typeFilter: simpleTypeFilter,
-  channels: { write: 'write' },
+  authorizedRoles: { write: 'write' },
   propertyValidators: {
     objectProp: {
       type: 'object',

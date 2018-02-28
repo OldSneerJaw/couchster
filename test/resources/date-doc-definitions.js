@@ -1,6 +1,6 @@
 {
   dateDoc: {
-    channels: { write: 'write' },
+    authorizedRoles: { write: 'write' },
     typeFilter: function(doc) {
       return doc._id === 'dateDoc';
     },
@@ -28,7 +28,7 @@
     typeFilter: function(doc) {
       return doc._id === 'dateMustEqualDoc';
     },
-    channels: { write: 'write' },
+    authorizedRoles: { write: 'write' },
     propertyValidators: {
       equalityValidationProp: {
         type: 'date',

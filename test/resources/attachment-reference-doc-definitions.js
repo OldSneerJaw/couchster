@@ -1,7 +1,7 @@
 {
   attachmentsDoc: {
     typeFilter: simpleTypeFilter,
-    channels: { write: 'write' },
+    authorizedRoles: { write: 'write' },
     allowAttachments: true,
     propertyValidators: {
       staticExtensionsValidationProp: {

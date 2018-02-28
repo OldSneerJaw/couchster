@@ -10,7 +10,7 @@ function() {
   return {
     staticDoc: {
       typeFilter: customTypeFilter,
-      channels: { write: 'write' },
+      authorizedRoles: { write: 'write' },
       propertyValidators: {
         stringProp: {
           type: 'string',
@@ -75,7 +75,7 @@ function() {
     },
     dynamicDoc: {
       typeFilter: customTypeFilter,
-      channels: { write: 'write' },
+      authorizedRoles: { write: 'write' },
       propertyValidators: {
         dynamicPropsRequired: {
           type: 'boolean'

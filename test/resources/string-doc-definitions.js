@@ -29,7 +29,7 @@ function() {
 
   return {
     stringDoc: {
-      channels: { write: 'write' },
+      authorizedRoles: { write: 'write' },
       typeFilter: function(doc) {
         return doc._id === 'stringDoc';
       },

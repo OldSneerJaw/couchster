@@ -35,7 +35,7 @@ describe('Document definitions validator:', () => {
 
     expect(results).to.have.members(
       [
-        'myDoc1: "value" must contain at least one of [channels, authorizedRoles, authorizedUsers]',
+        'myDoc1: "value" must contain at least one of [authorizedRoles, authorizedUsers]',
         'myDoc1.typeFilter: "typeFilter" is required',
         'myDoc1.propertyValidators: "propertyValidators" is required',
         'myDoc1.allowUnknownProperties: \"allowUnknownProperties\" must be a boolean',
@@ -52,7 +52,6 @@ describe('Document definitions validator:', () => {
       return {
         myDoc1: {
           typeFilter: () => { },
-          channels: { }, // Must have at least one permission type
           authorizedRoles: { }, // Must have at least one permission type
           authorizedUsers: { }, // Must have at least one permission type
           immutable: true,
@@ -209,7 +208,6 @@ describe('Document definitions validator:', () => {
 
     expect(results).to.have.members(
       [
-        'myDoc1.channels: \"channels\" must have at least 1 children',
         'myDoc1.authorizedRoles: \"authorizedRoles\" must have at least 1 children',
         'myDoc1.authorizedUsers: \"authorizedUsers\" must have at least 1 children',
         'myDoc1.immutable: \"immutable\" conflict with forbidden peer \"cannotReplace\"',

@@ -9,14 +9,7 @@ describe('Test helper:', () => {
   const fakeValidationFunctionContents = 'my-validation-function';
 
   beforeEach(() => {
-    fakeTestEnvironment = {
-      requireAccess: simpleMock.stub(),
-      requireRole: simpleMock.stub(),
-      requireUser: simpleMock.stub(),
-      channel: simpleMock.stub(),
-      customActionStub: simpleMock.stub(),
-      validationFunction: simpleMock.stub()
-    };
+    fakeTestEnvironment = { validationFunction: simpleMock.stub() };
 
     // Stub out the "require" calls in the module under test
     fsMock = { readFileSync: simpleMock.stub() };
@@ -36,6 +29,20 @@ describe('Test helper:', () => {
 
   afterEach(() => {
     mockRequire.stopAll();
+  });
+
+  describe('when verifying that document authorization is denied', () => {
+    beforeEach(() => {
+      testHelper.initDocumentDefinitions(fakeFilePath);
+    });
+
+    it('fails if authorization is NOT denied', () => {
+      testHelper.validationFunction = () => { };
+
+      expect(() => {
+        testHelper.verifyAccessDenied({ }, null, { }, null);
+      }).to.throw('Document authorization succeeded when it was expected to fail');
+    });
   });
 
   describe('when initializing a test environment', () => {
@@ -68,63 +75,8 @@ describe('Test helper:', () => {
     });
 
     function verifyTestEnvironment() {
-      expect(testHelper.requireAccess).to.equal(fakeTestEnvironment.requireAccess);
-      expect(testHelper.requireRole).to.equal(fakeTestEnvironment.requireRole);
-      expect(testHelper.requireUser).to.equal(fakeTestEnvironment.requireUser);
-      expect(testHelper.channel).to.equal(fakeTestEnvironment.channel);
-      expect(testHelper.customActionStub).to.equal(fakeTestEnvironment.customActionStub);
       expect(testHelper.validationFunction).to.equal(fakeTestEnvironment.validationFunction);
     }
-  });
-
-  describe('when verifying that document authorization is denied', () => {
-    beforeEach(() => {
-      testHelper.initDocumentDefinitions(fakeFilePath);
-    });
-
-    it('fails if it encounters a required channel that was not expected', () => {
-      const actualChannels = [ 'my-channel-1', 'my-channel-2' ];
-      const expectedChannels = [ 'my-channel-1' ];
-
-      testHelper.validationFunction = () => {
-        testHelper.requireAccess(actualChannels);
-      };
-
-      expect(() => {
-        testHelper.verifyAccessDenied({ }, void 0, expectedChannels);
-      }).to.throw(`Unexpected channel encountered: my-channel-2. Expected channels: ${expectedChannels.join(',')}`);
-    });
-
-    it('fails if it does not encounter a channel that was expected', () => {
-      const actualChannels = [ 'my-channel-1' ];
-      const expectedChannels = [ 'my-channel-1', 'my-channel-2' ];
-
-      testHelper.validationFunction = () => {
-        testHelper.requireAccess(actualChannels);
-      };
-
-      expect(() => {
-        testHelper.verifyAccessDenied({ }, void 0, expectedChannels);
-      }).to.throw(`Expected channel was not encountered: my-channel-2. Actual channels: ${actualChannels.join(',')}`);
-    });
-
-    it('fails if the validation function does not throw an error', () => {
-      testHelper.validationFunction = () => { };
-
-      expect(() => {
-        testHelper.verifyAccessDenied({ }, void 0, [ ]);
-      }).to.throw('Document authorization succeeded when it was expected to fail');
-    });
-
-    it('succeeds if there are no expected channels, roles or users allowed', () => {
-      testHelper.validationFunction = () => {
-        testHelper.requireAccess([ ]);
-      };
-
-      expect(() => {
-        testHelper.verifyAccessDenied({ }, void 0, { });
-      }).not.to.throw();
-    });
   });
 
   describe('when verifying that a document type is unknown', () => {
@@ -142,6 +94,8 @@ describe('Test helper:', () => {
   });
 
   describe('when verifying that document contents are invalid', () => {
+    const docType = 'my-doc-type';
+
     beforeEach(() => {
       testHelper.initDocumentDefinitions(fakeFilePath);
     });
@@ -150,7 +104,7 @@ describe('Test helper:', () => {
       testHelper.validationFunction = () => { };
 
       expect(() => {
-        testHelper.verifyDocumentRejected({ }, void 0, 'my-doc-type', [ ], { });
+        testHelper.verifyDocumentRejected({ }, void 0, docType, [ ], { expectedRoles: 'my-role' });
       }).to.throw('Document validation succeeded when it was expected to fail');
     });
 
@@ -162,12 +116,11 @@ describe('Test helper:', () => {
       };
 
       expect(() => {
-        testHelper.verifyDocumentRejected({ }, void 0, 'my-doc-type', [ ], { });
+        testHelper.verifyDocumentRejected({ }, void 0, docType, [ ], 'my-role');
       }).to.throw(`Unrecognized document validation error message format: "${errorMessage}"`);
     });
 
     it('fails if an expected validation error is missing', () => {
-      const docType = 'my-doc-type';
       const expectedErrors = [ 'my-error-1', 'my-error-2' ];
       const errorMessage = `Invalid ${docType} document: ${expectedErrors[0]}`;
 
@@ -181,7 +134,6 @@ describe('Test helper:', () => {
     });
 
     it('fails if an unexpected validation error is encountered', () => {
-      const docType = 'my-doc-type';
       const actualErrors = [ 'my-error-1', 'my-error-2' ];
       const actualErrorMessage = `Invalid ${docType} document: ${actualErrors[0]}; ${actualErrors[1]}`;
       const expectedErrors = [ actualErrors[0] ];
@@ -192,24 +144,8 @@ describe('Test helper:', () => {
       };
 
       expect(() => {
-        testHelper.verifyDocumentRejected({ }, void 0, docType, expectedErrors, { });
+        testHelper.verifyDocumentRejected({ }, void 0, docType, expectedErrors, { expectedUsers: 'me' });
       }).to.throw(`Unexpected document validation error: "${actualErrors[1]}". Expected error: ${expectedErrorMessage}`);
-    });
-  });
-
-  describe('when verifying that document contents are correct', () => {
-    beforeEach(() => {
-      testHelper.initDocumentDefinitions(fakeFilePath);
-    });
-
-    it('fails if the channel assignment function was not called', () => {
-      testHelper.validationFunction = () => {
-        testHelper.requireAccess([ ]);
-      };
-
-      expect(() => {
-        testHelper.verifyDocumentAccepted({ }, void 0, [ ]);
-      }).to.throw('Document channels were not assigned');
     });
   });
 });

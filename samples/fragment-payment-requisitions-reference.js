@@ -1,7 +1,5 @@
 {
-  channels: toDefaultSyncChannels(doc, oldDoc, 'INVOICE_PAYMENT_REQUISITIONS'),
-  authorizedRoles: defaultAuthorizedRoles,
-  authorizedUsers: defaultAuthorizedUsers,
+  authorizedRoles: toDefaultDbRoles(doc, oldDoc, 'INVOICE_PAYMENT_REQUISITIONS'),
   typeFilter: function(doc, oldDoc) {
     return createBusinessEntityRegex('invoice\\.[A-Za-z0-9_-]+.paymentRequisitions$').test(doc._id);
   },

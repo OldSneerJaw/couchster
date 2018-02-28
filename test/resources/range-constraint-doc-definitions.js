@@ -17,7 +17,7 @@ function () {
 
   return {
     inclusiveRangeDocType: {
-      channels: { write: 'write' },
+      authorizedRoles: { write: 'write' },
       typeFilter: function(doc) {
         return doc._id === 'inclusiveRangeDocType';
       },
@@ -68,7 +68,7 @@ function () {
       }
     },
     exclusiveRangeDocType: {
-      channels: { write: 'write' },
+      authorizedRoles: { write: 'write' },
       typeFilter: function(doc) {
         return doc._id === 'exclusiveRangeDocType';
       },

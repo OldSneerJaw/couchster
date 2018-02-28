@@ -5,7 +5,7 @@ function() {
 
   return {
     immutableItemsDoc: {
-      channels: { write: 'write' },
+      authorizedRoles: { write: 'write' },
       typeFilter: function(doc) {
         return doc._id === 'immutableItemsDoc';
       },

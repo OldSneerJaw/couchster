@@ -1,7 +1,5 @@
 {
-  channels: toDefaultSyncChannels(doc, oldDoc, 'NOTIFICATIONS_CONFIG'),
-  authorizedRoles: defaultAuthorizedRoles,
-  authorizedUsers: defaultAuthorizedUsers,
+  authorizedRoles: toDefaultDbRoles(doc, oldDoc, 'NOTIFICATIONS_CONFIG'),
   typeFilter: function(doc, oldDoc) {
     return createBusinessEntityRegex('notificationTransport\\.[A-Za-z0-9_-]+$').test(doc._id);
   },
@@ -21,15 +19,20 @@
     }
   },
   customActions: {
-    onAuthorizationSucceeded: function(doc, oldDoc) {
+    onAuthorizationSucceeded: function(doc, oldDoc, customActionMetadata, userContext, securityInfo) {
+      var userRoles = (userContext && userContext.roles) ? userContext.roles : [ ];
       if (doc._deleted) {
-        // The document is being removed, so ensure the user has the document's "-delete" channel in addition to one of the
-        // channels defined in the document definition's "channels.remove" property
-        requireAccess(doc._id + '-delete');
+        // The document is being removed, so ensure the user has the document's "-delete" role in addition to one of the
+        // roles defined in the document definition's "roles.remove" property
+        if (userRoles.indexOf(doc._id + '-delete') < 0) {
+          throw { forbidden: 'Operation forbidden' };
+        }
       } else if (oldDoc && !oldDoc._deleted) {
-        // The document is being replaced, so ensure the user has the document's "-replace" channel in addition to one of the
-        // channels defined in the document definition's "channels.replace" property
-        requireAccess(doc._id + '-replace');
+        // The document is being replaced, so ensure the user has the document's "-replace" role in addition to one of the
+        // roles defined in the document definition's "roles.replace" property
+        if (userRoles.indexOf(doc._id + '-replace') < 0) {
+          throw { forbidden: 'Operation forbidden' };
+        }
       }
     }
   }

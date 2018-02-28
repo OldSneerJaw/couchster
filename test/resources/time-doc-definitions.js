@@ -1,7 +1,7 @@
 {
   timeDoc: {
     typeFilter: simpleTypeFilter,
-    channels: { write: 'write' },
+    authorizedRoles: { write: 'write' },
     propertyValidators: {
       formatValidationProp: {
         type: 'time'
@@ -24,7 +24,7 @@
   },
   timeMustEqualDocType: {
     typeFilter: simpleTypeFilter,
-    channels: { write: 'write' },
+    authorizedRoles: { write: 'write' },
     propertyValidators: {
       equalityValidationProp: {
         type: 'time',

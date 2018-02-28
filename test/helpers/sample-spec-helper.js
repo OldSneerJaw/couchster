@@ -2,12 +2,8 @@
 
 const testHelper = require('../../src/testing/test-helper');
 
-function getExpectedAuthorization(expectedChannels) {
-  return {
-    expectedRoles: [ 'SERVICE' ],
-    expectedUsers: [ 'ADMIN' ],
-    expectedChannels
-  };
+function getExpectedAuthorization(expectedRoles) {
+  return { expectedRoles };
 }
 
 exports.getExpectedAuthorization = getExpectedAuthorization;

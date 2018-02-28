@@ -1,17 +1,14 @@
 {
-  channels: function(doc, oldDoc) {
+  authorizedRoles: function(doc, oldDoc) {
     var businessId = getBusinessId(doc, oldDoc);
 
     // Only service users can create new notifications
     return {
-      view: [ toSyncChannel(businessId, 'VIEW_NOTIFICATIONS'), doc._id + '-VIEW' ],
       add: [ 'notification-add' ],
-      replace: [ toSyncChannel(businessId, 'CHANGE_NOTIFICATIONS') ],
-      remove: [ toSyncChannel(businessId, 'REMOVE_NOTIFICATIONS') ]
+      replace: [ toDbRole(businessId, 'CHANGE_NOTIFICATIONS') ],
+      remove: [ toDbRole(businessId, 'REMOVE_NOTIFICATIONS') ]
     };
   },
-  authorizedRoles: defaultAuthorizedRoles,
-  authorizedUsers: defaultAuthorizedUsers,
   typeFilter: function(doc, oldDoc) {
     return createBusinessEntityRegex('notification\\.[A-Za-z0-9_-]+$').test(doc._id);
   },

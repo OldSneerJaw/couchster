@@ -1,7 +1,5 @@
 {
-  channels: toDefaultSyncChannels(doc, oldDoc, 'NOTIFICATIONS_CONFIG'),
-  authorizedRoles: defaultAuthorizedRoles,
-  authorizedUsers: defaultAuthorizedUsers,
+  authorizedRoles: toDefaultDbRoles(doc, oldDoc, 'NOTIFICATIONS_CONFIG'),
   typeFilter: function(doc, oldDoc) {
     return createBusinessEntityRegex('notificationsConfig$').test(doc._id);
   },

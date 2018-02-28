@@ -66,32 +66,6 @@ describe('Simple type filter:', () => {
 
       testHelper.verifyUnknownDocumentType(doc);
     });
-
-    it('cannot identify a deleted document when the old document does not exist', () => {
-      const doc = {
-        _id: 'my-doc',
-        _deleted: true
-      };
-
-      // When deleting a document that does not exist and the document's type cannot be determined, the fallback
-      // behaviour is to allow it to be deleted and assign the public channel to it
-      testHelper.verifyDocumentAccepted(doc, void 0, [ '!' ]);
-    });
-
-    it('cannot identify a deleted document when the old document is also deleted', () => {
-      const doc = {
-        _id: 'my-doc',
-        _deleted: true
-      };
-      const oldDoc = {
-        _id: 'my-doc',
-        _deleted: true
-      };
-
-      // When deleting a document that was already deleted and the document's type cannot be determined, the fallback
-      // behaviour is to allow it to be deleted and assign the public channel to it
-      testHelper.verifyDocumentAccepted(doc, oldDoc, [ '!' ]);
-    });
   }
 
   describe('when a type property validator is explicitly defined', () => {

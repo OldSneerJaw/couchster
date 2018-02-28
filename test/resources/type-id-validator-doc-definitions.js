@@ -1,6 +1,6 @@
 {
   typeIdDoc: {
-    channels: {
+    authorizedRoles: {
       write: [ 'write' ]
     },
     typeFilter: function(doc) {

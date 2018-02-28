@@ -1,15 +1,12 @@
 {
-  channels: function(doc, oldDoc) {
+  authorizedRoles: function(doc, oldDoc) {
     var businessId = getBusinessId(doc, oldDoc);
 
     // Only service users can create, replace or delete payment attempts to prevent regular users from tampering
     return {
-      view: toSyncChannel(businessId, 'VIEW_INVOICE_PAYMENT_REQUISITIONS'),
       write: 'payment-attempt-write'
     };
   },
-  authorizedRoles: defaultAuthorizedRoles,
-  authorizedUsers: defaultAuthorizedUsers,
   typeFilter: function(doc, oldDoc) {
     return /^paymentAttempt\.[A-Za-z0-9_-]+$/.test(doc._id);
   },

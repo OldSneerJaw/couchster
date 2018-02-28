@@ -1,9 +1,7 @@
 {
-  channels: {
+  authorizedRoles: {
     write: 'notification-transport-write'
   },
-  authorizedRoles: defaultAuthorizedRoles,
-  authorizedUsers: defaultAuthorizedUsers,
   typeFilter: function(doc, oldDoc) {
     return createBusinessEntityRegex('notification\\.[A-Za-z0-9_-]+\\.processedTransport\\.[A-Za-z0-9_-]+$').test(doc._id);
   },

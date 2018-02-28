@@ -1,14 +1,18 @@
 function() {
   function customAction(actionType) {
     return function(doc, oldDoc, customActionMetadata, userContext, securityInfo) {
-      customActionMetadata.actionType = actionType;
-
-      // This function is defined as a stub by the test-helper module to make it easy to verify whether a custom action has been executed
-      customActionStub(doc, oldDoc, customActionMetadata, userContext, securityInfo);
+      // The most reliable means to get a result from a validation function is to throw it
+      throw {
+        doc: doc,
+        oldDoc: oldDoc,
+        customActionMetadata: customActionMetadata,
+        userContext: userContext,
+        securityInfo: securityInfo,
+        actionType: actionType
+      };
     };
   }
 
-  var channels = { write: 'write-channel' };
   var authorizedRoles = { write: 'write-role' };
   var authorizedUsers = { write: 'write-user' };
 
@@ -17,7 +21,6 @@ function() {
       typeFilter: function(doc, oldDoc) {
         return doc._id === 'onTypeIdentifiedDoc';
       },
-      channels: channels,
       authorizedRoles: authorizedRoles,
       authorizedUsers: authorizedUsers,
       propertyValidators: { },
@@ -27,7 +30,6 @@ function() {
       typeFilter: function(doc, oldDoc) {
         return doc._id === 'onAuthorizationDoc';
       },
-      channels: channels,
       authorizedRoles: authorizedRoles,
       authorizedUsers: authorizedUsers,
       propertyValidators: { },
@@ -37,7 +39,6 @@ function() {
       typeFilter: function(doc, oldDoc) {
         return doc._id === 'onValidationDoc';
       },
-      channels: channels,
       authorizedRoles: authorizedRoles,
       authorizedUsers: authorizedUsers,
       propertyValidators: { },

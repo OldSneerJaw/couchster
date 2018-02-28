@@ -2,7 +2,7 @@ function() {
   return {
     customValidationDoc: {
       typeFilter: simpleTypeFilter,
-      channels: { write: 'write' },
+      authorizedRoles: { write: 'write' },
       propertyValidators: {
         baseProp: {
           type: 'object',

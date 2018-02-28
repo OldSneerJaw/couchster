@@ -19,62 +19,58 @@ exports.initDocumentDefinitions = initDocumentDefinitions;
 exports.validationErrorFormatter = require('./validation-error-formatter');
 
 /**
- * Attempts to write the specified doc and then verifies that it completed successfully with the expected channels.
+ * Attempts to write the specified doc and then verifies that it completed successfully with the expected authorization.
  *
  * @param {Object} doc The document to write. May include property "_deleted=true" to simulate a delete operation.
  * @param {Object} oldDoc The document to replace or delete. May be null or undefined or include property "_deleted=true" to simulate a
  *                        create operation.
- * @param {(Object|string[])} expectedAuthorization Either an object that specifies the separate channels/roles/users or a list of channels
+ * @param {(Object|string[])} expectedAuthorization Either an object that specifies the separate roles/users or a list of roles
  *                                                  that are authorized to perform the operation. If it is an object, the following fields are
  *                                                  available:
- *                                                  - expectedChannels: an optional list of channels that are authorized
  *                                                  - expectedRoles: an optional list of roles that are authorized
  *                                                  - expectedUsers: an optional list of users that are authorized
  */
 exports.verifyDocumentAccepted = verifyDocumentAccepted;
 
 /**
- * Attempts to create the specified doc and then verifies that it completed successfully with the expected channels.
+ * Attempts to create the specified doc and then verifies that it completed successfully with the expected authorization.
  *
  * @param {Object} doc The new document
- * @param {(Object|string[])} [expectedAuthorization] Either an optional object that specifies the channels/roles/users or an optional list
- *                                                    of channels that are authorized to perform the operation. If omitted, then the channel
+ * @param {(Object|string[])} [expectedAuthorization] Either an optional object that specifies the roles/users or an optional list
+ *                                                    of roles that are authorized to perform the operation. If omitted, then the role
  *                                                    "write" is assumed. If it is an object, the following fields are available:
- *                                                    - expectedChannels: an optional list of channels that are authorized
  *                                                    - expectedRoles: an optional list of roles that are authorized
  *                                                    - expectedUsers: an optional list of users that are authorized
  */
 exports.verifyDocumentCreated = verifyDocumentCreated;
 
 /**
- * Attempts to replace the specified doc and then verifies that it completed successfully with the expected channels.
+ * Attempts to replace the specified doc and then verifies that it completed successfully with the expected authorization.
  *
  * @param {Object} doc The updated document
  * @param {Object} oldDoc The document to replace
- * @param {(Object|string[])} [expectedAuthorization] Either an optional object that specifies the channels/roles/users or an optional list
- *                                                    of channels that are authorized to perform the operation. If omitted, then the channel
+ * @param {(Object|string[])} [expectedAuthorization] Either an optional object that specifies the roles/users or an optional list
+ *                                                    of roles that are authorized to perform the operation. If omitted, then the role
  *                                                    "write" is assumed. If it is an object, the following fields are available:
- *                                                    - expectedChannels: an optional list of channels that are authorized
  *                                                    - expectedRoles: an optional list of roles that are authorized
  *                                                    - expectedUsers: an optional list of users that are authorized
  */
 exports.verifyDocumentReplaced = verifyDocumentReplaced;
 
 /**
- * Attempts to delete the specified doc and then verifies that it completed successfully with the expected channels.
+ * Attempts to delete the specified doc and then verifies that it completed successfully with the expected authorizations.
  *
  * @param {Object} oldDoc The document to delete
- * @param {(Object|string[])} [expectedAuthorization] Either an optional object that specifies the channels/roles/users or an optional list
- *                                                    of channels that are authorized to perform the operation. If omitted, then the channel
+ * @param {(Object|string[])} [expectedAuthorization] Either an optional object that specifies the roles/users or an optional list
+ *                                                    of roles that are authorized to perform the operation. If omitted, then the role
  *                                                    "write" is assumed. If it is an object, the following fields are available:
- *                                                    - expectedChannels: an optional list of channels that are authorized
  *                                                    - expectedRoles: an optional list of roles that are authorized
  *                                                    - expectedUsers: an optional list of users that are authorized
  */
 exports.verifyDocumentDeleted = verifyDocumentDeleted;
 
 /**
- * Attempts to write the specified doc and then verifies that it failed validation with the expected channels.
+ * Attempts to write the specified doc and then verifies that it failed validation with the expected authorizations.
  *
  * @param {Object} doc The document to write. May include property "_deleted=true" to simulate a delete operation.
  * @param {Object} oldDoc The document to replace or delete. May be null or undefined or include property "_deleted=true" to simulate a
@@ -82,59 +78,55 @@ exports.verifyDocumentDeleted = verifyDocumentDeleted;
  * @param {string} docType The document's type as specified in the document definition
  * @param {string[]} expectedErrorMessages The list of validation error messages that should be generated by the operation. May be a string
  *                                         if only one validation error is expected.
- * @param {(Object|string[])} expectedAuthorization Either an object that specifies the separate channels/roles/users or a list of channels
+ * @param {(Object|string[])} expectedAuthorization Either an object that specifies the separate roles/users or a list of roles
  *                                                  that are authorized to perform the operation. If it is an object, the following fields are
  *                                                  available:
- *                                                  - expectedChannels: an optional list of channels that are authorized
  *                                                  - expectedRoles: an optional list of roles that are authorized
  *                                                  - expectedUsers: an optional list of users that are authorized
  */
 exports.verifyDocumentRejected = verifyDocumentRejected;
 
 /**
- * Attempts to create the specified doc and then verifies that it failed validation with the expected channels.
+ * Attempts to create the specified doc and then verifies that it failed validation with the expected authorizations.
  *
  * @param {Object} doc The new document
  * @param {string} docType The document's type as specified in the document definition
  * @param {string[]} expectedErrorMessages The list of validation error messages that should be generated by the operation. May be a string
  *                                         if only one validation error is expected.
- * @param {(Object|string[])} [expectedAuthorization] Either an optional object that specifies the channels/roles/users or an optional list
- *                                                    of channels that are authorized to perform the operation. If omitted, then the channel
+ * @param {(Object|string[])} [expectedAuthorization] Either an optional object that specifies the roles/users or an optional list
+ *                                                    of roles that are authorized to perform the operation. If omitted, then the role
  *                                                    "write" is assumed. If it is an object, the following fields are available:
- *                                                    - expectedChannels: an optional list of channels that are authorized
  *                                                    - expectedRoles: an optional list of roles that are authorized
  *                                                    - expectedUsers: an optional list of users that are authorized
  */
 exports.verifyDocumentNotCreated = verifyDocumentNotCreated;
 
 /**
- * Attempts to replace the specified doc and then verifies that it failed validation with the expected channels.
+ * Attempts to replace the specified doc and then verifies that it failed validation with the expected authorizations.
  *
  * @param {Object} doc The updated document
  * @param {Object} oldDoc The document to replace
  * @param {string} docType The document's type as specified in the document definition
  * @param {string[]} expectedErrorMessages The list of validation error messages that should be generated by the operation. May be a string
  *                                         if only one validation error is expected.
- * @param {(Object|string[])} [expectedAuthorization] Either an optional object that specifies the channels/roles/users or an optional list
- *                                                    of channels that are authorized to perform the operation. If omitted, then the channel
+ * @param {(Object|string[])} [expectedAuthorization] Either an optional object that specifies the roles/users or an optional list
+ *                                                    of roles that are authorized to perform the operation. If omitted, then the role
  *                                                    "write" is assumed. If it is an object, the following fields are available:
- *                                                    - expectedChannels: an optional list of channels that are authorized
  *                                                    - expectedRoles: an optional list of roles that are authorized
  *                                                    - expectedUsers: an optional list of users that are authorized
  */
 exports.verifyDocumentNotReplaced = verifyDocumentNotReplaced;
 
 /**
- * Attempts to delete the specified doc and then verifies that it failed validation with the expected channels.
+ * Attempts to delete the specified doc and then verifies that it failed validation with the expected authorizations.
  *
  * @param {Object} oldDoc The document to delete
  * @param {string} docType The document's type as specified in the document definition
  * @param {string[]} expectedErrorMessages The list of validation error messages that should be generated by the operation. May be a string
  *                                         if only one validation error is expected.
- * @param {(Object|string[])} [expectedAuthorization] Either an optional object that specifies the channels/roles/users or an optional list
- *                                                    of channels that are authorized to perform the operation. If omitted, then the channel
+ * @param {(Object|string[])} [expectedAuthorization] Either an optional object that specifies the roles/users or an optional list
+ *                                                    of roles that are authorized to perform the operation. If omitted, then the role
  *                                                    "write" is assumed. If it is an object, the following fields are available:
- *                                                    - expectedChannels: an optional list of channels that are authorized
  *                                                    - expectedRoles: an optional list of roles that are authorized
  *                                                    - expectedUsers: an optional list of users that are authorized
  */
@@ -151,49 +143,15 @@ exports.verifyDocumentNotDeleted = verifyDocumentNotDeleted;
 exports.verifyValidationErrors = verifyValidationErrors;
 
 /**
- * Verifies that the specified document that was created, replaced or deleted required the specified channels for access.
- *
- * @param {string[]} expectedChannels The list of all channels that are authorized to perform the operation. May be a string if only one channel
- *                                    is expected.
- */
-exports.verifyRequireAccess = verifyRequireAccess;
-
-/**
- * Verifies that the specified document that was created, replaced or deleted required the specified roles for access.
- *
- * @param {string[]} expectedRoles The list of all roles that are authorized to perform the operation. May be a string if only one role is
- *                                 expected.
- */
-exports.verifyRequireRole = verifyRequireRole;
-
-/**
- * Verifies that the specified document that was created, replaced or deleted required the specified users for access.
- *
- * @param {string[]} expectedUsers The list of all users that are authorized to perform the operation. May be a string if only one user is
- *                                 expected.
- */
-exports.verifyRequireUser = verifyRequireUser;
-
-/**
- * Verifies that the specified channels were all assigned to a document that was created, replaced or deleted.
- *
- * @param {string[]} expectedChannels The list of channels that should have been assigned to the document. May be a string if only one
- *                                    channel is expected.
- */
-exports.verifyChannelAssignment = verifyChannelAssignment;
-
-/**
  * Verifies that the validation function throws an error when authorization is denied to create/replace/delete a document.
  *
  * @param {Object} doc The document to attempt to write. May include property "_deleted=true" to simulate a delete operation.
  * @param {Object} oldDoc The document to replace or delete. May be null or undefined or include property "_deleted=true" to simulate a
  *                        create operation.
- * @param {(Object|string[])} expectedAuthorization Either an object that specifies the separate channels/roles/users or a list of channels
- *                                                  that are authorized to perform the operation. If it is an object, the following fields are
- *                                                  available:
- *                                                  - expectedChannels: an optional list of channels that are authorized
- *                                                  - expectedRoles: an optional list of roles that are authorized
- *                                                  - expectedUsers: an optional list of users that are authorized
+ * @param {Object} userContext A CouchDB user context (http://docs.couchdb.org/en/latest/json-structure.html#userctx-object) that represents
+ *                             a user that should be denied access.
+ * @param {Object} [securityInfo] A CouchDB security object (http://docs.couchdb.org/en/latest/json-structure.html#security-object) that
+ *                                describes the roles assigned to the database.
  */
 exports.verifyAccessDenied = verifyAccessDenied;
 
@@ -212,7 +170,7 @@ const fs = require('fs');
 const validationFunctionLoader = require('../loading/validation-function-loader');
 const testEnvironmentMaker = require('./test-environment-maker');
 
-const defaultWriteChannel = 'write';
+const defaultWriteRole = 'write';
 
 function initValidationFunction(filePath) {
   const rawValidationFunction = fs.readFileSync(filePath, 'utf8').toString();
@@ -229,173 +187,62 @@ function initDocumentDefinitions(filePath) {
 function init(rawValidationFunction, validationFunctionFile) {
   const testHelperEnvironment = testEnvironmentMaker.init(rawValidationFunction, validationFunctionFile);
 
-  exports.requireAccess = testHelperEnvironment.requireAccess;
-  exports.requireRole = testHelperEnvironment.requireRole;
-  exports.requireUser = testHelperEnvironment.requireUser;
-  exports.channel = testHelperEnvironment.channel;
-
-  // A function stub that can be used in document definitions for test cases to verify custom actions
-  exports.customActionStub = testHelperEnvironment.customActionStub;
-
   exports.validationFunction = testHelperEnvironment.validationFunction;
 }
 
-function verifyRequireAccess(expectedChannels) {
-  assert.ok(exports.requireAccess.callCount > 0, `Document does not specify required channels. Expected: ${expectedChannels}`);
-
-  checkAuthorizations(expectedChannels, exports.requireAccess.calls[0].arg, 'channel');
-}
-
-function verifyRequireRole(expectedRoles) {
-  assert.ok(exports.requireRole.callCount > 0, `Document does not specify required roles. Expected: ${expectedRoles}`);
-
-  checkAuthorizations(expectedRoles, exports.requireRole.calls[0].arg, 'role');
-}
-
-function verifyRequireUser(expectedUsers) {
-  assert.ok(exports.requireUser.callCount > 0, `Document does not specify required users. Expected: ${expectedUsers}`);
-
-  checkAuthorizations(expectedUsers, exports.requireUser.calls[0].arg, 'user');
-}
-
-function verifyChannelAssignment(expectedChannels) {
-  assert.equal(exports.channel.callCount, 1, `Document was not assigned to any channels. Expected: ${expectedChannels}`);
-
-  checkAuthorizations(expectedChannels, exports.channel.calls[0].arg, 'channel');
-}
-
-function checkAuthorizations(expectedAuthorizations, actualAuthorizations, authorizationType) {
-  if (!(expectedAuthorizations instanceof Array)) {
-    expectedAuthorizations = [ expectedAuthorizations ];
-  }
-
-  if (!(actualAuthorizations instanceof Array)) {
-    actualAuthorizations = [ actualAuthorizations ];
-  }
-
-  // Rather than compare the sizes of the two lists, which leads to an obtuse error message on failure (e.g. "expected 2 to be 3"), ensure
-  // that neither list of channels/roles/users contains an element that does not exist in the other
-  expectedAuthorizations.forEach((expectedAuth) => {
-    if (!actualAuthorizations.includes(expectedAuth)) {
-      assert.fail(`Expected ${authorizationType} was not encountered: ${expectedAuth}. Actual ${authorizationType}s: ${actualAuthorizations}`);
-    }
-  });
-
-  actualAuthorizations.forEach((actualAuth) => {
-    if (!expectedAuthorizations.includes(actualAuth)) {
-      assert.fail(`Unexpected ${authorizationType} encountered: ${actualAuth}. Expected ${authorizationType}s: ${expectedAuthorizations}`);
-    }
-  });
-}
-
-function verifyOperationChannelsAssigned(doc, oldDoc, expectedChannels) {
-  if (exports.channel.callCount !== 1) {
-    assert.fail('Document channels were not assigned');
-  }
-
-  const actualChannels = exports.channel.calls[0].arg;
-  if (expectedChannels instanceof Array) {
-    expectedChannels.forEach((expectedChannel) => {
-      assert.ok(
-        actualChannels.includes(expectedChannel),
-        `Document was not assigned to expected channel: ${expectedChannel}. Actual: ${actualChannels}`);
-    });
-  } else {
-     assert.ok(
-      actualChannels.includes(expectedChannels),
-      `Document was not assigned to expected channel: "${expectedChannels}. Actual: ${actualChannels}`);
-  }
-}
-
-function verifyAuthorization(expectedAuthorization) {
-  let expectedOperationChannels = [ ];
-  if (typeof expectedAuthorization === 'string' || expectedAuthorization instanceof Array) {
-    // For backward compatibility, if the authorization parameter is not an object, treat it as the collection of channels that are required
-    // for authorization
-    expectedOperationChannels = expectedAuthorization;
-    verifyRequireAccess(expectedAuthorization);
-    assert.equal(exports.requireRole.callCount, 0, `Unexpected document roles assigned: ${JSON.stringify(exports.requireRole.calls)}`);
-    assert.equal(exports.requireUser.callCount, 0, `Unexpected document users assigned: ${JSON.stringify(exports.requireUser.calls)}`);
-  } else {
-    if (expectedAuthorization.expectedChannels) {
-      expectedOperationChannels = expectedAuthorization.expectedChannels;
-      verifyRequireAccess(expectedAuthorization.expectedChannels);
-    }
-
-    if (expectedAuthorization.expectedRoles) {
-      verifyRequireRole(expectedAuthorization.expectedRoles);
-    } else {
-      assert.equal(exports.requireRole.callCount, 0, `Unexpected document roles assigned: ${JSON.stringify(exports.requireRole.calls)}`);
-    }
-
-    if (expectedAuthorization.expectedUsers) {
-      verifyRequireUser(expectedAuthorization.expectedUsers);
-    } else {
-      assert.equal(exports.requireUser.callCount, 0, `Unexpected document users assigned: ${JSON.stringify(exports.requireUser.calls)}`);
-    }
-
-    if (!expectedAuthorization.expectedChannels && !expectedAuthorization.expectedRoles && !expectedAuthorization.expectedUsers) {
-      verifyRequireAccess([ ]);
-    }
-  }
-
-  return expectedOperationChannels;
-}
-
 function verifyDocumentAccepted(doc, oldDoc, expectedAuthorization) {
-  exports.validationFunction(doc, oldDoc);
+  const userContexts = generateAuthorizedUserContexts(expectedAuthorization);
 
-  const expectedOperationChannels = verifyAuthorization(expectedAuthorization);
-
-  verifyOperationChannelsAssigned(doc, oldDoc, expectedOperationChannels);
+  userContexts.forEach((userContext) => {
+    exports.validationFunction(doc, oldDoc, userContext, { });
+  });
 }
 
 function verifyDocumentCreated(doc, expectedAuthorization) {
-  verifyDocumentAccepted(doc, void 0, expectedAuthorization || defaultWriteChannel);
+  verifyDocumentAccepted(doc, void 0, expectedAuthorization || defaultWriteRole);
 }
 
 function verifyDocumentReplaced(doc, oldDoc, expectedAuthorization) {
-  verifyDocumentAccepted(doc, oldDoc, expectedAuthorization || defaultWriteChannel);
+  verifyDocumentAccepted(doc, oldDoc, expectedAuthorization || defaultWriteRole);
 }
 
 function verifyDocumentDeleted(oldDoc, expectedAuthorization) {
-  verifyDocumentAccepted({ _id: oldDoc._id, _deleted: true }, oldDoc, expectedAuthorization || defaultWriteChannel);
+  verifyDocumentAccepted({ _id: oldDoc._id, _deleted: true }, oldDoc, expectedAuthorization || defaultWriteRole);
 }
 
 function verifyDocumentRejected(doc, oldDoc, docType, expectedErrorMessages, expectedAuthorization) {
-  let validationFuncError = null;
-  try {
-    exports.validationFunction(doc, oldDoc);
-  } catch (ex) {
-    validationFuncError = ex;
-  }
+  const userContexts = generateAuthorizedUserContexts(expectedAuthorization);
 
-  if (validationFuncError) {
-    verifyValidationErrors(docType, expectedErrorMessages, validationFuncError);
-    verifyAuthorization(expectedAuthorization);
+  userContexts.forEach((userContext) => {
+    let validationFuncError = null;
+    try {
+      exports.validationFunction(doc, oldDoc, userContext);
+    } catch (ex) {
+      validationFuncError = ex;
+    }
 
-    assert.equal(exports.channel.callCount, 0, `Document was erroneously assigned to channels: ${JSON.stringify(exports.channel.calls)}`);
-  } else {
-    assert.fail('Document validation succeeded when it was expected to fail');
-  }
+    if (validationFuncError) {
+      verifyValidationErrors(docType, expectedErrorMessages, validationFuncError);
+    } else {
+      assert.fail('Document validation succeeded when it was expected to fail');
+    }
+  });
 }
 
 function verifyDocumentNotCreated(doc, docType, expectedErrorMessages, expectedAuthorization) {
-  verifyDocumentRejected(doc, void 0, docType, expectedErrorMessages, expectedAuthorization || defaultWriteChannel);
+  verifyDocumentRejected(doc, void 0, docType, expectedErrorMessages, expectedAuthorization || defaultWriteRole);
 }
 
 function verifyDocumentNotReplaced(doc, oldDoc, docType, expectedErrorMessages, expectedAuthorization) {
-  verifyDocumentRejected(doc, oldDoc, docType, expectedErrorMessages, expectedAuthorization || defaultWriteChannel);
+  verifyDocumentRejected(doc, oldDoc, docType, expectedErrorMessages, expectedAuthorization || defaultWriteRole);
 }
 
 function verifyDocumentNotDeleted(oldDoc, docType, expectedErrorMessages, expectedAuthorization) {
-  verifyDocumentRejected({ _id: oldDoc._id, _deleted: true }, oldDoc, docType, expectedErrorMessages, expectedAuthorization || defaultWriteChannel);
+  verifyDocumentRejected({ _id: oldDoc._id, _deleted: true }, oldDoc, docType, expectedErrorMessages, expectedAuthorization || defaultWriteRole);
 }
 
 function verifyValidationErrors(docType, expectedErrorMessages, exception) {
-  if (!(expectedErrorMessages instanceof Array)) {
-    expectedErrorMessages = [ expectedErrorMessages ];
-  }
+  const errorMessageList = normalizeList(expectedErrorMessages);
 
   // Used to split the leading component (e.g. "Invalid foobar document") from the validation error messages, which are separated by a colon
   const validationErrorRegex = /^([^:]+):\s*(.+)$/;
@@ -418,82 +265,29 @@ function verifyValidationErrors(docType, expectedErrorMessages, exception) {
 
   // Rather than compare the sizes of the two lists, which leads to an obtuse error message on failure (e.g. "expected 2 to be 3"), verify
   // that neither list of validation errors contains an element that does not exist in the other
-  expectedErrorMessages.forEach((expectedErrorMsg) => {
+  errorMessageList.forEach((expectedErrorMsg) => {
     assert.ok(
       actualErrorMessages.includes(expectedErrorMsg),
       `Document validation errors do not include expected error message: "${expectedErrorMsg}". Actual error: ${exception.forbidden}`);
   });
 
   actualErrorMessages.forEach((errorMessage) => {
-    if (!expectedErrorMessages.includes(errorMessage)) {
-      assert.fail(`Unexpected document validation error: "${errorMessage}". Expected error: Invalid ${docType} document: ${expectedErrorMessages.join('; ')}`);
+    if (!errorMessageList.includes(errorMessage)) {
+      assert.fail(`Unexpected document validation error: "${errorMessage}". Expected error: Invalid ${docType} document: ${errorMessageList.join('; ')}`);
     }
   });
 }
 
-function countAuthorizationTypes(expectedAuthorization) {
-  let count = 0;
-  if (expectedAuthorization.expectedChannels) {
-    count++;
-  }
-  if (expectedAuthorization.expectedRoles) {
-    count++;
-  }
-  if (expectedAuthorization.expectedUsers) {
-    count++;
-  }
-
-  return count;
-}
-
-function verifyAccessDenied(doc, oldDoc, expectedAuthorization) {
-  const channelAccessDeniedError = new Error('Channel access denied!');
-  const roleAccessDeniedError = new Error('Role access denied!');
-  const userAccessDeniedError = new Error('User access denied!');
-  const generalAuthFailedMessage = 'missing channel access';
-
-  exports.requireAccess.throwWith(channelAccessDeniedError);
-  exports.requireRole.throwWith(roleAccessDeniedError);
-  exports.requireUser.throwWith(userAccessDeniedError);
-
+function verifyAccessDenied(doc, oldDoc, userContext, securityInfo) {
   let validationFuncError = null;
   try {
-    exports.validationFunction(doc, oldDoc);
+    exports.validationFunction(doc, oldDoc, userContext, securityInfo);
   } catch (ex) {
     validationFuncError = ex;
   }
 
   if (validationFuncError) {
-    if (typeof expectedAuthorization === 'string' || expectedAuthorization instanceof Array) {
-      assert.equal(
-        validationFuncError,
-        channelAccessDeniedError,
-        `Document authorization error does not indicate channel access was denied. Actual: ${JSON.stringify(validationFuncError)}`);
-    } else if (countAuthorizationTypes(expectedAuthorization) === 0) {
-      verifyRequireAccess([ ]);
-    } else if (countAuthorizationTypes(expectedAuthorization) > 1) {
-      assert.equal(
-        validationFuncError.forbidden,
-        generalAuthFailedMessage,
-        `Document authorization error does not indicate that channel, role and user access were all denied. Actual: ${JSON.stringify(validationFuncError)}`);
-    } else if (expectedAuthorization.expectedChannels) {
-      assert.equal(
-        validationFuncError,
-        channelAccessDeniedError,
-        `Document authorization error does not indicate channel access was denied. Actual: ${JSON.stringify(validationFuncError)}`);
-    } else if (expectedAuthorization.expectedRoles) {
-      assert.equal(
-        validationFuncError,
-        roleAccessDeniedError,
-        `Document authorization error does not indicate role access was denied. Actual: ${JSON.stringify(validationFuncError)}`);
-    } else {
-      assert.ok(
-        validationFuncError,
-        userAccessDeniedError,
-        `Document authorization error does not indicate user access was denied. Actual: ${JSON.stringify(validationFuncError)}`);
-    }
-
-    verifyAuthorization(expectedAuthorization);
+    assert.deepEqual(validationFuncError, { forbidden: 'Access denied' });
   } else {
     assert.fail('Document authorization succeeded when it was expected to fail');
   }
@@ -502,7 +296,7 @@ function verifyAccessDenied(doc, oldDoc, expectedAuthorization) {
 function verifyUnknownDocumentType(doc, oldDoc) {
   let validationFuncError = null;
   try {
-    exports.validationFunction(doc, oldDoc);
+    exports.validationFunction(doc, oldDoc, { }, { });
   } catch (ex) {
     validationFuncError = ex;
   }
@@ -512,12 +306,48 @@ function verifyUnknownDocumentType(doc, oldDoc) {
       validationFuncError.forbidden,
       'Unknown document type',
       `Document validation error does not indicate the document type is unrecognized. Actual: ${JSON.stringify(validationFuncError)}`);
-
-    assert.equal(exports.channel.callCount, 0, `Document was erroneously assigned to channels: ${JSON.stringify(exports.channel.calls)}`);
-    assert.equal(exports.requireAccess.callCount, 0, `Unexpected attempt to specify required channels: ${JSON.stringify(exports.requireAccess.calls)}`);
-    assert.equal(exports.requireRole.callCount, 0, `Unexpected attempt to specify required roles: ${JSON.stringify(exports.requireRole.calls)}`);
-    assert.equal(exports.requireUser.callCount, 0, `Unexpected attempt to specify required users: ${JSON.stringify(exports.requireUser.calls)}`);
   } else {
     assert.fail('Document type was successfully identified when it was expected to be unknown');
+  }
+}
+
+function generateAuthorizedUserContexts(expectedAuthorization) {
+  const users = convertToUserContexts(expectedAuthorization);
+
+  return (users.length > 0) ? users : [ { name: '' } ];
+}
+
+function convertToUserContexts(expectedAuthorization) {
+  if (typeof expectedAuthorization === 'string') {
+    // The expected authorization is a single role name
+    return [ createUserContextFromRole(expectedAuthorization) ];
+  } else if (Array.isArray(expectedAuthorization)) {
+    // The expected authorization is an array of role names
+    return expectedAuthorization.map((expectedRole) => createUserContextFromRole(expectedRole));
+  } else {
+    const expectedRoles = normalizeList(expectedAuthorization.expectedRoles);
+    const expectedUsers = normalizeList(expectedAuthorization.expectedUsers);
+
+    const usersByRole = expectedRoles.map(expectedRole => createUserContextFromRole(expectedRole));
+    const usersByUsername = expectedUsers.map(expectedUsername => ({ name: expectedUsername }));
+
+    return [ ...usersByRole, ...usersByUsername ];
+  }
+}
+
+function createUserContextFromRole(expectedRole) {
+  return {
+    name: `user-from-role:${expectedRole}`,
+    roles: [ expectedRole ]
+  };
+}
+
+function normalizeList(items) {
+  if (Array.isArray(items)) {
+    return items;
+  } else if (typeof items === 'string') {
+    return [ items ];
+  } else {
+    return [ ];
   }
 }

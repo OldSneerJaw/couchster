@@ -51,15 +51,6 @@ module.exports = exports = joi.object().options({ convert: false }).keys({
         supportedContentTypes: dynamicConstraintSchema(joi.array().min(1).items(nonEmptyStringSchema))
       })),
 
-  channels: dynamicConstraintSchema(
-    joi.object().min(1).keys(
-      {
-        view: arrayOrSingleItemSchema(nonEmptyStringSchema), // The other auth types deliberately omit this permission type
-        add: arrayOrSingleItemSchema(nonEmptyStringSchema),
-        replace: arrayOrSingleItemSchema(nonEmptyStringSchema),
-        remove: arrayOrSingleItemSchema(nonEmptyStringSchema),
-        write: arrayOrSingleItemSchema(nonEmptyStringSchema)
-      })),
   authorizedRoles: authorizationSchema,
   authorizedUsers: authorizationSchema,
 
@@ -74,8 +65,8 @@ module.exports = exports = joi.object().options({ convert: false }).keys({
       /^[^_].*$/, // CouchDB does not allow top-level document property names to start with an underscore
       propertyValidatorSchema)).required()
 })
-  // At least one of "channels", "authorizedRoles" or "authorizedUsers" must be defined
-  .or('channels', 'authorizedRoles', 'authorizedUsers')
+  // At least one of "authorizedRoles" or "authorizedUsers" must be defined
+  .or('authorizedRoles', 'authorizedUsers')
   // It makes no sense to set "immutable" with either of "cannotReplace" or "cannotDelete"
   .without('immutable', [ 'cannotReplace', 'cannotDelete' ]);
 

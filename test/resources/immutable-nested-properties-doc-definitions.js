@@ -1,7 +1,7 @@
 {
   objectNestedInArrayDoc: {
     typeFilter: simpleTypeFilter,
-    channels: { write: 'write' },
+    authorizedRoles: { write: 'write' },
     propertyValidators: {
       elementList: {
         type: 'array',
@@ -22,7 +22,7 @@
   },
   objectNestedInHashtableDoc: {
     typeFilter: simpleTypeFilter,
-    channels: { write: 'write' },
+    authorizedRoles: { write: 'write' },
     propertyValidators: {
       hash: {
         type: 'hashtable',
@@ -43,7 +43,7 @@
   },
   objectNestedInObjectDoc: {
     typeFilter: simpleTypeFilter,
-    channels: { write: 'write' },
+    authorizedRoles: { write: 'write' },
     propertyValidators: {
       object: {
         type: 'object',
@@ -66,7 +66,7 @@
   },
   hashtableNestedInArrayDoc: {
     typeFilter: simpleTypeFilter,
-    channels: { write: 'write' },
+    authorizedRoles: { write: 'write' },
     propertyValidators: {
       elementList: {
         type: 'array',
@@ -82,7 +82,7 @@
   },
   hashtableNestedInObjectDoc: {
     typeFilter: simpleTypeFilter,
-    channels: { write: 'write' },
+    authorizedRoles: { write: 'write' },
     propertyValidators: {
       object: {
         type: 'object',
@@ -100,7 +100,7 @@
   },
   hashtableNestedInHashtableDoc: {
     typeFilter: simpleTypeFilter,
-    channels: { write: 'write' },
+    authorizedRoles: { write: 'write' },
     propertyValidators: {
       hash: {
         type: 'hashtable',

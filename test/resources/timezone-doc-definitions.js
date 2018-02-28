@@ -1,7 +1,7 @@
 {
   timezoneDoc: {
     typeFilter: simpleTypeFilter,
-    channels: { write: 'write' },
+    authorizedRoles: { write: 'write' },
     propertyValidators: {
       formatValidationProp: {
         type: 'timezone'
@@ -24,7 +24,7 @@
   },
   timezoneMustEqualDocType: {
     typeFilter: simpleTypeFilter,
-    channels: { write: 'write' },
+    authorizedRoles: { write: 'write' },
     propertyValidators: {
       equalityValidationProp: {
         type: 'timezone',

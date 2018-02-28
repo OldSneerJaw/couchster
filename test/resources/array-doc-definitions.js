@@ -13,7 +13,7 @@ function() {
 
   return {
     arrayDoc: {
-      channels: { write: 'write' },
+      authorizedRoles: { write: 'write' },
       typeFilter: function(doc) {
         return doc._id === 'arrayDoc';
       },

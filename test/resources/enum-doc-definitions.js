@@ -3,7 +3,7 @@
     typeFilter: function(doc, oldDoc) {
       return doc._id === 'enumDoc';
     },
-    channels: { write: 'write' },
+    authorizedRoles: { write: 'write' },
     propertyValidators: {
       staticEnumProp: {
         type: 'enum',

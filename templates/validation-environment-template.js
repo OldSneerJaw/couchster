@@ -1,22 +1,16 @@
 function makeValidationEnvironment(simpleMock) {
-  var doc = { };
-  var oldDoc = { };
-  var typeIdValidator = { type: 'string' };
-  var simpleTypeFilter = simpleMock.stub();
-  var isDocumentMissingOrDeleted = simpleMock.stub();
-  var isValueNullOrUndefined = simpleMock.stub();
-
-  // Sync Gateway utility functions
-  var requireAccess = simpleMock.stub();
-  var requireRole = simpleMock.stub();
-  var requireUser = simpleMock.stub();
-  var channel = simpleMock.stub();
+  const doc = { };
+  const oldDoc = { };
+  const typeIdValidator = { type: 'string' };
+  const simpleTypeFilter = simpleMock.stub();
+  const isDocumentMissingOrDeleted = simpleMock.stub();
+  const isValueNullOrUndefined = simpleMock.stub();
 
   // CouchDB utility functions
-  var isArray = Array.isArray;
-  var log = simpleMock.stub();
-  var sum = (list) => list.reduce((accumulator, item) => accumulator + item, 0);
-  var toJSON = JSON.stringify;
+  const isArray = Array.isArray;
+  const log = simpleMock.stub();
+  const sum = (list) => list.reduce((accumulator, item) => accumulator + item, 0);
+  const toJSON = JSON.stringify;
 
   return {
     doc: doc,
@@ -25,10 +19,6 @@ function makeValidationEnvironment(simpleMock) {
     simpleTypeFilter: simpleTypeFilter,
     isDocumentMissingOrDeleted: isDocumentMissingOrDeleted,
     isValueNullOrUndefined: isValueNullOrUndefined,
-    requireAccess: requireAccess,
-    requireRole: requireRole,
-    requireUser: requireUser,
-    channel: channel,
     isArray: isArray,
     log: log,
     sum: sum,
