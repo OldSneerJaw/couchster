@@ -1,18 +1,15 @@
 {
-  channels: function(doc, oldDoc) {
+  authorizedRoles: function(doc, oldDoc) {
     var businessId = getBusinessId(doc, oldDoc);
 
     // Because creating a business config document is not the same as creating a business, reuse the same permission for both creating
     // and updating
     return {
-      view: toSyncChannel(businessId, 'VIEW'),
-      add: toSyncChannel(businessId, 'CHANGE_BUSINESS'),
-      replace: toSyncChannel(businessId, 'CHANGE_BUSINESS'),
-      remove: toSyncChannel(businessId, 'REMOVE_BUSINESS')
+      add: toDbRole(businessId, 'CHANGE_BUSINESS'),
+      replace: toDbRole(businessId, 'CHANGE_BUSINESS'),
+      remove: toDbRole(businessId, 'REMOVE_BUSINESS')
     };
   },
-  authorizedRoles: defaultAuthorizedRoles,
-  authorizedUsers: defaultAuthorizedUsers,
   typeFilter: function(doc, oldDoc) {
     return /^biz\.[A-Za-z0-9_-]+$/.test(doc._id);
   },
@@ -27,7 +24,7 @@
   },
   propertyValidators: {
     businessLogoAttachment: {
-      // The name of the Sync Gateway file attachment that is to be used as the business/invoice logo image
+      // The name of the CouchDB file attachment that is to be used as the business/invoice logo image
       type: 'attachmentReference',
       required: false,
       maximumSize: 2097152,

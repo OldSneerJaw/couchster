@@ -2,7 +2,7 @@ function() {
   return {
     customValidationDoc: {
       typeFilter: simpleTypeFilter,
-      channels: { write: 'write' },
+      authorizedRoles: { write: 'write' },
       propertyValidators: {
         baseProp: {
           type: 'object',
@@ -16,10 +16,10 @@ function() {
                 var parentItemValue = validationItemStack[validationItemStack.length - 1].itemValue;
                 if (parentItemValue && parentItemValue.failValidation) {
                   return [
-                    'doc: ' + jsonStringify(doc),
-                    'oldDoc: ' + jsonStringify(oldDoc),
-                    'currentItemEntry: ' + jsonStringify(currentItemEntry),
-                    'validationItemStack: ' + jsonStringify(validationItemStack)
+                    'doc: ' + JSON.stringify(doc),
+                    'oldDoc: ' + JSON.stringify(oldDoc),
+                    'currentItemEntry: ' + JSON.stringify(currentItemEntry),
+                    'validationItemStack: ' + JSON.stringify(validationItemStack)
                   ];
                 } else {
                   return [ ];

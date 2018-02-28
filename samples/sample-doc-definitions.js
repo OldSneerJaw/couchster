@@ -1,17 +1,10 @@
 function() {
-  // The role that confers universal privileges and is only applicable to Kashoo services
-  var serviceRole = 'SERVICE';
-
-  // A special user that has universal privileges
-  var adminUser = 'ADMIN';
-
   // Matches values that look like three-letter ISO 4217 currency codes. It is not comprehensive.
   var iso4217CurrencyCodeRegex = /^[A-Z]{3}$/;
 
   // Creates a RegExp to match the ID of an entity that belongs to a business
   function createBusinessEntityRegex(suffixPattern) {
-    // Note that this regex uses double quotes rather than single quotes as a workaround to https://github.com/Kashoo/synctos/issues/116
-    return new RegExp("^biz\\.\\d+\\." + suffixPattern + "$");
+    return new RegExp('^biz\\.\\d+\\.' + suffixPattern + '$');
   }
 
   // Checks that a business ID is valid (an integer greater than 0) and is not changed from the old version of the document
@@ -45,30 +38,25 @@ function() {
     }
   }
 
-  // Converts a Books business privilege to a Couchbase Sync Gateway document channel name
-  function toSyncChannel(businessId, privilege) {
+  // Converts a Books business privilege to a CouchDB role name
+  function toDbRole(businessId, privilege) {
     return businessId + '-' + privilege;
   }
 
-  // Builds a function that returns the view, add, replace, remove channels extrapolated from the specified base privilege, name which is
+  // Builds a function that returns the add, replace, remove roles extrapolated from the specified base privilege, name which is
   // formatted according to the de facto Books convention of "VIEW_FOOBAR", "ADD_FOOBAR", "CHANGE_FOOBAR" and "REMOVE_FOOBAR" assuming the
   // base privilege name is "FOOBAR"
-  function toDefaultSyncChannels(doc, oldDoc, basePrivilegeName) {
+  function toDefaultDbRoles(doc, oldDoc, basePrivilegeName) {
     var businessId = getBusinessId(doc, oldDoc);
 
     return function(doc, oldDoc) {
       return {
-        view: [ toSyncChannel(businessId, 'VIEW_' + basePrivilegeName) ],
-        add: [ toSyncChannel(businessId, 'ADD_' + basePrivilegeName) ],
-        replace: [ toSyncChannel(businessId, 'CHANGE_' + basePrivilegeName) ],
-        remove: [ toSyncChannel(businessId, 'REMOVE_' + basePrivilegeName) ]
+        add: [ toDbRole(businessId, 'ADD_' + basePrivilegeName) ],
+        replace: [ toDbRole(businessId, 'CHANGE_' + basePrivilegeName) ],
+        remove: [ toDbRole(businessId, 'REMOVE_' + basePrivilegeName) ]
       };
     };
   }
-
-  var defaultAuthorizedRoles = { write: serviceRole };
-
-  var defaultAuthorizedUsers = { write: adminUser };
 
   // The document type definitions. For everyone's sanity, please keep the document types in case-insensitive alphabetical order
   return {

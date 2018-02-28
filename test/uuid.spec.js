@@ -3,7 +3,7 @@ const errorFormatter = testHelper.validationErrorFormatter;
 
 describe('UUID validation type:', () => {
   beforeEach(() => {
-    testHelper.initSyncFunction('build/sync-functions/test-uuid-sync-function.js');
+    testHelper.initValidationFunction('build/validation-functions/test-uuid-validation-function.js');
   });
 
   describe('format validation', () => {

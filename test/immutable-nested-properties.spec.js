@@ -3,7 +3,7 @@ const errorFormatter = testHelper.validationErrorFormatter;
 
 describe('Immutable nested properties:', () => {
   beforeEach(() => {
-    testHelper.initSyncFunction('build/sync-functions/test-immutable-nested-properties-sync-function.js');
+    testHelper.initValidationFunction('build/validation-functions/test-immutable-nested-properties-validation-function.js');
   });
 
   describe('when an object with an immutable property is nested in an array', () => {

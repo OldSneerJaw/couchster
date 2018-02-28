@@ -1,5 +1,5 @@
 function() {
-  var docChannels = { write: 'write' };
+  var authorizedRoles = { write: 'write' };
 
   function sharedTypeFilter(doc, oldDoc, docType) {
     return doc._id === docType;
@@ -12,7 +12,7 @@ function() {
   return {
     staticArrayDoc: {
       typeFilter: sharedTypeFilter,
-      channels: docChannels,
+      authorizedRoles: authorizedRoles,
       propertyValidators: {
         arrayProp: {
           type: 'array',
@@ -22,7 +22,7 @@ function() {
     },
     dynamicArrayDoc: {
       typeFilter: sharedTypeFilter,
-      channels: docChannels,
+      authorizedRoles: authorizedRoles,
       propertyValidators: {
         expectedDynamicValue: {
           type: 'array'
@@ -35,7 +35,7 @@ function() {
     },
     staticObjectDoc: {
       typeFilter: sharedTypeFilter,
-      channels: docChannels,
+      authorizedRoles: authorizedRoles,
       propertyValidators: {
         objectProp: {
           type: 'object',
@@ -52,7 +52,7 @@ function() {
     },
     dynamicObjectDoc: {
       typeFilter: sharedTypeFilter,
-      channels: docChannels,
+      authorizedRoles: authorizedRoles,
       propertyValidators: {
         expectedDynamicValue: {
           type: 'object'
@@ -65,7 +65,7 @@ function() {
     },
     staticHashtableDoc: {
       typeFilter: sharedTypeFilter,
-      channels: docChannels,
+      authorizedRoles: authorizedRoles,
       propertyValidators: {
         hashtableProp: {
           type: 'hashtable',
@@ -82,7 +82,7 @@ function() {
     },
     dynamicHashtableDoc: {
       typeFilter: sharedTypeFilter,
-      channels: docChannels,
+      authorizedRoles: authorizedRoles,
       propertyValidators: {
         expectedDynamicValue: {
           type: 'hashtable'
@@ -95,7 +95,7 @@ function() {
     },
     arrayElementConstraintDoc: {
       typeFilter: sharedTypeFilter,
-      channels: docChannels,
+      authorizedRoles: authorizedRoles,
       propertyValidators: {
         arrayProp: {
           type: 'array',
@@ -108,7 +108,7 @@ function() {
     },
     hashtableElementConstraintDoc: {
       typeFilter: sharedTypeFilter,
-      channels: docChannels,
+      authorizedRoles: authorizedRoles,
       propertyValidators: {
         hashtableProp: {
           type: 'hashtable',
@@ -121,7 +121,7 @@ function() {
     },
     specializedStringsDoc: {
       typeFilter: sharedTypeFilter,
-      channels: docChannels,
+      authorizedRoles: authorizedRoles,
       propertyValidators: {
         dateProp: {
           type: 'date',
@@ -147,7 +147,7 @@ function() {
     },
     nullExpectedValueDoc: {
       typeFilter: sharedTypeFilter,
-      channels: docChannels,
+      authorizedRoles: authorizedRoles,
       propertyValidators: {
         stringProp: {
           type: 'string',

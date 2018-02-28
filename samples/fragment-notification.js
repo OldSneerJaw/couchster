@@ -1,32 +1,17 @@
 {
-  channels: function(doc, oldDoc) {
+  authorizedRoles: function(doc, oldDoc) {
     var businessId = getBusinessId(doc, oldDoc);
 
     // Only service users can create new notifications
     return {
-      view: [ toSyncChannel(businessId, 'VIEW_NOTIFICATIONS'), doc._id + '-VIEW' ],
       add: [ 'notification-add' ],
-      replace: [ toSyncChannel(businessId, 'CHANGE_NOTIFICATIONS') ],
-      remove: [ toSyncChannel(businessId, 'REMOVE_NOTIFICATIONS') ]
+      replace: [ toDbRole(businessId, 'CHANGE_NOTIFICATIONS') ],
+      remove: [ toDbRole(businessId, 'REMOVE_NOTIFICATIONS') ]
     };
   },
-  authorizedRoles: defaultAuthorizedRoles,
-  authorizedUsers: defaultAuthorizedUsers,
   typeFilter: function(doc, oldDoc) {
-    // Note that this regex uses double quotes rather than single quotes as a workaround to https://github.com/Kashoo/synctos/issues/116
-    return createBusinessEntityRegex("notification\\.[A-Za-z0-9_-]+$").test(doc._id);
+    return createBusinessEntityRegex('notification\\.[A-Za-z0-9_-]+$').test(doc._id);
   },
-  accessAssignments: [
-    {
-      users: function(doc, oldDoc) {
-        return doc.users;
-      },
-      roles: function(doc, oldDoc) {
-        return doc.groups;
-      },
-      channels: [ doc._id + '-VIEW' ]
-    }
-  ],
   propertyValidators: {
     eventId: {
       type: 'uuid',

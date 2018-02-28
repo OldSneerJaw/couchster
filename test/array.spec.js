@@ -3,7 +3,7 @@ const errorFormatter = testHelper.validationErrorFormatter;
 
 describe('Array validation type', () => {
   beforeEach(() => {
-    testHelper.initSyncFunction('build/sync-functions/test-array-sync-function.js');
+    testHelper.initValidationFunction('build/validation-functions/test-array-validation-function.js');
   });
 
   describe('length constraints', () => {

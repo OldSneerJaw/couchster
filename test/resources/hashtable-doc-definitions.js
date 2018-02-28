@@ -13,7 +13,7 @@ function() {
 
   return {
     hashtableDoc: {
-      channels: { write: 'write' },
+      authorizedRoles: { write: 'write' },
       typeFilter: function(doc) {
         return doc._id === 'hashtableDoc';
       },

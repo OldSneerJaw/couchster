@@ -6,17 +6,18 @@ const uuidSchema = joi.string().uuid();
 const regexSchema = joi.object().type(RegExp);
 
 // NOTE: When Joi runs, it does so in a Node.js process, which may support a different subset of the ISO 8601 date-time
-// string format than Sync Gateway's JavaScript interpreter does. To prevent the validator from allowing date or
-// date-time strings that cannot be parsed when a generated sync function is used in Sync Gateway, strings with explicit
+// string format than CouchDB's JavaScript interpreter does. To prevent the validator from allowing date or
+// date-time strings that cannot be parsed when a generated validation function is used in CouchDB, strings with explicit
 // regular expression definitions are used for the "date" and "datetime" types rather than `joi.date().iso()`.
 const datetimeStringSchema = joi.string()
-  .regex(/^(([0-9]{4})(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01]))?)?)(T([01][0-9]|2[0-3])(:[0-5][0-9])(:[0-5][0-9](\.[0-9]{1,3})?)?(Z|([\+-])([01][0-9]|2[0-3]):?([0-5][0-9]))?)?$/);
+  .regex(/^(([0-9]{4})(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01]))?)?)(T((([01][0-9]|2[0-3])(:[0-5][0-9])(:[0-5][0-9](\.[0-9]{1,3})?)?)|(24:00(:00(\.0{1,3})?)?))(Z|([+-])([01][0-9]|2[0-3]):([0-5][0-9]))?)?$/);
 const datetimeSchema = joi.any().when(
   joi.string(),
   {
     then: datetimeStringSchema,
     otherwise: joi.date().options({ convert: false })
   });
+
 const dateOnlyStringSchema = joi.string().regex(/^([0-9]{4})(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01]))?)?$/);
 const dateOnlySchema = joi.any().when(
   joi.string(),
@@ -25,8 +26,8 @@ const dateOnlySchema = joi.any().when(
     otherwise: joi.date().options({ convert: false })
   });
 
-const timeOnlySchema = joi.string().regex(/^([01][0-9]|2[0-3])(:[0-5][0-9])(:[0-5][0-9](\.[0-9]{1,3})?)?$/);
-const timezoneSchema = joi.string().regex(/^(Z|([+-])([01][0-9]|2[0-3]):?([0-5][0-9]))$/);
+const timeOnlySchema = joi.string().regex(/^((([01][0-9]|2[0-3])(:[0-5][0-9])(:[0-5][0-9](\.[0-9]{1,3})?)?)|(24:00(:00(\.0{1,3})?)?))$/);
+const timezoneSchema = joi.string().regex(/^(Z|([+-])([01][0-9]|2[0-3]):([0-5][0-9]))$/);
 
 const typeEqualitySchemas = {
   string: joi.string(),
@@ -235,7 +236,7 @@ function universalConstraintSchemas(typeEqualitySchema) {
     immutableWhenSetStrict: dynamicConstraintSchema(joi.boolean()),
     mustEqual: dynamicConstraintSchema(mustEqualConstraintSchema(typeEqualitySchema)),
     mustEqualStrict: dynamicConstraintSchema(mustEqualConstraintSchema(typeEqualitySchema)),
-    customValidation: joi.func().maxArity(4) // Function parameters: doc, oldDoc, currentItemEntry, validationItemStack
+    customValidation: joi.func().maxArity(6) // Function parameters: doc, oldDoc, currentItemEntry, validationItemStack, userContext, securityInfo
   };
 }
 

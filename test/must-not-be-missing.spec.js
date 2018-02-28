@@ -3,7 +3,7 @@ const errorFormatter = testHelper.validationErrorFormatter;
 
 describe('Non-missing value constraint', () => {
   beforeEach(() => {
-    testHelper.initSyncFunction('build/sync-functions/test-must-not-be-missing-sync-function.js');
+    testHelper.initValidationFunction('build/validation-functions/test-must-not-be-missing-validation-function.js');
   });
 
   describe('with static validation', () => {
@@ -52,7 +52,7 @@ describe('Non-missing value constraint', () => {
         integerProp: -45,
         floatProp: 5.19,
         booleanProp: true,
-        datetimeProp: '2017-04-10T16:10:39.773-0700',
+        datetimeProp: '2017-04-10T16:10:39.773-07:00',
         dateProp: '2017-04-10',
         enumProp: 2,
         attachmentReferenceProp: 'barfoo.baz',
@@ -105,7 +105,7 @@ describe('Non-missing value constraint', () => {
         integerProp: -45,
         floatProp: 5.19,
         booleanProp: true,
-        datetimeProp: '2017-04-10T16:10:39.773-0700',
+        datetimeProp: '2017-04-10T16:10:39.773-07:00',
         dateProp: '2017-04-10',
         enumProp: 2,
         attachmentReferenceProp: 'barfoo.baz',
@@ -152,7 +152,7 @@ describe('Non-missing value constraint', () => {
         integerProp: -45,
         floatProp: 5.19,
         booleanProp: true,
-        datetimeProp: '2017-04-10T16:10:39.773-0700',
+        datetimeProp: '2017-04-10T16:10:39.773-07:00',
         dateProp: '2017-04-10',
         enumProp: 2,
         attachmentReferenceProp: 'barfoo.baz',
@@ -245,7 +245,7 @@ describe('Non-missing value constraint', () => {
         integerProp: -45,
         floatProp: 5.19,
         booleanProp: true,
-        datetimeProp: '2017-04-10T16:10:39.773-0700',
+        datetimeProp: '2017-04-10T16:10:39.773-07:00',
         dateProp: '2017-04-10',
         enumProp: 2,
         attachmentReferenceProp: 'barfoo.baz',
@@ -300,7 +300,7 @@ describe('Non-missing value constraint', () => {
         integerProp: -45,
         floatProp: 5.19,
         booleanProp: true,
-        datetimeProp: '2017-04-10T16:10:39.773-0700',
+        datetimeProp: '2017-04-10T16:10:39.773-07:00',
         dateProp: '2017-04-10',
         enumProp: 2,
         attachmentReferenceProp: 'barfoo.baz',
@@ -351,7 +351,7 @@ describe('Non-missing value constraint', () => {
         integerProp: -45,
         floatProp: 5.19,
         booleanProp: true,
-        datetimeProp: '2017-04-10T16:10:39.773-0700',
+        datetimeProp: '2017-04-10T16:10:39.773-07:00',
         dateProp: '2017-04-10',
         enumProp: 2,
         attachmentReferenceProp: 'barfoo.baz',

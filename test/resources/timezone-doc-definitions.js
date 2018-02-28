@@ -1,7 +1,7 @@
 {
   timezoneDoc: {
     typeFilter: simpleTypeFilter,
-    channels: { write: 'write' },
+    authorizedRoles: { write: 'write' },
     propertyValidators: {
       formatValidationProp: {
         type: 'timezone'
@@ -13,7 +13,7 @@
       },
       minAndMaxExclusiveValuesProp: {
         type: 'timezone',
-        minimumValueExclusive: '-1131',
+        minimumValueExclusive: '-11:31',
         maximumValueExclusive: '+12:31'
       },
       immutableValidationProp: {
@@ -24,7 +24,7 @@
   },
   timezoneMustEqualDocType: {
     typeFilter: simpleTypeFilter,
-    channels: { write: 'write' },
+    authorizedRoles: { write: 'write' },
     propertyValidators: {
       equalityValidationProp: {
         type: 'timezone',

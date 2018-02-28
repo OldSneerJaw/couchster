@@ -2,22 +2,22 @@
 
 cd "$(dirname "$0")"/.. || exit 1
 
-outputDir="build/sync-functions"
+outputDir="build/validation-functions"
 
 echo "Linting modules and specs with JSHint...\n"
 node_modules/jshint/bin/jshint src test
 
-sampleDocDefinitionsPath="samples/sample-sync-doc-definitions.js"
+sampleDocDefinitionsPath="samples/sample-doc-definitions.js"
 
 # Validate the structure and sematics of the sample document definitions
 echo "Validating sample document definitions...\n"
 ./validate-document-definitions "$sampleDocDefinitionsPath"
 
-# Create a sync function from the sample document definitions file
-echo "Generating sync functions...\n"
-./make-sync-function "$sampleDocDefinitionsPath" "$outputDir"/test-sample-sync-function.js
+# Create a validation function from the sample document definitions file
+echo "Generating document validation functions...\n"
+./make-validation-function "$sampleDocDefinitionsPath" "$outputDir"/test-sample-validation-function.js
 
-# Automatically validate and create a sync function from each document definitions file in the test resources directory
+# Automatically validate and create a validation function from each document definitions file in the test resources directory
 definitionsDir="test/resources"
 for docDefinitionPath in "$definitionsDir"/*-doc-definitions.js; do
   # Skip entries that are not files
@@ -25,17 +25,17 @@ for docDefinitionPath in "$definitionsDir"/*-doc-definitions.js; do
 
   ./validate-document-definitions "$docDefinitionPath"
 
-  syncFuncName=$(basename "$docDefinitionPath" "-doc-definitions.js")
+  validationFuncName=$(basename "$docDefinitionPath" "-doc-definitions.js")
 
-  outputFile="$outputDir/test-$syncFuncName-sync-function.js"
+  outputFile="$outputDir/test-$validationFuncName-validation-function.js"
 
-  ./make-sync-function "$docDefinitionPath" "$outputFile"
+  ./make-validation-function "$docDefinitionPath" "$outputFile"
 done
 
-# Set up JSHint configuration for the generated sync functions
-cp "etc/jshintrc-sync-function-template.json" "$outputDir/.jshintrc"
+# Set up JSHint configuration for the generated validation functions
+cp "etc/jshintrc-validation-function-template.json" "$outputDir/.jshintrc"
 
-echo "\nLinting generated sync functions with JSHint...\n"
+echo "\nLinting generated document validation functions with JSHint...\n"
 node_modules/jshint/bin/jshint "$outputDir"/*.js
 
 echo "Done"

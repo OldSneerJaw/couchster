@@ -1,6 +1,6 @@
 function validationModule(utils, simpleTypeFilter, typeIdValidator) {
-  var timeModule = importSyncFunctionFragment('time-module.js')(utils);
-  var comparisonModule = importSyncFunctionFragment('comparison-module.js')(utils, buildItemPath, timeModule);
+  var timeModule = importValidationFunctionFragment('time-module.js')(utils);
+  var comparisonModule = importValidationFunctionFragment('comparison-module.js')(utils, buildItemPath, timeModule);
 
   function isUuid(value) {
     var regex = /^[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}$/;
@@ -29,11 +29,11 @@ function validationModule(utils, simpleTypeFilter, typeIdValidator) {
 
   // Resolves a constraint defined at the document level (e.g. `propertyValidators`, `allowUnknownProperties`, `immutable`).
   function resolveDocConstraint(doc, oldDoc, constraintDefinition) {
-    return (typeof constraintDefinition === 'function') ? constraintDefinition(doc, utils.resolveOldDoc(oldDoc)) : constraintDefinition;
+    return (typeof constraintDefinition === 'function') ? constraintDefinition(doc, oldDoc) : constraintDefinition;
   }
 
   // Ensures the document structure and content are valid
-  function validateDoc(doc, oldDoc, docDefinition, docType) {
+  function validateDoc(doc, oldDoc, userContext, securityInfo, docDefinition, docType) {
     var validationErrors = [ ];
 
     validateDocImmutability(doc, oldDoc, docDefinition, validationErrors);
@@ -43,6 +43,8 @@ function validationModule(utils, simpleTypeFilter, typeIdValidator) {
       validateDocContents(
         doc,
         oldDoc,
+        userContext,
+        securityInfo,
         docDefinition,
         validationErrors);
     }
@@ -68,7 +70,7 @@ function validationModule(utils, simpleTypeFilter, typeIdValidator) {
     }
   }
 
-  function validateDocContents(doc, oldDoc, docDefinition, validationErrors) {
+  function validateDocContents(doc, oldDoc, userContext, securityInfo, docDefinition, validationErrors) {
     var itemStack = [
       {
         itemValue: doc,
@@ -85,7 +87,7 @@ function validationModule(utils, simpleTypeFilter, typeIdValidator) {
     }
 
     var attachmentModule =
-      importSyncFunctionFragment('attachment-module.js')(utils, buildItemPath, resolveDocConstraint, resolveItemConstraint);
+      importValidationFunctionFragment('attachment-module.js')(utils, buildItemPath, resolveDocConstraint, resolveItemConstraint);
 
     // Execute each of the document's property validators while ignoring internal document properties at the root level
     validateProperties(
@@ -103,7 +105,7 @@ function validationModule(utils, simpleTypeFilter, typeIdValidator) {
       if (typeof constraintDefinition === 'function') {
         var currentItemEntry = itemStack[itemStack.length - 1];
 
-        return constraintDefinition(doc, utils.resolveOldDoc(oldDoc), currentItemEntry.itemValue, currentItemEntry.oldItemValue);
+        return constraintDefinition(doc, oldDoc, currentItemEntry.itemValue, currentItemEntry.oldItemValue);
       } else {
         return constraintDefinition;
       }
@@ -461,7 +463,8 @@ function validationModule(utils, simpleTypeFilter, typeIdValidator) {
       // Copy all but the last/top element so that the item's parent is at the top of the stack for the custom validation function
       var customValidationItemStack = itemStack.slice(0, -1);
 
-      var customValidationErrors = validator.customValidation(doc, oldDoc, currentItemEntry, customValidationItemStack);
+      var customValidationErrors =
+        validator.customValidation(doc, oldDoc, currentItemEntry, customValidationItemStack, userContext, securityInfo);
 
       if (customValidationErrors instanceof Array) {
         for (var errorIndex = 0; errorIndex < customValidationErrors.length; errorIndex++) {

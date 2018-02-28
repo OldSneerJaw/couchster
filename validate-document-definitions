@@ -31,7 +31,7 @@ function showUsage() {
   const scriptName = path.basename(process.argv[1]);
 
   console.info(
-`A utility for validating the structure and semantics of a synctos document definitions file.
+`A utility for validating the structure and semantics of a couchster document definitions file.
 
 Usage:  ${scriptName} <document_definitions_file>
    or:  ${nodeBinary} ${scriptName} <document_definitions_file>
@@ -40,7 +40,7 @@ Arguments:
     document_definitions_file
         Path to the JavaScript file that defines the document types for analysis
 
-For example:  ${scriptName} /path/to/my-sync-doc-definitions.js
+For example:  ${scriptName} /path/to/my-doc-definitions.js
 
 See the README for more information.`
   );

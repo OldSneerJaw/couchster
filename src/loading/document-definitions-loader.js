@@ -18,9 +18,9 @@ function loadFromFile(docDefinitionsFile) {
     docDefinitions = fs.readFileSync(docDefinitionsFile, 'utf8').trim();
   } catch (ex) {
     if (ex.code === 'ENOENT') {
-      console.error('ERROR: Sync document definitions file does not exist');
+      console.error('ERROR: Document definitions file does not exist');
     } else {
-      console.error(`ERROR: Unable to read the sync document definitions file: ${ex}`);
+      console.error(`ERROR: Unable to read the document definitions file: ${ex}`);
     }
 
     throw ex;

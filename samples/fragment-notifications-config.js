@@ -1,10 +1,7 @@
 {
-  channels: toDefaultSyncChannels(doc, oldDoc, 'NOTIFICATIONS_CONFIG'),
-  authorizedRoles: defaultAuthorizedRoles,
-  authorizedUsers: defaultAuthorizedUsers,
+  authorizedRoles: toDefaultDbRoles(doc, oldDoc, 'NOTIFICATIONS_CONFIG'),
   typeFilter: function(doc, oldDoc) {
-    // Note that this regex uses double quotes rather than single quotes as a workaround to https://github.com/Kashoo/synctos/issues/116
-    return createBusinessEntityRegex("notificationsConfig$").test(doc._id);
+    return createBusinessEntityRegex('notificationsConfig$').test(doc._id);
   },
   propertyValidators: {
     notificationTypes: {

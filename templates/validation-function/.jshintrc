@@ -1,0 +1,13 @@
+{
+  "extends": "../../.jshintrc",
+  "esversion": 5,
+  "node": false,
+  "varstmt": false,
+  "globals": {
+    "importValidationFunctionFragment": false,
+    "isArray": false,
+    "log": false,
+    "sum": false,
+    "toJSON": false
+  }
+}

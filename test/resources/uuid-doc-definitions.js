@@ -1,7 +1,7 @@
 {
   uuidDocType: {
     typeFilter: simpleTypeFilter,
-    channels: { write: 'write' },
+    authorizedRoles: { write: 'write' },
     propertyValidators: {
       formatValidationProp: {
         type: 'uuid'
@@ -19,7 +19,7 @@
   },
   uuidMustEqualDocType: {
     typeFilter: simpleTypeFilter,
-    channels: { write: 'write' },
+    authorizedRoles: { write: 'write' },
     propertyValidators: {
       equalityValidationProp: {
         type: 'uuid',

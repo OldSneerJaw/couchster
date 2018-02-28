@@ -1,7 +1,7 @@
 {
   staticRegularAttachmentsDoc: {
     typeFilter: simpleTypeFilter,
-    channels: { write: 'write' },
+    authorizedRoles: { write: 'write' },
     allowAttachments: true,
     attachmentConstraints: {
       maximumIndividualSize: 25,
@@ -21,7 +21,7 @@
   },
   staticAttachmentRefsOnlyDoc: {
     typeFilter: simpleTypeFilter,
-    channels: { write: 'write' },
+    authorizedRoles: { write: 'write' },
     allowAttachments: true,
     attachmentConstraints: {
       requireAttachmentReferences: true
@@ -34,7 +34,7 @@
   },
   dynamicAttachmentsDoc: {
     typeFilter: simpleTypeFilter,
-    channels: { write: 'write' },
+    authorizedRoles: { write: 'write' },
     allowAttachments: function(doc, oldDoc) {
       return doc.attachmentsEnabled;
     },

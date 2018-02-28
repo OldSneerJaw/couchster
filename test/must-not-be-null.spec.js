@@ -3,7 +3,7 @@ const errorFormatter = testHelper.validationErrorFormatter;
 
 describe('Non-null value constraint', () => {
   beforeEach(() => {
-    testHelper.initSyncFunction('build/sync-functions/test-must-not-be-null-sync-function.js');
+    testHelper.initValidationFunction('build/validation-functions/test-must-not-be-null-validation-function.js');
   });
 
   describe('with static validation', () => {
@@ -52,7 +52,7 @@ describe('Non-null value constraint', () => {
         integerProp: -45,
         floatProp: 5.19,
         booleanProp: true,
-        datetimeProp: '2017-04-10T16:10:39.773-0700',
+        datetimeProp: '2017-04-10T16:10:39.773-07:00',
         dateProp: '2017-04-10',
         enumProp: 2,
         attachmentReferenceProp: 'barfoo.baz',
@@ -77,7 +77,7 @@ describe('Non-null value constraint', () => {
         integerProp: -45,
         floatProp: 5.19,
         booleanProp: true,
-        datetimeProp: '2017-04-10T16:10:39.773-0700',
+        datetimeProp: '2017-04-10T16:10:39.773-07:00',
         dateProp: '2017-04-10',
         enumProp: 2,
         attachmentReferenceProp: 'barfoo.baz',
@@ -130,7 +130,7 @@ describe('Non-null value constraint', () => {
         integerProp: -45,
         floatProp: 5.19,
         booleanProp: true,
-        datetimeProp: '2017-04-10T16:10:39.773-0700',
+        datetimeProp: '2017-04-10T16:10:39.773-07:00',
         dateProp: '2017-04-10',
         enumProp: 2,
         attachmentReferenceProp: 'barfoo.baz',
@@ -230,7 +230,7 @@ describe('Non-null value constraint', () => {
         integerProp: -45,
         floatProp: 5.19,
         booleanProp: true,
-        datetimeProp: '2017-04-10T16:10:39.773-0700',
+        datetimeProp: '2017-04-10T16:10:39.773-07:00',
         dateProp: '2017-04-10',
         enumProp: 2,
         attachmentReferenceProp: 'barfoo.baz',
@@ -259,7 +259,7 @@ describe('Non-null value constraint', () => {
         integerProp: -45,
         floatProp: 5.19,
         booleanProp: true,
-        datetimeProp: '2017-04-10T16:10:39.773-0700',
+        datetimeProp: '2017-04-10T16:10:39.773-07:00',
         dateProp: '2017-04-10',
         enumProp: 2,
         attachmentReferenceProp: 'barfoo.baz',
@@ -314,7 +314,7 @@ describe('Non-null value constraint', () => {
         integerProp: -45,
         floatProp: 5.19,
         booleanProp: true,
-        datetimeProp: '2017-04-10T16:10:39.773-0700',
+        datetimeProp: '2017-04-10T16:10:39.773-07:00',
         dateProp: '2017-04-10',
         enumProp: 2,
         attachmentReferenceProp: 'barfoo.baz',

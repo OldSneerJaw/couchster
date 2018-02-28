@@ -3,7 +3,7 @@ const errorFormatter = testHelper.validationErrorFormatter;
 
 describe('Enum validation type', () => {
   beforeEach(() => {
-    testHelper.initSyncFunction('build/sync-functions/test-enum-sync-function.js');
+    testHelper.initValidationFunction('build/validation-functions/test-enum-validation-function.js');
   });
 
   describe('static validation', () => {

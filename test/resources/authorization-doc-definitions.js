@@ -1,13 +1,12 @@
 {
-  explicitChannelsDoc: {
-    channels: {
-      view: 'view',
+  explicitRolesDoc: {
+    authorizedRoles: {
       add: 'add',
       replace: [ 'replace', 'update' ],
       remove: [ 'remove', 'delete' ]
     },
     typeFilter: function(doc) {
-      return doc._id === 'explicitChannelsDoc';
+      return doc._id === 'explicitRolesDoc';
     },
     propertyValidators: {
       stringProp: {
@@ -15,12 +14,12 @@
       }
     }
   },
-  writeOnlyChannelsDoc: {
-    channels: {
+  writeOnlyRolesDoc: {
+    authorizedRoles: {
       write: [ 'edit', 'modify', 'write' ]
     },
     typeFilter: function(doc) {
-      return doc._id === 'writeOnlyChannelsDoc';
+      return doc._id === 'writeOnlyRolesDoc';
     },
     propertyValidators: {
       stringProp: {
@@ -28,13 +27,13 @@
       }
     }
   },
-  writeAndAddChannelsDoc: {
-    channels: {
+  writeAndAddRolesDoc: {
+    authorizedRoles: {
       write: 'edit',
       add: 'add'
     },
     typeFilter: function(doc) {
-      return doc._id === 'writeAndAddChannelsDoc';
+      return doc._id === 'writeAndAddRolesDoc';
     },
     propertyValidators: {
       stringProp: {
@@ -42,15 +41,9 @@
       }
     }
   },
-  dynamicChannelsRolesAndUsersDoc: {
+  dynamicRolesAndUsersDoc: {
     typeFilter: function(doc) {
-      return doc._id === 'dynamicChannelsRolesAndUsersDoc';
-    },
-    channels: function(doc, oldDoc) {
-      return {
-        view: doc._id + '-view',
-        write: doc._id + '-write'
-      };
+      return doc._id === 'dynamicRolesAndUsersDoc';
     },
     authorizedRoles: function(doc, oldDoc) {
       return { write: oldDoc ? oldDoc.roles : doc.roles };
@@ -70,24 +63,9 @@
       }
     }
   },
-  noChannelsAndStaticRolesDoc: {
+  explicitUsernamesDoc: {
     typeFilter: function(doc) {
-      return doc._id === 'noChannelsAndStaticRolesDoc';
-    },
-    authorizedRoles: {
-      add: 'add',
-      replace: 'replace',
-      remove: 'remove'
-    },
-    propertyValidators: {
-      stringProp: {
-        type: 'string'
-      }
-    }
-  },
-  noChannelsAndStaticUsersDoc: {
-    typeFilter: function(doc) {
-      return doc._id === 'noChannelsAndStaticUsersDoc';
+      return doc._id === 'explicitUsernamesDoc';
     },
     authorizedUsers: {
       add: [ 'add1', 'add2' ],

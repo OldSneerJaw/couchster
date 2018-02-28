@@ -1,36 +1,28 @@
-function makeValidationEnvironment(_, simple) {
-  var doc = { };
-  var oldDoc = { };
-  var typeIdValidator = { type: 'string' };
-  var simpleTypeFilter = simple.stub();
-  var isDocumentMissingOrDeleted = simple.stub();
-  var isValueNullOrUndefined = simple.stub();
-  var jsonStringify = simple.stub();
-  var requireAccess = simple.stub();
-  var requireRole = simple.stub();
-  var requireUser = simple.stub();
-  var channel = simple.stub();
-  var access = simple.stub();
-  var role = simple.stub();
+function makeValidationEnvironment(simpleMock) {
+  const doc = { };
+  const oldDoc = { };
+  const typeIdValidator = { type: 'string' };
+  const simpleTypeFilter = simpleMock.stub();
+  const isDocumentMissingOrDeleted = simpleMock.stub();
+  const isValueNullOrUndefined = simpleMock.stub();
 
-  var customActionStub = simple.stub();
+  // CouchDB utility functions
+  const isArray = Array.isArray;
+  const log = simpleMock.stub();
+  const sum = (list) => list.reduce((accumulator, item) => accumulator + item, 0);
+  const toJSON = JSON.stringify;
 
   return {
-    _: _,
     doc: doc,
     oldDoc: oldDoc,
     typeIdValidator: typeIdValidator,
     simpleTypeFilter: simpleTypeFilter,
     isDocumentMissingOrDeleted: isDocumentMissingOrDeleted,
     isValueNullOrUndefined: isValueNullOrUndefined,
-    jsonStringify: jsonStringify,
-    requireAccess: requireAccess,
-    requireRole: requireRole,
-    requireUser: requireUser,
-    channel: channel,
-    access: access,
-    role: role,
-    customActionStub: customActionStub,
+    isArray: isArray,
+    log: log,
+    sum: sum,
+    toJSON: toJSON,
     documentDefinitions: %DOC_DEFINITIONS_PLACEHOLDER%
   };
 }

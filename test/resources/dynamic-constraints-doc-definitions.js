@@ -7,7 +7,7 @@ function() {
   return {
     myDoc: {
       typeFilter: simpleTypeFilter,
-      channels: { write: 'write' },
+      authorizedRoles: { write: 'write' },
       propertyValidators: {
         dynamicReferenceId: {
           type: 'integer'

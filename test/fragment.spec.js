@@ -2,7 +2,7 @@ const testHelper = require('../src/testing/test-helper');
 
 describe('Document definition fragments:', () => {
   beforeEach(() => {
-    testHelper.initSyncFunction('build/sync-functions/test-fragment-sync-function.js');
+    testHelper.initValidationFunction('build/validation-functions/test-fragment-validation-function.js');
   });
 
   it('can create documents for a document type whose definition was imported with a single-quoted filename', () => {

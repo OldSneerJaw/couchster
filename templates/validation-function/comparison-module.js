@@ -71,7 +71,7 @@ function comparisonModule(utils, buildItemPath, timeModule) {
     var currentItemValue = currentItemEntry.itemValue;
 
     if (!checkItemEquality(currentItemValue, expectedItemValue, validatorType)) {
-      return 'value of item "' + buildItemPath(itemStack) + '" must equal ' + utils.jsonStringify(expectedItemValue);
+      return 'value of item "' + buildItemPath(itemStack) + '" must equal ' + JSON.stringify(expectedItemValue);
     } else {
       return null;
     }

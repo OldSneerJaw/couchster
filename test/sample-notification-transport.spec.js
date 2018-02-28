@@ -3,22 +3,13 @@ const testHelper = require('../src/testing/test-helper');
 const errorFormatter = testHelper.validationErrorFormatter;
 const { expect } = require('chai');
 
-describe('Sample business notification transport doc definition', () => {
+describe('Sample business notification transport doc definition:', () => {
   beforeEach(() => {
-    testHelper.initSyncFunction('build/sync-functions/test-sample-sync-function.js');
+    testHelper.initValidationFunction('build/validation-functions/test-sample-validation-function.js');
   });
 
   const expectedDocType = 'notificationTransport';
   const expectedBasePrivilege = 'NOTIFICATIONS_CONFIG';
-
-  function verifyAuthorizationCustomAction(docId, action) {
-    expect(testHelper.requireAccess.callCount).to.equal(2);
-    expect(testHelper.requireAccess.calls[1].arg).to.equal(`${docId}-${action}`);
-  }
-
-  function verifyNoAuthorizationCustomAction() {
-    expect(testHelper.requireAccess.callCount).to.equal(1);
-  }
 
   it('successfully creates a valid notification transport document', () => {
     const doc = {
@@ -28,7 +19,6 @@ describe('Sample business notification transport doc definition', () => {
     };
 
     sampleSpecHelper.verifyDocumentCreated(expectedBasePrivilege, 82, doc);
-    verifyNoAuthorizationCustomAction();
   });
 
   it('cannot create a notification transport document when the properties are invalid', () => {
@@ -43,7 +33,6 @@ describe('Sample business notification transport doc definition', () => {
       doc,
       expectedDocType,
       [ errorFormatter.requiredValueViolation('type'), errorFormatter.mustNotBeEmptyViolation('recipient') ]);
-    verifyNoAuthorizationCustomAction();
   });
 
   it('successfully replaces a valid notification transport document', () => {
@@ -58,8 +47,7 @@ describe('Sample business notification transport doc definition', () => {
       recipient: 'foo.bar@example.com'
     };
 
-    sampleSpecHelper.verifyDocumentReplaced(expectedBasePrivilege, 38, doc, oldDoc);
-    verifyAuthorizationCustomAction(doc._id, 'replace');
+    testHelper.validationFunction(doc, oldDoc, { name: 'me', roles: [ `38-CHANGE_${expectedBasePrivilege}`, `${doc._id}-replace` ] });
   });
 
   it('cannot replace a notification transport document when the properties are invalid', () => {
@@ -73,24 +61,76 @@ describe('Sample business notification transport doc definition', () => {
       recipient: 'foo.bar@example.com'
     };
 
-    sampleSpecHelper.verifyDocumentNotReplaced(
-      expectedBasePrivilege,
-      73,
-      doc,
-      oldDoc,
+    let validationFuncError = null;
+    expect(() => {
+      try {
+        testHelper.validationFunction(doc, oldDoc, { name: 'me', roles: [ `73-CHANGE_${expectedBasePrivilege}`, `${doc._id}-replace` ] });
+      } catch (ex) {
+        validationFuncError = ex;
+        throw ex;
+      }
+    }).to.throw();
+
+    testHelper.verifyValidationErrors(
       expectedDocType,
-      [ errorFormatter.typeConstraintViolation('type', 'string'), errorFormatter.requiredValueViolation('recipient') ]);
-    verifyAuthorizationCustomAction(doc._id, 'replace');
+      [ errorFormatter.typeConstraintViolation('type', 'string'), errorFormatter.requiredValueViolation('recipient') ],
+      validationFuncError);
+  });
+
+  it('cannot replace a notification transport document when the user fails the custom authorization', () => {
+    const doc = {
+      _id: 'biz.38.notificationTransport.ABC',
+      type: 'email',
+      recipient: 'different.foo.bar@example.com'
+    };
+    const oldDoc = {
+      _id: 'biz.38.notificationTransport.ABC',
+      type: 'email',
+      recipient: 'foo.bar@example.com'
+    };
+
+    verifyCustomAuthorizationFailed(doc, oldDoc, { name: 'me', roles: [ '38-CHANGE_NOTIFICATIONS_CONFIG' ] });
   });
 
   it('successfully deletes a notification transport document', () => {
+    const doc = {
+      _id: 'biz.14.notificationTransport.ABC',
+      _deleted: true
+    };
     const oldDoc = {
       _id: 'biz.14.notificationTransport.ABC',
       type: 'email',
       recipient: 'different.foo.bar@example.com'
     };
 
-    sampleSpecHelper.verifyDocumentDeleted(expectedBasePrivilege, 14, oldDoc);
-    verifyAuthorizationCustomAction(oldDoc._id, 'delete');
+    testHelper.validationFunction(doc, oldDoc, { name: 'me', roles: [ `14-REMOVE_${expectedBasePrivilege}`, `${doc._id}-delete` ] });
   });
+
+  it('cannot delete a notification transport document when the user fails the custom authorization', () => {
+    const doc = {
+      _id: 'biz.38.notificationTransport.ABC',
+      _deleted: true
+    };
+    const oldDoc = {
+      _id: 'biz.14.notificationTransport.ABC',
+      type: 'email',
+      recipient: 'different.foo.bar@example.com'
+    };
+
+    verifyCustomAuthorizationFailed(doc, oldDoc, { name: 'me', roles: [ '38-REMOVE_NOTIFICATIONS_CONFIG' ] });
+  });
+
+  function verifyCustomAuthorizationFailed(doc, oldDoc, userContext) {
+    let validationFuncError = null;
+    expect(() => {
+      try {
+        testHelper.validationFunction(doc, oldDoc, userContext);
+      } catch (ex) {
+        validationFuncError = ex;
+        throw ex;
+      }
+    }).to.throw();
+
+    expect(validationFuncError).to.eql({ forbidden: 'Operation forbidden' });
+  }
 });

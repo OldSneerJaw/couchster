@@ -3,7 +3,7 @@ const errorFormatter = testHelper.validationErrorFormatter;
 
 describe('Date/time validation type', () => {
   beforeEach(() => {
-    testHelper.initSyncFunction('build/sync-functions/test-datetime-sync-function.js');
+    testHelper.initValidationFunction('build/validation-functions/test-datetime-validation-function.js');
   });
 
   describe('format validation', () => {
@@ -222,13 +222,22 @@ describe('Date/time validation type', () => {
 
       testHelper.verifyDocumentNotCreated(doc, 'datetimeDoc', errorFormatter.datetimeFormatInvalid('formatValidationProp'));
     });
+
+    it('rejects a date/time without a colon separator in the time zone component', () => {
+      const doc = {
+        _id: 'datetimeDoc',
+        formatValidationProp: '2016-07-17T15:20:09.348-0700'
+      };
+
+      testHelper.verifyDocumentNotCreated(doc, 'datetimeDoc', errorFormatter.datetimeFormatInvalid('formatValidationProp'));
+    });
   });
 
   describe('inclusive range validation for min and max dates with time and time zone components', () => {
     it('can create a doc with a date/time that is within the minimum and maximum values', () => {
       const doc = {
         _id: 'datetimeDoc',
-        inclusiveRangeValidationAsDatetimesProp: '2016-06-24T08:22:17.123+0230'  // Same date/time as the min and max values, different time zone
+        inclusiveRangeValidationAsDatetimesProp: '2016-06-24T08:22:17.123+02:30'  // Same date/time as the min and max values, different time zone
       };
 
       testHelper.verifyDocumentCreated(doc);
@@ -371,9 +380,9 @@ describe('Date/time validation type', () => {
     });
   });
 
-  describe('exclusive range validation', function() {
-    it('allows a date/time that is within the minimum and maximum values', function() {
-      var doc = {
+  describe('exclusive range validation', () => {
+    it('allows a date/time that is within the minimum and maximum values', () => {
+      const doc = {
         _id: 'datetimeDoc',
         exclusiveRangeValidationAsDatetimesProp: new Date('2018-02-08T12:22:38').toISOString() // Output as UTC
       };
@@ -381,8 +390,8 @@ describe('Date/time validation type', () => {
       testHelper.verifyDocumentCreated(doc);
     });
 
-    it('rejects a date/time that is less than the minimum value', function() {
-      var doc = {
+    it('rejects a date/time that is less than the minimum value', () => {
+      const doc = {
         _id: 'datetimeDoc',
         exclusiveRangeValidationAsDatetimesProp: '2018-02-07'
       };
@@ -393,8 +402,8 @@ describe('Date/time validation type', () => {
         errorFormatter.minimumValueExclusiveViolation('exclusiveRangeValidationAsDatetimesProp', '2018-02-08T12:22:37.9'));
     });
 
-    it('rejects a date/time that is equal to the minimum value', function() {
-      var doc = {
+    it('rejects a date/time that is equal to the minimum value', () => {
+      const doc = {
         _id: 'datetimeDoc',
         exclusiveRangeValidationAsDatetimesProp: new Date('2018-02-08T12:22:37.900').toISOString() // Output as UTC
       };
@@ -407,8 +416,8 @@ describe('Date/time validation type', () => {
         errorFormatter.minimumValueExclusiveViolation('exclusiveRangeValidationAsDatetimesProp', '2018-02-08T12:22:37.9'));
     });
 
-    it('rejects a date/time that is greater than the maximum value', function() {
-      var doc = {
+    it('rejects a date/time that is greater than the maximum value', () => {
+      const doc = {
         _id: 'datetimeDoc',
         exclusiveRangeValidationAsDatetimesProp: '2018-02-08T19:35'
       };
@@ -419,8 +428,8 @@ describe('Date/time validation type', () => {
         errorFormatter.maximumValueExclusiveViolation('exclusiveRangeValidationAsDatetimesProp', '2018-02-08T12:22:38.1'));
     });
 
-    it('rejects a date/time that is equal to the maximum value', function() {
-      var doc = {
+    it('rejects a date/time that is equal to the maximum value', () => {
+      const doc = {
         _id: 'datetimeDoc',
         exclusiveRangeValidationAsDatetimesProp: new Date('2018-02-08T12:22:38.10').toISOString() // Output as UTC
       };
@@ -496,12 +505,12 @@ describe('Date/time validation type', () => {
     it('rejects a datetime that does not match the existing datetime', () => {
       const oldDoc = {
         _id: 'datetimeDoc',
-        immutabilityValidationProp: '1999-12-31T23:59:59.999-0800'
+        immutabilityValidationProp: '1999-12-31T23:59:59.999-08:00'
       };
 
       const doc = {
         _id: 'datetimeDoc',
-        immutabilityValidationProp: '1999-12-31T23:59:59.999-0700'
+        immutabilityValidationProp: '1999-12-31T23:59:59.999-07:00'
       };
 
       testHelper.verifyDocumentNotReplaced(

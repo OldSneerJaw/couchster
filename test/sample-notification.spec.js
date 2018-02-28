@@ -4,42 +4,27 @@ const errorFormatter = testHelper.validationErrorFormatter;
 
 describe('Sample business notification doc definition', () => {
   beforeEach(() => {
-    testHelper.initSyncFunction('build/sync-functions/test-sample-sync-function.js');
+    testHelper.initValidationFunction('build/validation-functions/test-sample-validation-function.js');
   });
 
   const expectedDocType = 'notification';
   const expectedBasePrivilege = 'NOTIFICATIONS';
 
-  function getExpectedAccessAssignments(doc, docId) {
-    return [
-      {
-        expectedChannels: [ `${docId}-VIEW` ],
-        expectedUsers: doc ? doc.users : null,
-        expectedRoles: doc ? doc.groups : null
-      }
-    ];
-  }
-
   function verifyNotificationCreated(businessId, doc) {
-    testHelper.verifyDocumentCreated(
-      doc,
-      sampleSpecHelper.getExpectedAuthorization('notification-add'),
-      getExpectedAccessAssignments(doc, doc._id));
+    testHelper.verifyDocumentCreated(doc, sampleSpecHelper.getExpectedAuthorization('notification-add'));
   }
 
   function verifyNotificationReplaced(businessId, doc, oldDoc) {
     testHelper.verifyDocumentReplaced(
       doc,
       oldDoc,
-      sampleSpecHelper.getExpectedAuthorization([ `${businessId}-CHANGE_${expectedBasePrivilege}` ]),
-      getExpectedAccessAssignments(doc, doc._id));
+      sampleSpecHelper.getExpectedAuthorization([ `${businessId}-CHANGE_${expectedBasePrivilege}` ]));
   }
 
   function verifyNotificationDeleted(businessId, oldDoc) {
     testHelper.verifyDocumentDeleted(
       oldDoc,
-      sampleSpecHelper.getExpectedAuthorization([ `${businessId}-REMOVE_${expectedBasePrivilege}` ]),
-      getExpectedAccessAssignments({ }, oldDoc._id));
+      sampleSpecHelper.getExpectedAuthorization([ `${businessId}-REMOVE_${expectedBasePrivilege}` ]));
   }
 
   function verifyNotificationNotCreated(businessId, doc, expectedErrorMessages) {

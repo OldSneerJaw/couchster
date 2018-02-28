@@ -3,7 +3,7 @@ const errorFormatter = testHelper.validationErrorFormatter;
 
 describe('Required value constraint', () => {
   beforeEach(() => {
-    testHelper.initSyncFunction('build/sync-functions/test-required-sync-function.js');
+    testHelper.initValidationFunction('build/validation-functions/test-required-validation-function.js');
   });
 
   describe('with static validation', () => {
@@ -67,7 +67,7 @@ describe('Required value constraint', () => {
         integerProp: -45,
         floatProp: 5.19,
         booleanProp: true,
-        datetimeProp: '2017-04-10T16:10:39.773-0700',
+        datetimeProp: '2017-04-10T16:10:39.773-07:00',
         dateProp: '2017-04-10',
         enumProp: 2,
         attachmentReferenceProp: 'barfoo.baz',
@@ -127,7 +127,7 @@ describe('Required value constraint', () => {
         integerProp: -45,
         floatProp: 5.19,
         booleanProp: true,
-        datetimeProp: '2017-04-10T16:10:39.773-0700',
+        datetimeProp: '2017-04-10T16:10:39.773-07:00',
         dateProp: '2017-04-10',
         enumProp: 2,
         attachmentReferenceProp: 'barfoo.baz',
@@ -174,7 +174,7 @@ describe('Required value constraint', () => {
         integerProp: -45,
         floatProp: 5.19,
         booleanProp: true,
-        datetimeProp: '2017-04-10T16:10:39.773-0700',
+        datetimeProp: '2017-04-10T16:10:39.773-07:00',
         dateProp: '2017-04-10',
         enumProp: 2,
         attachmentReferenceProp: 'barfoo.baz',
@@ -282,7 +282,7 @@ describe('Required value constraint', () => {
         integerProp: -45,
         floatProp: 5.19,
         booleanProp: true,
-        datetimeProp: '2017-04-10T16:10:39.773-0700',
+        datetimeProp: '2017-04-10T16:10:39.773-07:00',
         dateProp: '2017-04-10',
         enumProp: 2,
         attachmentReferenceProp: 'barfoo.baz',
@@ -344,7 +344,7 @@ describe('Required value constraint', () => {
         integerProp: -45,
         floatProp: 5.19,
         booleanProp: true,
-        datetimeProp: '2017-04-10T16:10:39.773-0700',
+        datetimeProp: '2017-04-10T16:10:39.773-07:00',
         dateProp: '2017-04-10',
         enumProp: 2,
         attachmentReferenceProp: 'barfoo.baz',
@@ -395,7 +395,7 @@ describe('Required value constraint', () => {
         integerProp: -45,
         floatProp: 5.19,
         booleanProp: true,
-        datetimeProp: '2017-04-10T16:10:39.773-0700',
+        datetimeProp: '2017-04-10T16:10:39.773-07:00',
         dateProp: '2017-04-10',
         enumProp: 2,
         attachmentReferenceProp: 'barfoo.baz',

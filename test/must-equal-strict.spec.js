@@ -3,7 +3,7 @@ const errorFormatter = testHelper.validationErrorFormatter;
 
 describe('Strict equality constraint:', () => {
   beforeEach(() => {
-    testHelper.initSyncFunction('build/sync-functions/test-must-equal-strict-sync-function.js');
+    testHelper.initValidationFunction('build/validation-functions/test-must-equal-strict-validation-function.js');
   });
 
   describe('array type with static property validation', () => {

@@ -4,7 +4,7 @@ const makeConstraintSchemaDynamic = require('./dynamic-constraint-schema-maker')
 
 const integerSchema = joi.number().integer();
 const nonEmptyStringSchema = joi.string().min(1);
-const customActionEventSchema = joi.func().maxArity(3); // Function parameters: doc, oldDoc, customActionMetadata
+const customActionEventSchema = joi.func().maxArity(5); // Function parameters: doc, oldDoc, customActionMetadata, userContext, securityInfo
 const authorizationSchema = dynamicConstraintSchema(
   joi.object().min(1).keys(
     {
@@ -13,7 +13,6 @@ const authorizationSchema = dynamicConstraintSchema(
       remove: arrayOrSingleItemSchema(nonEmptyStringSchema),
       write: arrayOrSingleItemSchema(nonEmptyStringSchema)
     }));
-const accessAssignmentEntryPropertySchema = dynamicConstraintSchema(arrayOrSingleItemSchema(nonEmptyStringSchema, 1));
 
 /**
  * The full schema for a single document definition object.
@@ -38,7 +37,7 @@ module.exports = exports = joi.object().options({ convert: false }).keys({
       {
         requireAttachmentReferences: dynamicConstraintSchema(joi.boolean()),
         maximumAttachmentCount: dynamicConstraintSchema(integerSchema.min(1)),
-        maximumIndividualSize: dynamicConstraintSchema(integerSchema.min(1).max(20971520)),
+        maximumIndividualSize: dynamicConstraintSchema(integerSchema.min(1)),
         maximumTotalSize: dynamicConstraintSchema(
           integerSchema.when(
             // This property must be greater or equal to "maximumIndividualSize" if it's defined
@@ -52,58 +51,22 @@ module.exports = exports = joi.object().options({ convert: false }).keys({
         supportedContentTypes: dynamicConstraintSchema(joi.array().min(1).items(nonEmptyStringSchema))
       })),
 
-  channels: dynamicConstraintSchema(
-    joi.object().min(1).keys(
-      {
-        view: arrayOrSingleItemSchema(nonEmptyStringSchema), // The other auth types deliberately omit this permission type
-        add: arrayOrSingleItemSchema(nonEmptyStringSchema),
-        replace: arrayOrSingleItemSchema(nonEmptyStringSchema),
-        remove: arrayOrSingleItemSchema(nonEmptyStringSchema),
-        write: arrayOrSingleItemSchema(nonEmptyStringSchema)
-      })),
   authorizedRoles: authorizationSchema,
   authorizedUsers: authorizationSchema,
-
-  accessAssignments: joi.array().items(
-    joi.object().keys({ type: joi.string().only([ 'channel', 'role', null ]) })
-      // Each access assignment may be either a role assignment
-      .when(
-        joi.object().unknown().keys({ type: joi.string().required().only('role') }),
-        {
-          then: joi.object().keys({
-            type: joi.string(),
-            roles: accessAssignmentEntryPropertySchema.required(),
-            users: accessAssignmentEntryPropertySchema.required()
-          })
-        })
-
-      // ... or a channel assignment
-      .when(
-        joi.object().unknown().keys({ type: joi.string().optional().only([ 'channel', null ]) }),
-        {
-          then: joi.object().keys({
-            type: joi.string(),
-            channels: accessAssignmentEntryPropertySchema.required(),
-            roles: accessAssignmentEntryPropertySchema,
-            users: accessAssignmentEntryPropertySchema
-          }).or('roles', 'users') // At least one of "roles" or "users" must be provided
-        })),
 
   customActions: joi.object().min(1).keys({
     onTypeIdentificationSucceeded: customActionEventSchema,
     onAuthorizationSucceeded: customActionEventSchema,
-    onValidationSucceeded: customActionEventSchema,
-    onAccessAssignmentsSucceeded: customActionEventSchema,
-    onDocumentChannelAssignmentSucceeded: customActionEventSchema
+    onValidationSucceeded: customActionEventSchema
   }),
 
   propertyValidators: dynamicConstraintSchema(
     joi.object().pattern(
-      /^[^_].*$/, // Sync Gateway does not allow top-level document property names to start with an underscore
+      /^[^_].*$/, // CouchDB does not allow top-level document property names to start with an underscore
       propertyValidatorSchema)).required()
 })
-  // At least one of "channels", "authorizedRoles" or "authorizedUsers" must be defined
-  .or('channels', 'authorizedRoles', 'authorizedUsers')
+  // At least one of "authorizedRoles" or "authorizedUsers" must be defined
+  .or('authorizedRoles', 'authorizedUsers')
   // It makes no sense to set "immutable" with either of "cannotReplace" or "cannotDelete"
   .without('immutable', [ 'cannotReplace', 'cannotDelete' ]);
 

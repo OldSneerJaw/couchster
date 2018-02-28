@@ -1,7 +1,7 @@
 {
   initDoc: {
     typeFilter: simpleTypeFilter,
-    channels: { write: 'write' },
+    authorizedRoles: { write: 'write' },
     propertyValidators: {
       testProp: {
         type: 'float',

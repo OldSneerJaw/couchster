@@ -4,7 +4,7 @@ const validator = require('./document-definitions-validator');
 
 describe('Document definitions validator:', () => {
   it('performs validation on the sample document definitions file', () => {
-    const filePath = 'samples/sample-sync-doc-definitions.js';
+    const filePath = 'samples/sample-doc-definitions.js';
     const sampleDocDefinitions = docDefinitionsLoader.load(filePath);
 
     const results = validator.validate(sampleDocDefinitions, filePath);
@@ -20,7 +20,7 @@ describe('Document definitions validator:', () => {
         cannotDelete: true, // Must not be defined if "immutable" is also defined
         attachmentConstraints: (a, b) => b, // "allowAttachments" must also be defined,
         customActions: {
-          onTypeIdentificationSucceeded: (a, b, c, extraParam) => { // Too many parameters
+          onTypeIdentificationSucceeded: (a, b, c, d, e, extraParam) => { // Too many parameters
             return extraParam;
           },
           onAuthorizationSucceeded: 5, // Must be a function
@@ -35,13 +35,13 @@ describe('Document definitions validator:', () => {
 
     expect(results).to.have.members(
       [
-        'myDoc1: "value" must contain at least one of [channels, authorizedRoles, authorizedUsers]',
+        'myDoc1: "value" must contain at least one of [authorizedRoles, authorizedUsers]',
         'myDoc1.typeFilter: "typeFilter" is required',
         'myDoc1.propertyValidators: "propertyValidators" is required',
         'myDoc1.allowUnknownProperties: \"allowUnknownProperties\" must be a boolean',
         'myDoc1.immutable: \"immutable\" conflict with forbidden peer \"cannotDelete\"',
         'myDoc1.allowAttachments: \"allowAttachments\" is required',
-        'myDoc1.customActions.onTypeIdentificationSucceeded: \"onTypeIdentificationSucceeded\" must have an arity lesser or equal to 3',
+        'myDoc1.customActions.onTypeIdentificationSucceeded: \"onTypeIdentificationSucceeded\" must have an arity lesser or equal to 5',
         'myDoc1.customActions.onAuthorizationSucceeded: \"onAuthorizationSucceeded\" must be a Function',
         'myDoc1.customActions.invalidEvent: \"invalidEvent\" is not allowed'
       ]);
@@ -52,7 +52,6 @@ describe('Document definitions validator:', () => {
       return {
         myDoc1: {
           typeFilter: () => { },
-          channels: { }, // Must have at least one permission type
           authorizedRoles: { }, // Must have at least one permission type
           authorizedUsers: { }, // Must have at least one permission type
           immutable: true,
@@ -60,8 +59,8 @@ describe('Document definitions validator:', () => {
           allowAttachments: false, // Must be true since "attachmentConstraints" is defined
           attachmentConstraints: {
             maximumAttachmentCount: 0, // Must be at least 1
-            maximumIndividualSize: 20971521, // Must be no greater than 20971520 (the max Sync Gateway attachment size)
-            maximumTotalSize: 20971520, // Must be greater or equal to "maximumIndividualSize"
+            maximumIndividualSize: -1500, // Must be a positive number
+            maximumTotalSize: -1501, // Must be greater or equal to "maximumIndividualSize"
             supportedExtensions: (doc, oldDoc, extraParam) => { // Has too many params
               return [ extraParam ];
             },
@@ -82,7 +81,7 @@ describe('Document definitions validator:', () => {
               maximumValueExclusive: '19:00', // Must have a positive or negative sign
               mustEqual: 'barfoo' // Must be a valid timezone string
             },
-            _invalidName: { // Sync Gateway does not allow top-level property names to start with underscore
+            _invalidName: { // CouchDB does not allow top-level property names to start with underscore
               type: 'string'
             },
             nestedObject: {
@@ -99,7 +98,7 @@ describe('Document definitions validator:', () => {
                   immutableWhenSet: false, // Must not be defined in conjunction with "immutable"
                   maximumValue: '2018-01-31T17:31:27.283-08:00', // Should not include time and time zone components
                   mustEqualStrict: new Date('1578-11-30'), // Must be a date string for equality
-                  customValidation: (a, b, c, d, extraParam) => { // Too many parameters
+                  customValidation: (a, b, c, d, e, f, extraParam) => { // Too many parameters
                     return extraParam;
                   }
                 },
@@ -209,26 +208,25 @@ describe('Document definitions validator:', () => {
 
     expect(results).to.have.members(
       [
-        'myDoc1.channels: \"channels\" must have at least 1 children',
         'myDoc1.authorizedRoles: \"authorizedRoles\" must have at least 1 children',
         'myDoc1.authorizedUsers: \"authorizedUsers\" must have at least 1 children',
         'myDoc1.immutable: \"immutable\" conflict with forbidden peer \"cannotReplace\"',
         'myDoc1.allowAttachments: \"allowAttachments\" must be one of [true]',
         'myDoc1.attachmentConstraints.maximumAttachmentCount: \"maximumAttachmentCount\" must be larger than or equal to 1',
-        'myDoc1.attachmentConstraints.maximumIndividualSize: \"maximumIndividualSize\" must be less than or equal to 20971520',
-        'myDoc1.attachmentConstraints.maximumTotalSize: \"maximumTotalSize\" must be larger than or equal to 20971521',
+        'myDoc1.attachmentConstraints.maximumIndividualSize: \"maximumIndividualSize\" must be larger than or equal to 1',
+        'myDoc1.attachmentConstraints.maximumTotalSize: \"maximumTotalSize\" must be larger than or equal to -1500',
         'myDoc1.attachmentConstraints.supportedExtensions: "supportedExtensions" must have an arity lesser or equal to 2',
         'myDoc1.attachmentConstraints.supportedContentTypes: \"supportedContentTypes\" must contain at least 1 items',
         'myDoc1.customActions: \"customActions\" must have at least 1 children',
         'myDoc1.propertyValidators.timeProperty.immutable: \"immutable\" must be a boolean',
-        'myDoc1.propertyValidators.timeProperty.minimumValue: \"minimumValue\" with value \"15\" fails to match the required pattern: /^([01][0-9]|2[0-3])(:[0-5][0-9])(:[0-5][0-9](\\.[0-9]{1,3})?)?$/',
-        'myDoc1.propertyValidators.timeProperty.maximumValue: \"maximumValue\" with value \"23:49:52.1234\" fails to match the required pattern: /^([01][0-9]|2[0-3])(:[0-5][0-9])(:[0-5][0-9](\\.[0-9]{1,3})?)?$/',
-        'myDoc1.propertyValidators.timeProperty.mustEqual: \"mustEqual\" with value \"foobar\" fails to match the required pattern: /^([01][0-9]|2[0-3])(:[0-5][0-9])(:[0-5][0-9](\\.[0-9]{1,3})?)?$/',
+        'myDoc1.propertyValidators.timeProperty.minimumValue: \"minimumValue\" with value \"15\" fails to match the required pattern: /^((([01][0-9]|2[0-3])(:[0-5][0-9])(:[0-5][0-9](\\.[0-9]{1,3})?)?)|(24:00(:00(\\.0{1,3})?)?))$/',
+        'myDoc1.propertyValidators.timeProperty.maximumValue: \"maximumValue\" with value \"23:49:52.1234\" fails to match the required pattern: /^((([01][0-9]|2[0-3])(:[0-5][0-9])(:[0-5][0-9](\\.[0-9]{1,3})?)?)|(24:00(:00(\\.0{1,3})?)?))$/',
+        'myDoc1.propertyValidators.timeProperty.mustEqual: \"mustEqual\" with value \"foobar\" fails to match the required pattern: /^((([01][0-9]|2[0-3])(:[0-5][0-9])(:[0-5][0-9](\\.[0-9]{1,3})?)?)|(24:00(:00(\\.0{1,3})?)?))$/',
         'myDoc1.propertyValidators.timeProperty.minimumValue: \"minimumValue\" conflict with forbidden peer \"mustEqual\"',
         'myDoc1.propertyValidators.timeProperty.maximumValue: \"maximumValue\" conflict with forbidden peer \"mustEqual\"',
-        'myDoc1.propertyValidators.timezoneProperty.minimumValueExclusive: \"minimumValueExclusive\" with value \"-15\" fails to match the required pattern: /^(Z|([+-])([01][0-9]|2[0-3]):?([0-5][0-9]))$/',
-        'myDoc1.propertyValidators.timezoneProperty.maximumValueExclusive: \"maximumValueExclusive\" with value \"19:00\" fails to match the required pattern: /^(Z|([+-])([01][0-9]|2[0-3]):?([0-5][0-9]))$/',
-        'myDoc1.propertyValidators.timezoneProperty.mustEqual: \"mustEqual\" with value \"barfoo\" fails to match the required pattern: /^(Z|([+-])([01][0-9]|2[0-3]):?([0-5][0-9]))$/',
+        'myDoc1.propertyValidators.timezoneProperty.minimumValueExclusive: \"minimumValueExclusive\" with value \"-15\" fails to match the required pattern: /^(Z|([+-])([01][0-9]|2[0-3]):([0-5][0-9]))$/',
+        'myDoc1.propertyValidators.timezoneProperty.maximumValueExclusive: \"maximumValueExclusive\" with value \"19:00\" fails to match the required pattern: /^(Z|([+-])([01][0-9]|2[0-3]):([0-5][0-9]))$/',
+        'myDoc1.propertyValidators.timezoneProperty.mustEqual: \"mustEqual\" with value \"barfoo\" fails to match the required pattern: /^(Z|([+-])([01][0-9]|2[0-3]):([0-5][0-9]))$/',
         'myDoc1.propertyValidators.timezoneProperty.minimumValueExclusive: \"minimumValueExclusive\" conflict with forbidden peer \"mustEqual\"',
         'myDoc1.propertyValidators.timezoneProperty.maximumValueExclusive: \"maximumValueExclusive\" conflict with forbidden peer \"mustEqual\"',
         'myDoc1.propertyValidators._invalidName: "_invalidName" is not allowed',
@@ -238,14 +236,14 @@ describe('Document definitions validator:', () => {
         'myDoc1.propertyValidators.nestedObject.propertyValidators.dateProperty.maximumValue: "maximumValue" with value "2018-01-31T17:31:27.283-08:00" fails to match the required pattern: /^([0-9]{4})(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01]))?)?$/',
         'myDoc1.propertyValidators.nestedObject.propertyValidators.dateProperty.maximumValue: \"maximumValue\" conflict with forbidden peer \"mustEqualStrict\"',
         'myDoc1.propertyValidators.nestedObject.propertyValidators.dateProperty.mustEqualStrict: \"mustEqualStrict\" must be a string',
-        'myDoc1.propertyValidators.nestedObject.propertyValidators.dateProperty.customValidation: \"customValidation\" must have an arity lesser or equal to 4',
+        'myDoc1.propertyValidators.nestedObject.propertyValidators.dateProperty.customValidation: \"customValidation\" must have an arity lesser or equal to 6',
         'myDoc1.propertyValidators.nestedObject.propertyValidators.enumProperty.predefinedValues.3: \"predefinedValues\" at position 3 does not match any of the allowed types',
         'myDoc1.propertyValidators.nestedObject.propertyValidators.enumProperty.mustEqual: \"mustEqual\" conflict with forbidden peer \"mustEqualStrict\"',
         'myDoc1.propertyValidators.nestedObject.propertyValidators.enumProperty.mustEqual: \"mustEqual\" must be a string',
         'myDoc1.propertyValidators.nestedObject.propertyValidators.enumProperty.mustEqual: \"mustEqual\" must be a number',
         'myDoc1.propertyValidators.nestedObject.propertyValidators.hashtableProperty.maximumSize: \"maximumSize\" must be larger than or equal to 2',
         'myDoc1.propertyValidators.nestedObject.propertyValidators.hashtableProperty.hashtableKeysValidator.regexPattern: "regexPattern" must be an object',
-        'myDoc1.propertyValidators.nestedObject.propertyValidators.hashtableProperty.hashtableValuesValidator.minimumValue: \"minimumValue\" with value \"Mon, 25 Dec 1995 13:30:00 +0430\" fails to match the required pattern: /^(([0-9]{4})(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01]))?)?)(T([01][0-9]|2[0-3])(:[0-5][0-9])(:[0-5][0-9](\\.[0-9]{1,3})?)?(Z|([\\+-])([01][0-9]|2[0-3]):?([0-5][0-9]))?)?$/',
+        'myDoc1.propertyValidators.nestedObject.propertyValidators.hashtableProperty.hashtableValuesValidator.minimumValue: \"minimumValue\" with value \"Mon, 25 Dec 1995 13:30:00 +0430\" fails to match the required pattern: /^(([0-9]{4})(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01]))?)?)(T((([01][0-9]|2[0-3])(:[0-5][0-9])(:[0-5][0-9](\\.[0-9]{1,3})?)?)|(24:00(:00(\\.0{1,3})?)?))(Z|([+-])([01][0-9]|2[0-3]):([0-5][0-9]))?)?$/',
         'myDoc1.propertyValidators.nestedObject.propertyValidators.hashtableProperty.hashtableValuesValidator.minimumValue: \"minimumValue\" conflict with forbidden peer \"mustEqual\"',
         'myDoc1.propertyValidators.nestedObject.propertyValidators.hashtableProperty.hashtableValuesValidator.maximumValueExclusive: "maximumValueExclusive" conflict with forbidden peer "mustEqual"',
         'myDoc1.propertyValidators.nestedObject.propertyValidators.hashtableProperty.hashtableValuesValidator.mustEqual: \"mustEqual\" must be a string',

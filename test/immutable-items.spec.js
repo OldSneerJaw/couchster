@@ -3,7 +3,7 @@ const errorFormatter = testHelper.validationErrorFormatter;
 
 describe('Immutable item validation parameter', () => {
   beforeEach(() => {
-    testHelper.initSyncFunction('build/sync-functions/test-immutable-items-sync-function.js');
+    testHelper.initValidationFunction('build/validation-functions/test-immutable-items-validation-function.js');
   });
 
   describe('array type with static property validation', () => {

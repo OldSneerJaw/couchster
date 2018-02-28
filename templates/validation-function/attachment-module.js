@@ -27,7 +27,7 @@ function attachmentModule(utils, buildItemPath, resolveDocConstraint, resolveIte
       // Because the addition of an attachment is typically a separate operation from the creation/update of the associated document, we
       // can't guarantee that the attachment is present when the attachment reference property is created/updated for it, so only
       // validate it if it's present. The good news is that, because adding an attachment is a two part operation (create/update the
-      // document and add the attachment), the sync function will be run once for each part, thus ensuring the content is verified once
+      // document and add the attachment), the validation function will be run once for each part, thus ensuring the content is verified once
       // both parts have been synced.
       if (docAttachments && docAttachments[itemValue]) {
         var attachment = docAttachments[itemValue];
@@ -126,7 +126,6 @@ function attachmentModule(utils, buildItemPath, resolveDocConstraint, resolveIte
 
   // A regular expression that matches one of the given file extensions
   function buildSupportedExtensionsRegex(extensions) {
-    // Note that this regex uses double quotes rather than single quotes as a workaround to https://github.com/Kashoo/synctos/issues/116
-    return new RegExp("\\.(" + extensions.join("|") + ")$", "i");
+    return new RegExp('\\.(' + extensions.join('|') + ')$', 'i');
   }
 }

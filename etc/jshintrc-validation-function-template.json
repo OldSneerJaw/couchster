@@ -1,0 +1,14 @@
+{
+  "extends": "../../.jshintrc",
+  "-W025": true,
+  "esversion": 5,
+  "node": false,
+  "unused": false,
+  "varstmt": false,
+  "globals": {
+    "isArray": false,
+    "log": false,
+    "sum": false,
+    "toJSON": false
+  }
+}

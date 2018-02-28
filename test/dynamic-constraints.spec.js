@@ -3,7 +3,7 @@ const errorFormatter = testHelper.validationErrorFormatter;
 
 describe('Dynamic constraints', () => {
   beforeEach(() => {
-    testHelper.initSyncFunction('build/sync-functions/test-dynamic-constraints-sync-function.js');
+    testHelper.initValidationFunction('build/validation-functions/test-dynamic-constraints-validation-function.js');
   });
 
   it('allows a new doc to be created when the property constraints are satisfied', () => {
@@ -32,26 +32,6 @@ describe('Dynamic constraints', () => {
       dynamicReferenceId: 0,
       validationByDocProperty: 'foo-0-bar',
       validationByValueProperty: -35
-    };
-
-    testHelper.verifyDocumentReplaced(doc, oldDoc);
-  });
-
-  it('allows a deleted doc to be replaced when the property constraints are satisfied', () => {
-    const doc = {
-      _id: 'my-doc',
-      type: 'myDoc',
-      dynamicReferenceId: 34,
-      validationByDocProperty: 'foo-34-bar',
-      validationByValueProperty: 7
-    };
-    const oldDoc = {
-      _id: 'my-doc',
-      _deleted: true,
-      type: 'myDoc',
-      dynamicReferenceId: 9,
-      validationByDocProperty: 'foo-9-bar',
-      validationByValueProperty: 500
     };
 
     testHelper.verifyDocumentReplaced(doc, oldDoc);

@@ -10,15 +10,12 @@ function() {
     typeFilter: function(doc, oldDoc) {
       return typeRegex.test(doc._id);
     },
-    channels: function(doc, oldDoc) {
+    authorizedRoles: function(doc, oldDoc) {
       // Only staff/service users can create, replace or delete payment processor settlements to prevent regular users from tampering
       return {
-        view: toSyncChannel(docBusinessId, 'VIEW_PAYMENT_PROCESSOR_SETTLEMENTS'),
         write: 'payment-settlement-write'
       };
     },
-    authorizedRoles: defaultAuthorizedRoles,
-    authorizedUsers: defaultAuthorizedUsers,
     immutable: true,
     propertyValidators: {
       businessId: {
@@ -45,8 +42,7 @@ function() {
         regexPattern: function(doc, oldDoc, value, oldValue) {
           var expectedSettlementId = typeRegexMatchGroups[SETTLEMENT_ID_MATCH_GROUP];
 
-          // Note that this regex uses double quotes rather than single quotes as a workaround to https://github.com/Kashoo/synctos/issues/116
-          return new RegExp("^" + expectedSettlementId + "$");
+          return new RegExp('^' + expectedSettlementId + '$');
         }
       },
       processorId: {
@@ -58,8 +54,7 @@ function() {
         regexPattern: function(doc, oldDoc, value, oldValue) {
           var expectedProcessorId = typeRegexMatchGroups[PROCESSOR_ID_MATCH_GROUP];
 
-          // Note that this regex uses double quotes rather than single quotes as a workaround to https://github.com/Kashoo/synctos/issues/116
-          return new RegExp("^" + expectedProcessorId + "$");
+          return new RegExp('^' + expectedProcessorId + '$');
         }
       },
       capturedAt: {

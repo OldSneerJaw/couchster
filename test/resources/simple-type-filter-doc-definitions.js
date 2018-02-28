@@ -1,6 +1,6 @@
 {
   myExplicitTypeValidatorDoc: {
-    channels: { write: 'write' },
+    authorizedRoles: { write: 'write' },
     typeFilter: simpleTypeFilter,
     propertyValidators: {
       type: {
@@ -9,7 +9,7 @@
     }
   },
   myImplicitTypeValidatorDoc: {
-    channels: { write: 'write' },
+    authorizedRoles: { write: 'write' },
     typeFilter: simpleTypeFilter,
     propertyValidators: { }
   }

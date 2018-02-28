@@ -1,10 +1,7 @@
 {
-  channels: toDefaultSyncChannels(doc, oldDoc, 'INVOICE_PAYMENT_REQUISITIONS'),
-  authorizedRoles: defaultAuthorizedRoles,
-  authorizedUsers: defaultAuthorizedUsers,
+  authorizedRoles: toDefaultDbRoles(doc, oldDoc, 'INVOICE_PAYMENT_REQUISITIONS'),
   typeFilter: function(doc, oldDoc) {
-    // Note that this regex uses double quotes rather than single quotes as a workaround to https://github.com/Kashoo/synctos/issues/116
-    return createBusinessEntityRegex("invoice\\.[A-Za-z0-9_-]+.paymentRequisitions$").test(doc._id);
+    return createBusinessEntityRegex('invoice\\.[A-Za-z0-9_-]+.paymentRequisitions$').test(doc._id);
   },
   propertyValidators: {
     paymentProcessorId: {

@@ -5,8 +5,7 @@ function() {
 
   return {
     generalDoc: {
-      channels: {
-        view: 'view',
+      authorizedRoles: {
         add: 'add',
         replace: [ 'replace', 'update' ],
         remove: [ 'remove', 'delete' ]
