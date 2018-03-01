@@ -67,7 +67,7 @@ In either case, include an entry for each change in `CHANGELOG.md`'s "Unreleased
 
 ### Example document definitions
 
-The project's `samples` directory contains a number of document definitions as examples for end users (originally based on Kashoo's official [document definitions](https://github.com/Kashoo/kashoo-document-definitions)). Configuration elements introduced by new features should also be added as examples to these sample document definitions for illustrative purposes.
+The project's `samples` directory contains a number of document definitions as examples for end users. Configuration elements introduced by new features should also be added as examples to these sample document definitions for illustrative purposes.
 
 ### Backward compatibility
 
