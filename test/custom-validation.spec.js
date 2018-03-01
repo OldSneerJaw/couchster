@@ -1,3 +1,4 @@
+const { expect } = require('chai');
 const testHelper = require('../src/testing/test-helper.js');
 
 describe('Custom validation constraint:', () => {
@@ -50,16 +51,34 @@ describe('Custom validation constraint:', () => {
         itemName: 'baseProp'
       }
     ];
+    const testUserContext = {
+      name: 'me',
+      roles: [ 'write' ]
+    };
+    const testSecurityInfo = {
+      members: { names: [ 'me' ]}
+    };
 
-    testHelper.verifyDocumentNotReplaced(
-      doc,
-      oldDoc,
+    let validationFuncError = null;
+    expect(() => {
+      try {
+        testHelper.validationFunction(doc, oldDoc, testUserContext, testSecurityInfo);
+      } catch (ex) {
+        validationFuncError = ex;
+        throw ex;
+      }
+    }).to.throw();
+
+    testHelper.verifyValidationErrors(
       'customValidationDoc',
       [
         'doc: ' + JSON.stringify(doc),
         'oldDoc: ' + JSON.stringify(oldDoc),
         'currentItemEntry: ' + JSON.stringify(expectedCurrentItemEntry),
-        'validationItemStack: ' + JSON.stringify(expectedValidationItemStack)
-      ]);
+        'validationItemStack: ' + JSON.stringify(expectedValidationItemStack),
+        'userContext: ' + JSON.stringify(testUserContext),
+        'securityInfo: ' + JSON.stringify(testSecurityInfo)
+      ],
+      validationFuncError);
   });
 });
