@@ -328,6 +328,79 @@ describe('Authorization:', () => {
     });
   });
 
+  describe('when whether to allow universal write access is defined statically', () => {
+    it('allows document creation by an authenticated user', () => {
+      const doc = {
+        _id: 'staticUniversalAccessDoc',
+        floatProp: -1.8
+      };
+
+      testHelper.validationFunction(doc, null, { name: 'me' });
+    });
+
+    it('allows document replacement by an authenticated user', () => {
+      const doc = {
+        _id: 'staticUniversalAccessDoc',
+        floatProp: 15.917
+      };
+      const oldDoc = { _id: 'staticUniversalAccessDoc' };
+
+      testHelper.validationFunction(doc, oldDoc, { name: 'me' });
+    });
+
+    it('allows document deletion by an authenticated user', () => {
+      const oldDoc = {
+        _id: 'staticUniversalAccessDoc',
+        floatProp: 0
+      };
+
+      testHelper.validationFunction({ _id: oldDoc._id, _deleted: true }, oldDoc, { name: 'me' });
+    });
+
+    it('rejects document created by an unauthenticated user', () => {
+      const doc = {
+        _id: 'staticUniversalAccessDoc',
+        floatProp: 4.0
+      };
+
+      verifyUnauthorizedError(doc, null);
+    });
+  });
+
+  describe('when whether to allow universal write access is defined dynamically', () => {
+    const testUserContext = { name: 'me', roles: [ '1' ] };
+
+    it('allows document creation by an authenticated user when the configuration option is enabled', () => {
+      const doc = {
+        _id: 'dynamicUniversalAccessDoc',
+        allowAccess: true
+      };
+
+      testHelper.validationFunction(doc, null, testUserContext);
+    });
+
+    it('rejects document creation by an authenticated user when the configuration option is disabled', () => {
+      const doc = {
+        _id: 'dynamicUniversalAccessDoc',
+        allowAccess: false
+      };
+
+      testHelper.verifyAccessDenied(doc, null, testUserContext);
+    });
+
+    it('allows document creation by a DB admin even when the configuration option is disabled', () => {
+      const testSecurityInfo = {
+        admins: { roles: '1' }
+      };
+      const doc = {
+        _id: 'dynamicUniversalAccessDoc',
+        allowAccess: true
+      };
+
+      testHelper.validationFunction(doc, null, testUserContext, testSecurityInfo);
+    });
+  });
+
   function verifyUnauthorizedError(doc, oldDoc) {
     let validationFuncError = null;
     expect(() => {

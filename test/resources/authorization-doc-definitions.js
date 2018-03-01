@@ -103,5 +103,29 @@
         type: 'string'
       }
     }
+  },
+  staticUniversalAccessDoc: {
+    typeFilter: function(doc) {
+      return doc._id === 'staticUniversalAccessDoc';
+    },
+    allowUniversalWriteAccess: true,
+    propertyValidators: {
+      floatProp: {
+        type: 'float'
+      }
+    }
+  },
+  dynamicUniversalAccessDoc: {
+    typeFilter: function(doc) {
+      return doc._id === 'dynamicUniversalAccessDoc';
+    },
+    allowUniversalWriteAccess: function(doc, oldDoc) {
+      return doc.allowAccess;
+    },
+    propertyValidators: {
+      allowAccess: {
+        type: 'boolean'
+      }
+    }
   }
 }

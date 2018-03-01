@@ -17,17 +17,17 @@ function authorizationModule(utils) {
   }
 
   // A document definition may define its authorized roles or users as either a function or an object/hashtable
-  function getAuthorizationMap(doc, oldDoc, authorizationDefinition) {
-    if (typeof authorizationDefinition === 'function') {
-      return authorizationDefinition(doc, oldDoc);
+  function resolveSchemaConstraint(doc, oldDoc, schemaConstraint) {
+    if (typeof schemaConstraint === 'function') {
+      return schemaConstraint(doc, oldDoc);
     } else {
-      return authorizationDefinition;
+      return schemaConstraint;
     }
   }
 
   // Retrieves a list of authorizations (e.g. roles, users) for the current document write operation type (add, replace or remove)
-  function getRequiredAuthorizations(doc, oldDoc, authorizationDefinition) {
-    var authorizationMap = getAuthorizationMap(doc, oldDoc, authorizationDefinition);
+  function resolveRequiredAuthorizations(doc, oldDoc, authorizationDefinition) {
+    var authorizationMap = resolveSchemaConstraint(doc, oldDoc, authorizationDefinition);
 
     if (utils.isValueNullOrUndefined(authorizationMap)) {
       // This document type does not define any authorizations (roles, users) at all
@@ -72,11 +72,15 @@ function authorizationModule(utils) {
       throw { unauthorized: 'Not authenticated' };
     }
 
-    var authorizedRoles = getRequiredAuthorizations(doc, oldDoc, docDefinition.authorizedRoles);
-    var authorizedUsers = getRequiredAuthorizations(doc, oldDoc, docDefinition.authorizedUsers);
+    var authorizedRoles = resolveRequiredAuthorizations(doc, oldDoc, docDefinition.authorizedRoles);
+    var authorizedUsers = resolveRequiredAuthorizations(doc, oldDoc, docDefinition.authorizedUsers);
+    var allowUniversalWriteAccess = resolveSchemaConstraint(doc, oldDoc, docDefinition.allowUniversalWriteAccess);
 
     if (isAdminUser(userContext, securityInfo)) {
       // Database admins have unrestricted access
+      return authorizationSuccessResult(authorizedRoles, authorizedUsers);
+    } else if (allowUniversalWriteAccess) {
+      // The document definition allows any authenticated use to write documents of this type
       return authorizationSuccessResult(authorizedRoles, authorizedUsers);
     } else if (!authorizedRoles && !authorizedUsers) {
       // The document type does not define any authorized roles or users

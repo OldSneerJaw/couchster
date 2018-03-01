@@ -199,7 +199,7 @@ function verifyDocumentAccepted(doc, oldDoc, expectedAuthorization) {
 }
 
 function verifyDocumentCreated(doc, expectedAuthorization) {
-  verifyDocumentAccepted(doc, void 0, expectedAuthorization || defaultWriteRole);
+  verifyDocumentAccepted(doc, null, expectedAuthorization || defaultWriteRole);
 }
 
 function verifyDocumentReplaced(doc, oldDoc, expectedAuthorization) {
@@ -230,7 +230,7 @@ function verifyDocumentRejected(doc, oldDoc, docType, expectedErrorMessages, exp
 }
 
 function verifyDocumentNotCreated(doc, docType, expectedErrorMessages, expectedAuthorization) {
-  verifyDocumentRejected(doc, void 0, docType, expectedErrorMessages, expectedAuthorization || defaultWriteRole);
+  verifyDocumentRejected(doc, null, docType, expectedErrorMessages, expectedAuthorization || defaultWriteRole);
 }
 
 function verifyDocumentNotReplaced(doc, oldDoc, docType, expectedErrorMessages, expectedAuthorization) {

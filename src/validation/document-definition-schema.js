@@ -54,6 +54,24 @@ module.exports = exports = joi.object().options({ convert: false }).keys({
   authorizedRoles: authorizationSchema,
   authorizedUsers: authorizationSchema,
 
+  allowUniversalWriteAccess: joi.any().when(
+    // This property must be false or a function if "authorizedRoles" or "authorizedUsers" is defined
+    'authorizedRoles',
+    {
+      is: joi.any().exist(),
+      then: dynamicConstraintSchema(joi.boolean().only(false)),
+      otherwise: joi.any().when(
+        'authorizedUsers',
+        {
+          is: joi.any().exist(),
+          then: dynamicConstraintSchema(joi.boolean().only(false)),
+
+          // Since neither "authorizedRoles" nor "authorizedUsers" are defined, then unless this property
+          // is a function, its value must be true
+          otherwise: dynamicConstraintSchema(joi.boolean().only(true))
+        })
+    }),
+
   customActions: joi.object().min(1).keys({
     onTypeIdentificationSucceeded: customActionEventSchema,
     onAuthorizationSucceeded: customActionEventSchema,
@@ -65,8 +83,8 @@ module.exports = exports = joi.object().options({ convert: false }).keys({
       /^[^_].*$/, // CouchDB does not allow top-level document property names to start with an underscore
       propertyValidatorSchema)).required()
 })
-  // At least one of "authorizedRoles" or "authorizedUsers" must be defined
-  .or('authorizedRoles', 'authorizedUsers')
+  // At least one of "authorizedRoles", "authorizedUsers" or "allowUniversalWriteAccess" must be defined
+  .or('authorizedRoles', 'authorizedUsers', 'allowUniversalWriteAccess')
   // It makes no sense to set "immutable" with either of "cannotReplace" or "cannotDelete"
   .without('immutable', [ 'cannotReplace', 'cannotDelete' ]);
 
