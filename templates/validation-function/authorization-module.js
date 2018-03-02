@@ -74,13 +74,13 @@ function authorizationModule(utils) {
 
     var authorizedRoles = resolveRequiredAuthorizations(doc, oldDoc, docDefinition.authorizedRoles);
     var authorizedUsers = resolveRequiredAuthorizations(doc, oldDoc, docDefinition.authorizedUsers);
-    var allowUniversalWriteAccess = resolveSchemaConstraint(doc, oldDoc, docDefinition.allowUniversalWriteAccess);
+    var grantAllMembersWriteAccess = resolveSchemaConstraint(doc, oldDoc, docDefinition.grantAllMembersWriteAccess);
 
-    if (isAdminUser(userContext, securityInfo)) {
-      // Database admins have unrestricted access
+    if (grantAllMembersWriteAccess) {
+      // The document definition allows any authenticated DB member to write documents of this type
       return authorizationSuccessResult(authorizedRoles, authorizedUsers);
-    } else if (allowUniversalWriteAccess) {
-      // The document definition allows any authenticated use to write documents of this type
+    } else if (isAdminUser(userContext, securityInfo)) {
+      // Database admins have unrestricted access
       return authorizationSuccessResult(authorizedRoles, authorizedUsers);
     } else if (!authorizedRoles && !authorizedUsers) {
       // The document type does not define any authorized roles or users

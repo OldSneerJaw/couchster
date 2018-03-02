@@ -15,19 +15,15 @@ describe('Document definitions validator:', () => {
   it('performs validation on a document definitions object', () => {
     const fakeDocDefinitions = {
       myDoc1: {
-        allowUniversalWriteAccess: false,
+        grantAllMembersWriteAccess: (a, b, extraParam) => extraParam, // Too many parameters
         allowUnknownProperties: 1, // Must be a boolean
         immutable: true,
         cannotDelete: true, // Must not be defined if "immutable" is also defined
         attachmentConstraints: (a, b) => b, // "allowAttachments" must also be defined,
         customActions: {
-          onTypeIdentificationSucceeded: (a, b, c, d, e, extraParam) => { // Too many parameters
-            return extraParam;
-          },
+          onTypeIdentificationSucceeded: (a, b, c, d, e, extraParam) => extraParam, // Too many parameters
           onAuthorizationSucceeded: 5, // Must be a function
-          invalidEvent: function (a, b, c) { // Unsupported event type
-            return c;
-          }
+          invalidEvent: (a, b, c) => c // Unsupported event type
         }
       }
     };
@@ -36,7 +32,7 @@ describe('Document definitions validator:', () => {
 
     expect(results).to.have.members(
       [
-        'myDoc1.allowUniversalWriteAccess: \"allowUniversalWriteAccess\" must be one of [true]',
+        'myDoc1.grantAllMembersWriteAccess: \"grantAllMembersWriteAccess\" must have an arity lesser or equal to 2',
         'myDoc1.typeFilter: "typeFilter" is required',
         'myDoc1.propertyValidators: "propertyValidators" is required',
         'myDoc1.allowUnknownProperties: \"allowUnknownProperties\" must be a boolean',
@@ -53,9 +49,11 @@ describe('Document definitions validator:', () => {
       return {
         myDoc1: {
           typeFilter: () => { },
-          authorizedRoles: { }, // Must have at least one permission type
+          authorizedRoles: {
+            view: 'view-role' // This permission category is not supported for "authorizedRoles"
+          },
           authorizedUsers: { }, // Must have at least one permission type
-          allowUniversalWriteAccess: true, // Must not be defined with "authorizedRoles" or "authorizedUsers"
+          grantAllMembersWriteAccess: true, // Must not be defined with "authorizedRoles" or "authorizedUsers"
           immutable: true,
           cannotReplace: false, // Must not be defined if "immutable" is also defined
           allowAttachments: false, // Must be true since "attachmentConstraints" is defined
@@ -63,9 +61,7 @@ describe('Document definitions validator:', () => {
             maximumAttachmentCount: 0, // Must be at least 1
             maximumIndividualSize: -1500, // Must be a positive number
             maximumTotalSize: -1501, // Must be greater or equal to "maximumIndividualSize"
-            supportedExtensions: (doc, oldDoc, extraParam) => { // Has too many params
-              return [ extraParam ];
-            },
+            supportedExtensions: (doc, oldDoc, extraParam) => [ extraParam ], // Has too many params
             supportedContentTypes: [ ] // Must have at least one element
           },
           customActions: { }, // Must have at least one property
@@ -100,9 +96,7 @@ describe('Document definitions validator:', () => {
                   immutableWhenSet: false, // Must not be defined in conjunction with "immutable"
                   maximumValue: '2018-01-31T17:31:27.283-08:00', // Should not include time and time zone components
                   mustEqualStrict: new Date('1578-11-30'), // Must be a date string for equality
-                  customValidation: (a, b, c, d, e, f, extraParam) => { // Too many parameters
-                    return extraParam;
-                  }
+                  customValidation: (a, b, c, d, e, f, extraParam) => extraParam // Too many parameters
                 },
                 enumProperty: {
                   type: 'enum',
@@ -136,9 +130,7 @@ describe('Document definitions validator:', () => {
                   arrayElementsValidator: {
                     type: 'object',
                     allowUnknownProperties: true,
-                    required: (doc, oldDoc, value, oldValue) => {
-                      return oldValue === true;
-                    },
+                    required: (doc, oldDoc, value, oldValue) => oldValue === true,
                     propertyValidators: {
                       stringProperty: {
                         type: 'string',
@@ -210,9 +202,9 @@ describe('Document definitions validator:', () => {
 
     expect(results).to.have.members(
       [
-        'myDoc1.authorizedRoles: \"authorizedRoles\" must have at least 1 children',
+        'myDoc1.authorizedRoles.view: \"view\" is not allowed',
         'myDoc1.authorizedUsers: \"authorizedUsers\" must have at least 1 children',
-        'myDoc1.allowUniversalWriteAccess: \"allowUniversalWriteAccess\" must be one of [false]',
+        'myDoc1.grantAllMembersWriteAccess: \"grantAllMembersWriteAccess\" must be one of [false]',
         'myDoc1.immutable: \"immutable\" conflict with forbidden peer \"cannotReplace\"',
         'myDoc1.allowAttachments: \"allowAttachments\" must be one of [true]',
         'myDoc1.attachmentConstraints.maximumAttachmentCount: \"maximumAttachmentCount\" must be larger than or equal to 1',

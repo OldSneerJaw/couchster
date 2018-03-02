@@ -1,4 +1,4 @@
-function () {
+function() {
   function minimumNumericValue(doc, oldDoc, value, oldValue) {
     return doc.dynamicPropertyValuesAllowed ? value - 1 : value + 1;
   }

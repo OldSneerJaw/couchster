@@ -108,7 +108,7 @@
     typeFilter: function(doc) {
       return doc._id === 'staticUniversalAccessDoc';
     },
-    allowUniversalWriteAccess: true,
+    grantAllMembersWriteAccess: true,
     propertyValidators: {
       floatProp: {
         type: 'float'
@@ -119,7 +119,7 @@
     typeFilter: function(doc) {
       return doc._id === 'dynamicUniversalAccessDoc';
     },
-    allowUniversalWriteAccess: function(doc, oldDoc) {
+    grantAllMembersWriteAccess: function(doc, oldDoc) {
       return doc.allowAccess;
     },
     propertyValidators: {
