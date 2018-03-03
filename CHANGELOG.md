@@ -2,7 +2,9 @@
 This project adheres to [Semantic Versioning](http://semver.org/). All notable changes will be documented in this file.
 
 ## [Unreleased]
-- [#2](https://github.com/OldSneerJaw/couchster/issues/2): Option to allow any authenticated user to write revisions for a specific document type
+### Added
+- [#2](https://github.com/OldSneerJaw/couchster/issues/2): Option to allow any database member to write revisions for a specific document type
+- [#4](https://github.com/OldSneerJaw/couchster/issues/4): Allow a document with an unknown type to be deleted by an admin
 
 ## [0.1.0] - 2018-02-28
 Adapted from [synctos](https://github.com/Kashoo/synctos) for use with CouchDB
