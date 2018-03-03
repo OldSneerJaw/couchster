@@ -42,6 +42,21 @@ describe('Functionality that is common to all documents:', () => {
 
       expect(validationFuncError).to.eql({ forbidden: 'Unknown document type' });
     });
+
+    it('allows document deletion by an administrator even if the type is unrecognized', () => {
+      const doc = { _id: 'my-invalid-doc', _deleted: true };
+      const oldDoc = { _id: 'my-invalid-doc' };
+
+      testHelper.validationFunction(doc, oldDoc, { name: 'me', roles: [ '_admin' ] });
+    });
+
+    it('allows a missing document to be "deleted" by an administrator even if the type is unrecognized', () => {
+      const doc = { _id: 'my-invalid-doc', _deleted: true };
+
+      // When deleting a document that does not exist and the document's type cannot be determined, the fallback
+      // behaviour is to allow it to be deleted by an admin
+      testHelper.validationFunction(doc, null, { name: 'me' }, { admins: { names: [ 'me' ] } });
+    });
   });
 
   describe('type validation', () => {

@@ -148,6 +148,7 @@ function authorizationModule(utils) {
   }
 
   return {
-    authorize: authorize
+    authorize: authorize,
+    isAdminUser: isAdminUser
   };
 }

@@ -84,7 +84,13 @@ function(doc, oldDoc, userContext, securityInfo) {
   var theDocType = getDocumentType(doc, oldDoc);
 
   if (isValueNullOrUndefined(theDocType)) {
-    throw { forbidden: 'Unknown document type' };
+    if (doc._deleted && authorizationModule.isAdminUser(userContext, securityInfo)) {
+      // Attempting to delete a document whose type is unknown. This may occur if the document belongs to a type that existed
+      // in a previous version of the document definitions but has since been removed. Only an admin may proceed.
+      return;
+    } else {
+      throw { forbidden: 'Unknown document type' };
+    }
   }
 
   var theDocDefinition = docDefinitions[theDocType];
