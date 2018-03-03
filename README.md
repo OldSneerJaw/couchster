@@ -87,7 +87,7 @@ Or as a custom [script](https://docs.npmjs.com/misc/scripts) in your project's `
 
 If the specified document definitions contain any violations, the utility will exit with a non-zero status code and output a list of the violations to standard error (stderr). Otherwise, if validation was successful, the utility will exit normally and will not output anything.
 
-Refer to the [Testing](#testing) section of the README for information on writing test cases for custom code in document definitions.
+Be aware that the validation utility cannot verify the behaviour of custom functions (e.g. dynamic constraints, custom actions, custom validation functions) in a document definition. However, the [Testing](#testing) section of the README describes how to write test cases for such custom code.
 
 ### Specifications
 
@@ -118,7 +118,7 @@ Each document type is defined as an object with a number of constraint propertie
 
 The following properties include the basics necessary to build a document definition:
 
-* `typeFilter`: (required) A function that is used to identify documents of this type. It accepts as function parameters (1) the new document, (2) the old document that is being replaced (if any) and (3) the name of the current document type. For the sake of convenience, a simple type filter function (`simpleTypeFilter`) is available that attempts to match the document's `type` property value to the document type's name (e.g. if a document definition is named "message", then a candidate document's `type` property value must be "message" to be considered a document of that type); if the document definition does not include an explicit `type` property validator, then, for convenience, the `type` property will be implicitly included in the document definition and validated with the built in `typeIdValidator` (see the validation type's [description](#predefined-validators) for more info). NOTE: In cases where the document is in the process of being deleted, the first parameter's `_deleted` property will be `true`, so be sure to account for such cases. And, if the old document has been deleted or simply does not exist, the second parameter will be `null`.
+* `typeFilter`: (required) A function that is used to identify documents of this type. It accepts as function parameters (1) the new document, (2) the old document that is being replaced (if any) and (3) the name of the current document type. For the sake of convenience, a simple type filter function (`simpleTypeFilter`) is available that attempts to match the document's `type` property value to the document type's name (e.g. if a document definition is named "message", then a candidate document's `type` property value must be "message" to be considered a document of that type); if the document definition does not include an explicit `type` property validator, then, for convenience, the `type` property will be implicitly included in the document definition and validated with the built in `typeIdValidator` (see the validation type's [description](#predefined-validators) for more info). NOTE: In cases where the document is in the process of being deleted, the first parameter's `_deleted` property will be `true` and, if the old document has been deleted or simply does not exist, the second parameter will be `null`.
 
 An example of the simple type filter:
 
