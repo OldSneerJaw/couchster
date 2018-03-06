@@ -194,7 +194,7 @@ function verifyDocumentAccepted(doc, oldDoc, expectedAuthorization) {
   const userContexts = generateAuthorizedUserContexts(expectedAuthorization);
 
   userContexts.forEach((userContext) => {
-    exports.validationFunction(doc, oldDoc, userContext, { });
+    exports.validationFunction(doc, oldDoc || null, userContext, { });
   });
 }
 
@@ -216,7 +216,7 @@ function verifyDocumentRejected(doc, oldDoc, docType, expectedErrorMessages, exp
   userContexts.forEach((userContext) => {
     let validationFuncError = null;
     try {
-      exports.validationFunction(doc, oldDoc, userContext);
+      exports.validationFunction(doc, oldDoc || null, userContext);
     } catch (ex) {
       validationFuncError = ex;
     }
@@ -281,7 +281,7 @@ function verifyValidationErrors(docType, expectedErrorMessages, exception) {
 function verifyAccessDenied(doc, oldDoc, userContext, securityInfo) {
   let validationFuncError = null;
   try {
-    exports.validationFunction(doc, oldDoc, userContext, securityInfo);
+    exports.validationFunction(doc, oldDoc || null, userContext, securityInfo);
   } catch (ex) {
     validationFuncError = ex;
   }
@@ -296,7 +296,7 @@ function verifyAccessDenied(doc, oldDoc, userContext, securityInfo) {
 function verifyUnknownDocumentType(doc, oldDoc) {
   let validationFuncError = null;
   try {
-    exports.validationFunction(doc, oldDoc, { }, { });
+    exports.validationFunction(doc, oldDoc || null, { }, { });
   } catch (ex) {
     validationFuncError = ex;
   }
