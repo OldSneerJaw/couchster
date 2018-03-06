@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/). All notable c
 ## [Unreleased]
 ### Added
 - [#2](https://github.com/OldSneerJaw/couchster/issues/2): Option to allow any database member to write revisions for a specific document type
+- [#3](https://github.com/OldSneerJaw/couchster/issues/3): Option to output a generated validation function as a single-line JSON string
 - [#4](https://github.com/OldSneerJaw/couchster/issues/4): Allow a document with an unknown type to be deleted by an admin
 
 ## [0.1.0] - 2018-02-28

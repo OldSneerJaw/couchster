@@ -65,9 +65,13 @@ Or as a custom [script](https://docs.npmjs.com/misc/scripts) in your project's `
 }
 ```
 
-This will take the sync document definitions that are defined in `/path/to/my-document-definitions.js` and build a new validation function that is output to `/path/to/my-generated-validation-function.js`. The generated validation function contents can then be inserted into a CouchDB [design document](http://docs.couchdb.org/en/latest/ddocs/ddocs.html).
+This will take the document definitions that are defined in `/path/to/my-document-definitions.js` and build a new validation function that is output to `/path/to/my-generated-validation-function.js`. Generated validation functions are compatible with all CouchDB 2.x versions.
 
-Generated validation functions are compatible with all CouchDB 2.x versions.
+Also, for convenience, the validation function can instead be output as a single line string to make it easier to insert it directly as the value of the `validate_doc_update` property in a CouchDB [design document](http://docs.couchdb.org/en/latest/ddocs/ddocs.html). For example:
+
+```
+node_modules/.bin/couchster --single-line /path/to/my-document-definitions.js /path/to/my-generated-validation-function-string.txt
+```
 
 ### Validating
 
@@ -652,9 +656,9 @@ As you can see, the fragments can also reference functions (e.g. `myDocTypeFilte
 
 ### Helper functions
 
-Custom code (e.g. type filters, custom validation functions, custom actions) within document definitions have access to some predefined functions for common operations:
+Custom code (e.g. type filters, custom validation functions, custom actions) within document definitions have access to CouchDB's built in [utility functions](http://docs.couchdb.org/en/latest/query-server/javascript.html). In addition, couchster provides some predefined functions for common operations:
 
-* `isDocumentMissingOrDeleted(candidate)`: Determines whether the given `candidate` document is either missing (i.e. `null` or `undefined`) or deleted (i.e. its `_deleted` property is `true`). Useful in cases where, for example, the old document (i.e. `oldDoc` parameter) is non-existant or deleted and you want to treat both cases as equivalent.
+* `isDocumentMissingOrDeleted(candidate)`: Determines whether the given `candidate` document is either missing (i.e. `null` or `undefined`) or deleted (i.e. its `_deleted` property is `true`). A useful alternative to testing the value of the new document's `_deleted` property or whether the old document is `null`.
 * `isValueNullOrUndefined(value)`: Determines whether the given `value` parameter is either `null` or `undefined`. In many cases, it is useful to treat both states the same.
 
 # Testing

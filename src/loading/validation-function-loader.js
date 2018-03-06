@@ -2,6 +2,8 @@
  * Generates a complete document validation function from the specified document definitions file.
  *
  * @param {string} docDefinitionsFile The path to the document definitions file
+ * @param {Object} formatOptions Controls how the validation function is formatted. Options:
+ *                               - jsonString: Whether to return the result as a JSON-compatible string
  *
  * @returns The full contents of the generated validation function as a string
  */
@@ -13,7 +15,7 @@ const indent = require('../../lib/indent.js/indent.min');
 const docDefinitionsLoader = require('./document-definitions-loader');
 const fileFragmentLoader = require('./file-fragment-loader');
 
-function loadFromFile(docDefinitionsFile) {
+function loadFromFile(docDefinitionsFile, formatOptions) {
   const validationFuncTemplateDir = path.resolve(__dirname, '../../templates/validation-function');
 
   const validationFuncTemplatePath = path.resolve(validationFuncTemplateDir, 'template.js');
@@ -32,10 +34,26 @@ function loadFromFile(docDefinitionsFile) {
   const docDefinitions = docDefinitionsLoader.load(docDefinitionsFile);
 
   // Load the document definitions into the validation function template
-  const validationFunc = validationFuncTemplate.replace('%DOCUMENT_DEFINITIONS%', () => docDefinitions);
+  const rawValidationFuncString = validationFuncTemplate.replace('%DOCUMENT_DEFINITIONS%', () => docDefinitions);
 
+  return formatValidationFunction(rawValidationFuncString, formatOptions || { });
+}
+
+function formatValidationFunction(rawValidationFuncString, formatOptions) {
   // Normalize code block indentation, normalize line endings and then replace blank lines with empty lines
-  return indent.js(validationFunc, { tabString: '  ' })
+  const intermediateFuncString = indent.js(rawValidationFuncString, { tabString: '  ' })
     .replace(/(?:\r\n)|(?:\r)/g, () => '\n')
     .replace(/^\s+$/gm, () => '');
+
+  if (formatOptions.jsonString) {
+    // Escape all escape sequences, backslash characters and line ending characters then wrap the result in quotes to
+    // make it a valid JSON string
+    const formattedFuncString = intermediateFuncString.replace(/\\/g, () => '\\\\')
+      .replace(/"/g, () => '\\"')
+      .replace(/\n/g, () => `\\n`);
+
+    return `"${formattedFuncString}"`;
+  } else {
+    return intermediateFuncString;
+  }
 }
