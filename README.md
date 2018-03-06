@@ -67,10 +67,10 @@ Or as a custom [script](https://docs.npmjs.com/misc/scripts) in your project's `
 
 This will take the document definitions that are defined in `/path/to/my-document-definitions.js` and build a new validation function that is output to `/path/to/my-generated-validation-function.js`. Generated validation functions are compatible with all CouchDB 2.x versions.
 
-Also, for convenience, the validation function can instead be output as a single line string to make it easier to insert it directly as the value of the `validate_doc_update` property in a CouchDB [design document](http://docs.couchdb.org/en/latest/ddocs/ddocs.html). For example:
+Also, for convenience, the validation function can instead be enclosed in a JSON-compatible string to make it easier to insert it directly as the value of the `validate_doc_update` property in a CouchDB [design document](http://docs.couchdb.org/en/latest/ddocs/ddocs.html). For example:
 
 ```
-node_modules/.bin/couchster --single-line /path/to/my-document-definitions.js /path/to/my-generated-validation-function-string.txt
+node_modules/.bin/couchster --json-string /path/to/my-document-definitions.js /path/to/my-generated-validation-function-string.txt
 ```
 
 ### Validating

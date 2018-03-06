@@ -36,7 +36,7 @@ describe('Validation function loader', () => {
     validateLoadSuccess('my\n  \r\nfinal\rsync `func`', null, 'my\n\nfinal\nsync `func`');
   });
 
-  it('should load a validation function as a single-line string', () => {
+  it('should load a validation function as a JSON string', () => {
     validateLoadSuccess('my\n  \r\n"final"\rsync \\func\\', { jsonString: true }, '"my\\n\\n\\"final\\"\\nsync \\\\func\\\\"');
   });
 
