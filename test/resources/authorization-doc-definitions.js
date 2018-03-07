@@ -45,11 +45,19 @@
     typeFilter: function(doc) {
       return doc._id === 'dynamicRolesAndUsersDoc';
     },
-    authorizedRoles: function(doc, oldDoc) {
-      return { write: oldDoc ? oldDoc.roles : doc.roles };
+    authorizedRoles: function(doc, oldDoc, dbName) {
+      var rolesList = oldDoc ? oldDoc.roles : doc.roles;
+
+      return {
+        write: rolesList.map(function(role) { return dbName + '-' + role; })
+      };
     },
-    authorizedUsers: function(doc, oldDoc) {
-      return { write: oldDoc ? oldDoc.users : doc.users };
+    authorizedUsers: function(doc, oldDoc, dbName) {
+      var usersList = oldDoc ? oldDoc.users : doc.users;
+
+      return {
+        write: usersList.map(function(username) { return dbName + '-' + username; })
+      };
     },
     propertyValidators: {
       stringProp: {
@@ -119,8 +127,14 @@
     typeFilter: function(doc) {
       return doc._id === 'dynamicUniversalAccessDoc';
     },
-    grantAllMembersWriteAccess: function(doc, oldDoc) {
-      return doc.allowAccess;
+    grantAllMembersWriteAccess: function(doc, oldDoc, dbName) {
+      if (dbName === 'all-members-write-access-db') {
+        return true;
+      } else if (oldDoc) {
+        return oldDoc.allowAccess;
+      } else {
+        return doc.allowAccess;
+      }
     },
     propertyValidators: {
       allowAccess: {

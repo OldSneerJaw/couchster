@@ -15,7 +15,7 @@ describe('Document definitions validator:', () => {
   it('performs validation on a document definitions object', () => {
     const fakeDocDefinitions = {
       myDoc1: {
-        grantAllMembersWriteAccess: (a, b, extraParam) => extraParam, // Too many parameters
+        grantAllMembersWriteAccess: (a, b, c, extraParam) => extraParam, // Too many parameters
         allowUnknownProperties: 1, // Must be a boolean
         immutable: true,
         cannotDelete: true, // Must not be defined if "immutable" is also defined
@@ -32,7 +32,7 @@ describe('Document definitions validator:', () => {
 
     expect(results).to.have.members(
       [
-        'myDoc1.grantAllMembersWriteAccess: \"grantAllMembersWriteAccess\" must have an arity lesser or equal to 2',
+        'myDoc1.grantAllMembersWriteAccess: \"grantAllMembersWriteAccess\" must have an arity lesser or equal to 3',
         'myDoc1.typeFilter: "typeFilter" is required',
         'myDoc1.propertyValidators: "propertyValidators" is required',
         'myDoc1.allowUnknownProperties: \"allowUnknownProperties\" must be a boolean',
