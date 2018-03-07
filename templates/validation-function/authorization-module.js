@@ -69,7 +69,7 @@ function authorizationModule(utils) {
   // Ensures the user is authorized to create/replace/delete this document
   function authorize(doc, oldDoc, userContext, securityInfo, docDefinition) {
     if (utils.isValueNullOrUndefined(userContext)) {
-      throw { unauthorized: 'Not authenticated' };
+      throw unauthorizedResult();
     }
 
     var authorizedRoles = resolveRequiredAuthorizations(doc, oldDoc, docDefinition.authorizedRoles);
@@ -117,6 +117,10 @@ function authorizationModule(utils) {
   }
 
   function isAdminUser(userContext, securityInfo) {
+    if (utils.isValueNullOrUndefined(userContext)) {
+      throw unauthorizedResult();
+    }
+
     var dbAdminUsers = (securityInfo && securityInfo.admins && securityInfo.admins.names) ? securityInfo.admins.names : [ ];
     if (dbAdminUsers.indexOf(userContext.name) >= 0) {
       return true;
@@ -141,6 +145,10 @@ function authorizationModule(utils) {
       roles: authorizedRoles,
       users: authorizedUsers
     };
+  }
+
+  function unauthorizedResult() {
+    return { unauthorized: 'Not authenticated' };
   }
 
   function forbiddenResult() {

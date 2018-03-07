@@ -11,36 +11,21 @@ describe('Functionality that is common to all documents:', () => {
     it('rejects document creation with an unrecognized doc type', () => {
       const doc = { _id: 'my-invalid-doc' };
 
-      let validationFuncError = null;
-      expect(() => {
-        try {
-          testHelper.validationFunction(doc, null, { });
-        } catch (ex) {
-          validationFuncError = ex;
-
-          throw ex;
-        }
-      }).to.throw();
-
-      expect(validationFuncError).to.eql({ forbidden: 'Unknown document type' });
+      testHelper.verifyUnknownDocumentType(doc, null);
     });
 
     it('rejects document replacement with an unrecognized doc type', () => {
       const doc = { _id: 'my-invalid-doc', foo: 'bar' };
       const oldDoc = { _id: 'my-invalid-doc' };
 
-      let validationFuncError = null;
-      expect(() => {
-        try {
-          testHelper.validationFunction(doc, oldDoc, { });
-        } catch (ex) {
-          validationFuncError = ex;
+      testHelper.verifyUnknownDocumentType(doc, oldDoc);
+    });
 
-          throw ex;
-        }
-      }).to.throw();
+    it('rejects document deletion with an unrecognized doc type', () => {
+      const doc = { _id: 'my-invalid-doc', _deleted: true };
+      const oldDoc = { _id: 'my-invalid-doc' };
 
-      expect(validationFuncError).to.eql({ forbidden: 'Unknown document type' });
+      testHelper.verifyUnknownDocumentType(doc, oldDoc);
     });
 
     it('allows document deletion by an administrator even if the type is unrecognized', () => {
@@ -56,6 +41,24 @@ describe('Functionality that is common to all documents:', () => {
       // When deleting a document that does not exist and the document's type cannot be determined, the fallback
       // behaviour is to allow it to be deleted by an admin
       testHelper.validationFunction(doc, null, { name: 'me' }, { admins: { names: [ 'me' ] } });
+    });
+
+    it('rejects deletion of an unrecognized doc type by an unauthenticated user', () => {
+      const doc = { _id: 'my-invalid-doc', _deleted: true };
+      const oldDoc = { _id: 'my-invalid-doc' };
+
+      let validationFuncError = null;
+      expect(() => {
+        try {
+          testHelper.validationFunction(doc, oldDoc, null);
+        } catch (ex) {
+          validationFuncError = ex;
+
+          throw ex;
+        }
+      }).to.throw();
+
+      expect(validationFuncError).to.eql({ unauthorized: 'Not authenticated' });
     });
   });
 
