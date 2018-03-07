@@ -29,6 +29,7 @@ exports.validationErrorFormatter = require('./validation-error-formatter');
  *                                                  available:
  *                                                  - expectedRoles: an optional list of roles that are authorized
  *                                                  - expectedUsers: an optional list of users that are authorized
+ *                                                  - expectedDbName: the optional name of the database
  */
 exports.verifyDocumentAccepted = verifyDocumentAccepted;
 
@@ -41,6 +42,7 @@ exports.verifyDocumentAccepted = verifyDocumentAccepted;
  *                                                    "write" is assumed. If it is an object, the following fields are available:
  *                                                    - expectedRoles: an optional list of roles that are authorized
  *                                                    - expectedUsers: an optional list of users that are authorized
+ *                                                    - expectedDbName: the optional name of the database
  */
 exports.verifyDocumentCreated = verifyDocumentCreated;
 
@@ -54,6 +56,7 @@ exports.verifyDocumentCreated = verifyDocumentCreated;
  *                                                    "write" is assumed. If it is an object, the following fields are available:
  *                                                    - expectedRoles: an optional list of roles that are authorized
  *                                                    - expectedUsers: an optional list of users that are authorized
+ *                                                    - expectedDbName: the optional name of the database
  */
 exports.verifyDocumentReplaced = verifyDocumentReplaced;
 
@@ -66,6 +69,7 @@ exports.verifyDocumentReplaced = verifyDocumentReplaced;
  *                                                    "write" is assumed. If it is an object, the following fields are available:
  *                                                    - expectedRoles: an optional list of roles that are authorized
  *                                                    - expectedUsers: an optional list of users that are authorized
+ *                                                    - expectedDbName: the optional name of the database
  */
 exports.verifyDocumentDeleted = verifyDocumentDeleted;
 
@@ -83,6 +87,7 @@ exports.verifyDocumentDeleted = verifyDocumentDeleted;
  *                                                  available:
  *                                                  - expectedRoles: an optional list of roles that are authorized
  *                                                  - expectedUsers: an optional list of users that are authorized
+ *                                                  - expectedDbName: the optional name of the database
  */
 exports.verifyDocumentRejected = verifyDocumentRejected;
 
@@ -98,6 +103,7 @@ exports.verifyDocumentRejected = verifyDocumentRejected;
  *                                                    "write" is assumed. If it is an object, the following fields are available:
  *                                                    - expectedRoles: an optional list of roles that are authorized
  *                                                    - expectedUsers: an optional list of users that are authorized
+ *                                                    - expectedDbName: the optional name of the database
  */
 exports.verifyDocumentNotCreated = verifyDocumentNotCreated;
 
@@ -114,6 +120,7 @@ exports.verifyDocumentNotCreated = verifyDocumentNotCreated;
  *                                                    "write" is assumed. If it is an object, the following fields are available:
  *                                                    - expectedRoles: an optional list of roles that are authorized
  *                                                    - expectedUsers: an optional list of users that are authorized
+ *                                                    - expectedDbName: the optional name of the database
  */
 exports.verifyDocumentNotReplaced = verifyDocumentNotReplaced;
 
@@ -129,6 +136,7 @@ exports.verifyDocumentNotReplaced = verifyDocumentNotReplaced;
  *                                                    "write" is assumed. If it is an object, the following fields are available:
  *                                                    - expectedRoles: an optional list of roles that are authorized
  *                                                    - expectedUsers: an optional list of users that are authorized
+ *                                                    - expectedDbName: the optional name of the database
  */
 exports.verifyDocumentNotDeleted = verifyDocumentNotDeleted;
 
@@ -314,7 +322,7 @@ function verifyUnknownDocumentType(doc, oldDoc) {
 function generateAuthorizedUserContexts(expectedAuthorization) {
   const users = convertToUserContexts(expectedAuthorization);
 
-  return (users.length > 0) ? users : [ { name: '' } ];
+  return (users.length > 0) ? users : [ { db: '', name: '' } ];
 }
 
 function convertToUserContexts(expectedAuthorization) {
@@ -328,15 +336,20 @@ function convertToUserContexts(expectedAuthorization) {
     const expectedRoles = normalizeList(expectedAuthorization.expectedRoles);
     const expectedUsers = normalizeList(expectedAuthorization.expectedUsers);
 
-    const usersByRole = expectedRoles.map(expectedRole => createUserContextFromRole(expectedRole));
-    const usersByUsername = expectedUsers.map(expectedUsername => ({ name: expectedUsername }));
+    const usersByRole = expectedRoles.map(expectedRole =>
+      createUserContextFromRole(expectedRole, expectedAuthorization.expectedDbName));
+    const usersByUsername = expectedUsers.map(expectedUsername => ({
+      db: expectedAuthorization.expectedDbName || '',
+      name: expectedUsername
+    }));
 
     return [ ...usersByRole, ...usersByUsername ];
   }
 }
 
-function createUserContextFromRole(expectedRole) {
+function createUserContextFromRole(expectedRole, dbName) {
   return {
+    db: dbName || '',
     name: `user-from-role:${expectedRole}`,
     roles: [ expectedRole ]
   };

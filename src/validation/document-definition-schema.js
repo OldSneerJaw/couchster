@@ -5,7 +5,7 @@ const makeConstraintSchemaDynamic = require('./dynamic-constraint-schema-maker')
 const integerSchema = joi.number().integer();
 const nonEmptyStringSchema = joi.string().min(1);
 const customActionEventSchema = joi.func().maxArity(5); // Function parameters: doc, oldDoc, customActionMetadata, userContext, securityInfo
-const authorizationSchema = dynamicConstraintSchema(
+const authorizationSchema = dynamicAuthorizationSchema(
   joi.object().min(1).keys(
     {
       add: arrayOrSingleItemSchema(nonEmptyStringSchema),
@@ -59,13 +59,13 @@ module.exports = exports = joi.object().options({ convert: false }).keys({
     'authorizedRoles',
     {
       is: joi.object().unknown().exist(),
-      then: dynamicConstraintSchema(joi.boolean().only(false)),
+      then: dynamicAuthorizationSchema(joi.boolean().only(false)),
       otherwise: joi.any().when(
         'authorizedUsers',
         {
           is: joi.object().unknown().exist(),
-          then: dynamicConstraintSchema(joi.boolean().only(false)),
-          otherwise: dynamicConstraintSchema(joi.boolean())
+          then: dynamicAuthorizationSchema(joi.boolean().only(false)),
+          otherwise: dynamicAuthorizationSchema(joi.boolean())
         })
     }),
 
@@ -92,6 +92,13 @@ function arrayOrSingleItemSchema(singleItemSchema, minimumLength) {
       then: joi.array().min(minimumLength || 0).items(singleItemSchema),
       otherwise: singleItemSchema
     });
+}
+
+// Generates a schema that can be used for top-level authorization properties (e.g. "authorizedRoles", "authorizedUsers",
+// "grantAllMembersWriteAccess")
+function dynamicAuthorizationSchema(wrappedSchema) {
+  // The function schema this creates will support no more than three parameters (doc, oldDoc, dbName)
+  return makeConstraintSchemaDynamic(wrappedSchema, 3);
 }
 
 // Generates a schema that can be used for top-level document definition property constraints
