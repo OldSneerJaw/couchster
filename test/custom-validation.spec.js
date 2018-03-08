@@ -1,9 +1,11 @@
 const { expect } = require('chai');
-const testHelper = require('../src/testing/test-helper.js');
+const testFixtureMaker = require('../src/testing/test-fixture-maker.js');
 
 describe('Custom validation constraint:', () => {
+  let testFixture;
+
   beforeEach(() => {
-    testHelper.initValidationFunction('build/validation-functions/test-custom-validation-validation-function.js');
+    testFixture = testFixtureMaker.initFromValidationFunction('build/validation-functions/test-custom-validation-validation-function.js');
   });
 
   it('allows a document if custom validation succeeds', () => {
@@ -16,7 +18,7 @@ describe('Custom validation constraint:', () => {
       }
     };
 
-    testHelper.verifyDocumentCreated(doc);
+    testFixture.verifyDocumentCreated(doc);
   });
 
   it('blocks a document if custom validation fails', () => {
@@ -62,14 +64,14 @@ describe('Custom validation constraint:', () => {
     let validationFuncError = null;
     expect(() => {
       try {
-        testHelper.validationFunction(doc, oldDoc, testUserContext, testSecurityInfo);
+        testFixture.validationFunction(doc, oldDoc, testUserContext, testSecurityInfo);
       } catch (ex) {
         validationFuncError = ex;
         throw ex;
       }
     }).to.throw();
 
-    testHelper.verifyValidationErrors(
+    testFixture.verifyValidationErrors(
       'customValidationDoc',
       [
         'doc: ' + JSON.stringify(doc),

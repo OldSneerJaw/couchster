@@ -1,6 +1,6 @@
-const testHelper = require('../src/testing/test-helper');
-const errorFormatter = testHelper.validationErrorFormatter;
 const { expect } = require('chai');
+const testFixtureMaker = require('../src/testing/test-fixture-maker');
+const errorFormatter = require('../src/testing/validation-error-formatter');
 
 describe('Custom actions:', () => {
   const expectedAuthorization = {
@@ -8,8 +8,10 @@ describe('Custom actions:', () => {
     expectedUsers: [ 'write-user' ]
   };
 
+  let testFixture;
+
   beforeEach(() => {
-    testHelper.initValidationFunction('build/validation-functions/test-custom-actions-validation-function.js');
+    testFixture = testFixtureMaker.initFromValidationFunction('build/validation-functions/test-custom-actions-validation-function.js');
   });
 
   describe('the onTypeIdentificationSucceeded event', () => {
@@ -36,7 +38,7 @@ describe('Custom actions:', () => {
       let validationFuncError = null;
       expect(() => {
         try {
-          testHelper.validationFunction(doc, null, { });
+          testFixture.validationFunction(doc, null, { });
         } catch (ex) {
           validationFuncError = ex;
 
@@ -44,7 +46,7 @@ describe('Custom actions:', () => {
         }
       }).to.throw();
 
-      testHelper.verifyValidationErrors(unknownDocType, errorFormatter.unknownDocumentType(), validationFuncError);
+      testFixture.verifyValidationErrors(unknownDocType, errorFormatter.unknownDocumentType(), validationFuncError);
     });
   });
 
@@ -66,7 +68,7 @@ describe('Custom actions:', () => {
     });
 
     it('does not execute a custom action if authorization was denied', () => {
-      testHelper.verifyAccessDenied(doc, null, { name: 'me' });
+      testFixture.verifyAccessDenied(doc, null, { name: 'me' });
     });
   });
 
@@ -93,55 +95,55 @@ describe('Custom actions:', () => {
         unsupportedProperty: 'foobar'
       };
 
-      testHelper.verifyDocumentNotCreated(doc, docType, errorFormatter.unsupportedProperty('unsupportedProperty'), expectedAuthorization);
+      testFixture.verifyDocumentNotCreated(doc, docType, errorFormatter.unsupportedProperty('unsupportedProperty'), expectedAuthorization);
     });
   });
-});
 
-function verifyCustomActionExecuted(doc, oldDoc, docType, expectedActionType) {
-  const userContext = { name: 'me', roles: [ 'write-role' ] };
-  const securityInfo = {
-    members: { names: 'me' }
-  };
-  let validationFuncError = null;
-  expect(() => {
-    try {
-      testHelper.validationFunction(doc, oldDoc, userContext, securityInfo);
-    } catch (ex) {
-      validationFuncError = ex;
-      throw ex;
-    }
-  }).to.throw();
+  function verifyCustomActionExecuted(doc, oldDoc, docType, expectedActionType) {
+    const userContext = { name: 'me', roles: [ 'write-role' ] };
+    const securityInfo = {
+      members: { names: 'me' }
+    };
+    let validationFuncError = null;
+    expect(() => {
+      try {
+        testFixture.validationFunction(doc, oldDoc, userContext, securityInfo);
+      } catch (ex) {
+        validationFuncError = ex;
+        throw ex;
+      }
+    }).to.throw();
 
-  expect(validationFuncError.doc).to.eql(doc);
-  expect(validationFuncError.oldDoc).to.eql(oldDoc);
-  expect(validationFuncError.userContext).to.eql(userContext);
-  expect(validationFuncError.securityInfo).to.eql(securityInfo);
-  expect(validationFuncError.actionType).to.eql(expectedActionType);
+    expect(validationFuncError.doc).to.eql(doc);
+    expect(validationFuncError.oldDoc).to.eql(oldDoc);
+    expect(validationFuncError.userContext).to.eql(userContext);
+    expect(validationFuncError.securityInfo).to.eql(securityInfo);
+    expect(validationFuncError.actionType).to.eql(expectedActionType);
 
-  verifyCustomActionMetadata(validationFuncError.customActionMetadata, docType, expectedActionType);
-}
-
-function verifyCustomActionMetadata(actualMetadata, docType, expectedActionType) {
-  if (expectedActionType === 'onTypeIdentificationSucceeded') {
-    verifyTypeMetadata(actualMetadata, docType);
-  } else if (expectedActionType === 'onAuthorizationSucceeded' || expectedActionType === 'onValidationSucceeded') {
-    verifyTypeMetadata(actualMetadata, docType);
-    verifyAuthorizationMetadata(actualMetadata);
-  } else {
-    expect.fail(null, null, `Unrecognized custom action type: ${expectedActionType}`);
+    verifyCustomActionMetadata(validationFuncError.customActionMetadata, docType, expectedActionType);
   }
-}
 
-function verifyTypeMetadata(actualMetadata, docType) {
-  expect(actualMetadata.documentTypeId).to.equal(docType);
-  expect(actualMetadata.documentDefinition.typeFilter({ _id: docType })).to.equal(true);
-}
+  function verifyCustomActionMetadata(actualMetadata, docType, expectedActionType) {
+    if (expectedActionType === 'onTypeIdentificationSucceeded') {
+      verifyTypeMetadata(actualMetadata, docType);
+    } else if (expectedActionType === 'onAuthorizationSucceeded' || expectedActionType === 'onValidationSucceeded') {
+      verifyTypeMetadata(actualMetadata, docType);
+      verifyAuthorizationMetadata(actualMetadata);
+    } else {
+      expect.fail(null, null, `Unrecognized custom action type: ${expectedActionType}`);
+    }
+  }
 
-function verifyAuthorizationMetadata(actualMetadata) {
-  const expectedAuthMetadata = {
-    roles: [ 'write-role' ],
-    users: [ 'write-user' ]
-  };
-  expect(actualMetadata.authorization).to.eql(expectedAuthMetadata);
-}
+  function verifyTypeMetadata(actualMetadata, docType) {
+    expect(actualMetadata.documentTypeId).to.equal(docType);
+    expect(actualMetadata.documentDefinition.typeFilter({ _id: docType })).to.equal(true);
+  }
+
+  function verifyAuthorizationMetadata(actualMetadata) {
+    const expectedAuthMetadata = {
+      roles: [ 'write-role' ],
+      users: [ 'write-user' ]
+    };
+    expect(actualMetadata.authorization).to.eql(expectedAuthMetadata);
+  }
+});

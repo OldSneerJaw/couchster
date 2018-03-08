@@ -11,9 +11,9 @@ exports.documentDefinitionsValidator = require('./validation/document-definition
 exports.validationFunctionLoader = require('./loading/validation-function-loader');
 
 /**
- * The test-helper module. Provides a number of conveniences to test the behaviour of document definitions.
+ * The test-fixture-maker module. Provides a number of conveniences to test the behaviour of document definitions.
  */
-exports.testHelper = require('./testing/test-helper');
+exports.testFixtureMaker = require('./testing/test-fixture-maker');
 
 /**
  * The validation-error-formatter module. Formats document validation error messages for use in document definition tests.

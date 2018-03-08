@@ -1,10 +1,11 @@
 const { expect } = require('chai');
-const testHelper = require('../src/testing/test-helper');
+const testFixtureMaker = require('../src/testing/test-fixture-maker');
 
-describe('Test helper module initialization', () => {
+describe('Test fixture maker module initialization', () => {
   describe('when initialized from a generated validation function file', () => {
     it('loads the validation function successfully for a valid path', () => {
-      testHelper.initValidationFunction('build/validation-functions/test-init-validation-function.js');
+      const testFixture =
+        testFixtureMaker.initFromValidationFunction('build/validation-functions/test-init-validation-function.js');
 
       const doc = {
         _id: 'foobar',
@@ -12,14 +13,14 @@ describe('Test helper module initialization', () => {
         testProp: 174.6
       };
 
-      testHelper.verifyDocumentCreated(doc);
+      testFixture.verifyDocumentCreated(doc);
     });
 
     it('fails to load the validation function for a file that does not exist', () => {
       let validationFuncError = null;
       expect(() => {
         try {
-          testHelper.initValidationFunction('build/validation-functions/test-nonexistant-validation-function.js');
+          testFixtureMaker.initFromValidationFunction('build/validation-functions/test-nonexistant-validation-function.js');
         } catch (ex) {
           validationFuncError = ex;
 
@@ -33,7 +34,7 @@ describe('Test helper module initialization', () => {
 
   describe('when initialized from a document definitions file', () => {
     it('loads the validation function successfully for a valid path', () => {
-      testHelper.initDocumentDefinitions('test/resources/init-doc-definitions.js');
+      const testFixture = testFixtureMaker.initFromDocumentDefinitions('test/resources/init-doc-definitions.js');
 
       const doc = {
         _id: 'barfoo',
@@ -41,14 +42,14 @@ describe('Test helper module initialization', () => {
         testProp: -97.99
       };
 
-      testHelper.verifyDocumentCreated(doc);
+      testFixture.verifyDocumentCreated(doc);
     });
 
     it('fails to load the validation function for a file that does not exist', () => {
       let validationFuncError = null;
       expect(() => {
         try {
-          testHelper.initDocumentDefinitions('test/resources/nonexistant-doc-definitions.js');
+          testFixtureMaker.initFromDocumentDefinitions('test/resources/nonexistant-doc-definitions.js');
         } catch (ex) {
           validationFuncError = ex;
 

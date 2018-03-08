@@ -1,10 +1,15 @@
-const sampleSpecHelper = require('./helpers/sample-spec-helper');
-const testHelper = require('../src/testing/test-helper');
-const errorFormatter = testHelper.validationErrorFormatter;
+const sampleSpecHelperFactory = require('./helpers/sample-spec-helper-factory');
+const testFixtureMaker = require('../src/testing/test-fixture-maker');
 
 describe('Sample payment requisitions reference doc definition', () => {
+  let testFixture;
+  let errorFormatter;
+  let sampleSpecHelper;
+
   beforeEach(() => {
-    testHelper.initValidationFunction('build/validation-functions/test-sample-validation-function.js');
+    testFixture = testFixtureMaker.initFromValidationFunction('build/validation-functions/test-sample-validation-function.js');
+    errorFormatter = testFixture.validationErrorFormatter;
+    sampleSpecHelper = sampleSpecHelperFactory.init(testFixture);
   });
 
   const expectedDocType = 'paymentRequisitionsReference';

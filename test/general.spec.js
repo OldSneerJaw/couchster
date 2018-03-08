@@ -1,38 +1,40 @@
 const { expect } = require('chai');
-const testHelper = require('../src/testing/test-helper');
-const errorFormatter = testHelper.validationErrorFormatter;
+const testFixtureMaker = require('../src/testing/test-fixture-maker');
+const errorFormatter = require('../src/testing/validation-error-formatter');
 
 describe('Functionality that is common to all documents:', () => {
+  let testFixture;
+
   beforeEach(() => {
-    testHelper.initValidationFunction('build/validation-functions/test-general-validation-function.js');
+    testFixture = testFixtureMaker.initFromValidationFunction('build/validation-functions/test-general-validation-function.js');
   });
 
   describe('the document type identifier', () => {
     it('rejects document creation with an unrecognized doc type', () => {
       const doc = { _id: 'my-invalid-doc' };
 
-      testHelper.verifyUnknownDocumentType(doc, null);
+      testFixture.verifyUnknownDocumentType(doc, null);
     });
 
     it('rejects document replacement with an unrecognized doc type', () => {
       const doc = { _id: 'my-invalid-doc', foo: 'bar' };
       const oldDoc = { _id: 'my-invalid-doc' };
 
-      testHelper.verifyUnknownDocumentType(doc, oldDoc);
+      testFixture.verifyUnknownDocumentType(doc, oldDoc);
     });
 
     it('rejects document deletion with an unrecognized doc type', () => {
       const doc = { _id: 'my-invalid-doc', _deleted: true };
       const oldDoc = { _id: 'my-invalid-doc' };
 
-      testHelper.verifyUnknownDocumentType(doc, oldDoc);
+      testFixture.verifyUnknownDocumentType(doc, oldDoc);
     });
 
     it('allows document deletion by an administrator even if the type is unrecognized', () => {
       const doc = { _id: 'my-invalid-doc', _deleted: true };
       const oldDoc = { _id: 'my-invalid-doc' };
 
-      testHelper.validationFunction(doc, oldDoc, { name: 'me', roles: [ '_admin' ] });
+      testFixture.validationFunction(doc, oldDoc, { name: 'me', roles: [ '_admin' ] });
     });
 
     it('allows a missing document to be "deleted" by an administrator even if the type is unrecognized', () => {
@@ -40,7 +42,7 @@ describe('Functionality that is common to all documents:', () => {
 
       // When deleting a document that does not exist and the document's type cannot be determined, the fallback
       // behaviour is to allow it to be deleted by an admin
-      testHelper.validationFunction(doc, null, { name: 'me' }, { admins: { names: [ 'me' ] } });
+      testFixture.validationFunction(doc, null, { name: 'me' }, { admins: { names: [ 'me' ] } });
     });
 
     it('rejects deletion of an unrecognized doc type by an unauthenticated user', () => {
@@ -50,7 +52,7 @@ describe('Functionality that is common to all documents:', () => {
       let validationFuncError = null;
       expect(() => {
         try {
-          testHelper.validationFunction(doc, oldDoc, null);
+          testFixture.validationFunction(doc, oldDoc, null);
         } catch (ex) {
           validationFuncError = ex;
 
@@ -69,7 +71,7 @@ describe('Functionality that is common to all documents:', () => {
         arrayProp: { }
       };
 
-      testHelper.verifyDocumentNotCreated(doc, 'generalDoc', [ errorFormatter.typeConstraintViolation('arrayProp', 'array') ], 'add');
+      testFixture.verifyDocumentNotCreated(doc, 'generalDoc', [ errorFormatter.typeConstraintViolation('arrayProp', 'array') ], 'add');
     });
 
     it('rejects an attachment reference property value that is not the right type', () => {
@@ -78,7 +80,7 @@ describe('Functionality that is common to all documents:', () => {
         attachmentReferenceProp: { }
       };
 
-      testHelper.verifyDocumentNotCreated(
+      testFixture.verifyDocumentNotCreated(
         doc,
         'generalDoc',
         [ errorFormatter.typeConstraintViolation('attachmentReferenceProp', 'attachmentReference') ],
@@ -91,7 +93,7 @@ describe('Functionality that is common to all documents:', () => {
         booleanProp: 0
       };
 
-      testHelper.verifyDocumentNotCreated(doc, 'generalDoc', [ errorFormatter.typeConstraintViolation('booleanProp', 'boolean') ], 'add');
+      testFixture.verifyDocumentNotCreated(doc, 'generalDoc', [ errorFormatter.typeConstraintViolation('booleanProp', 'boolean') ], 'add');
     });
 
     it('rejects a date property value that is not the right type', () => {
@@ -100,7 +102,7 @@ describe('Functionality that is common to all documents:', () => {
         dateProp: 1468713600000
       };
 
-      testHelper.verifyDocumentNotCreated(doc, 'generalDoc', [ errorFormatter.typeConstraintViolation('dateProp', 'date') ], 'add');
+      testFixture.verifyDocumentNotCreated(doc, 'generalDoc', [ errorFormatter.typeConstraintViolation('dateProp', 'date') ], 'add');
     });
 
     it('rejects a date/time property value that is not the right type', () => {
@@ -109,7 +111,7 @@ describe('Functionality that is common to all documents:', () => {
         datetimeProp: 1468795446123
       };
 
-      testHelper.verifyDocumentNotCreated(doc, 'generalDoc', [ errorFormatter.typeConstraintViolation('datetimeProp', 'datetime') ], 'add');
+      testFixture.verifyDocumentNotCreated(doc, 'generalDoc', [ errorFormatter.typeConstraintViolation('datetimeProp', 'datetime') ], 'add');
     });
 
     it('rejects a floating point number property value that is not the right type', () => {
@@ -118,7 +120,7 @@ describe('Functionality that is common to all documents:', () => {
         floatProp: false
       };
 
-      testHelper.verifyDocumentNotCreated(doc, 'generalDoc', [ errorFormatter.typeConstraintViolation('floatProp', 'float') ], 'add');
+      testFixture.verifyDocumentNotCreated(doc, 'generalDoc', [ errorFormatter.typeConstraintViolation('floatProp', 'float') ], 'add');
     });
 
     it('rejects a hashtable property value that is not the right type', () => {
@@ -127,7 +129,7 @@ describe('Functionality that is common to all documents:', () => {
         hashtableProp: [ ]
       };
 
-      testHelper.verifyDocumentNotCreated(doc, 'generalDoc', [ errorFormatter.typeConstraintViolation('hashtableProp', 'hashtable') ], 'add');
+      testFixture.verifyDocumentNotCreated(doc, 'generalDoc', [ errorFormatter.typeConstraintViolation('hashtableProp', 'hashtable') ], 'add');
     });
 
     it('rejects an integer property value that is not the right type', () => {
@@ -136,7 +138,7 @@ describe('Functionality that is common to all documents:', () => {
         integerProp: -15.9
       };
 
-      testHelper.verifyDocumentNotCreated(doc, 'generalDoc', [ errorFormatter.typeConstraintViolation('integerProp', 'integer') ], 'add');
+      testFixture.verifyDocumentNotCreated(doc, 'generalDoc', [ errorFormatter.typeConstraintViolation('integerProp', 'integer') ], 'add');
     });
 
     it('rejects an object property value that is not the right type', () => {
@@ -145,7 +147,7 @@ describe('Functionality that is common to all documents:', () => {
         objectProp: [ ]
       };
 
-      testHelper.verifyDocumentNotCreated(doc, 'generalDoc', [ errorFormatter.typeConstraintViolation('objectProp', 'object') ], 'add');
+      testFixture.verifyDocumentNotCreated(doc, 'generalDoc', [ errorFormatter.typeConstraintViolation('objectProp', 'object') ], 'add');
     });
 
     it('rejects a string property value that is not the right type', () => {
@@ -154,7 +156,7 @@ describe('Functionality that is common to all documents:', () => {
         stringProp: 99
       };
 
-      testHelper.verifyDocumentNotCreated(doc, 'generalDoc', [ errorFormatter.typeConstraintViolation('stringProp', 'string') ], 'add');
+      testFixture.verifyDocumentNotCreated(doc, 'generalDoc', [ errorFormatter.typeConstraintViolation('stringProp', 'string') ], 'add');
     });
 
     it('allows a value of the right type for a dynamic property type', () => {
@@ -168,7 +170,7 @@ describe('Functionality that is common to all documents:', () => {
         expectedDynamicMaximumExclusiveValue: -55
       };
 
-      testHelper.verifyDocumentCreated(doc, 'add');
+      testFixture.verifyDocumentCreated(doc, 'add');
     });
 
     it('rejects a value that falls outside the minimum and maximum values for a dynamic property type', () => {
@@ -182,7 +184,7 @@ describe('Functionality that is common to all documents:', () => {
         expectedDynamicMaximumExclusiveValue: 0
       };
 
-      testHelper.verifyDocumentNotCreated(
+      testFixture.verifyDocumentNotCreated(
         doc,
         'generalDoc',
         [
@@ -201,7 +203,7 @@ describe('Functionality that is common to all documents:', () => {
         expectedDynamicType: 'string'
       };
 
-      testHelper.verifyDocumentNotCreated(
+      testFixture.verifyDocumentNotCreated(
         doc,
         'generalDoc',
         [ errorFormatter.typeConstraintViolation('dynamicTypeProp', 'string') ],
@@ -220,7 +222,7 @@ describe('Functionality that is common to all documents:', () => {
         _someOtherProperty: 'my-value'
       };
 
-      testHelper.verifyDocumentCreated(doc, [ 'add' ]);
+      testFixture.verifyDocumentCreated(doc, [ 'add' ]);
     });
 
     it('rejects internal properties below the root level of the document', () => {
@@ -236,7 +238,7 @@ describe('Functionality that is common to all documents:', () => {
         }
       };
 
-      testHelper.verifyDocumentNotCreated(
+      testFixture.verifyDocumentNotCreated(
         doc,
         'generalDoc',
         [
@@ -261,6 +263,6 @@ describe('Functionality that is common to all documents:', () => {
       }
     };
 
-    testHelper.verifyDocumentNotCreated(doc, 'generalDoc', errorFormatter.allowAttachmentsViolation(), 'add');
+    testFixture.verifyDocumentNotCreated(doc, 'generalDoc', errorFormatter.allowAttachmentsViolation(), 'add');
   });
 });

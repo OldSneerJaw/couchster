@@ -1,11 +1,16 @@
-const sampleSpecHelper = require('./helpers/sample-spec-helper');
-const testHelper = require('../src/testing/test-helper');
-const errorFormatter = testHelper.validationErrorFormatter;
 const { expect } = require('chai');
+const sampleSpecHelperFactory = require('./helpers/sample-spec-helper-factory');
+const testFixtureMaker = require('../src/testing/test-fixture-maker');
 
 describe('Sample business notification transport doc definition:', () => {
+  let testFixture;
+  let errorFormatter;
+  let sampleSpecHelper;
+
   beforeEach(() => {
-    testHelper.initValidationFunction('build/validation-functions/test-sample-validation-function.js');
+    testFixture = testFixtureMaker.initFromValidationFunction('build/validation-functions/test-sample-validation-function.js');
+    errorFormatter = testFixture.validationErrorFormatter;
+    sampleSpecHelper = sampleSpecHelperFactory.init(testFixture);
   });
 
   const expectedDocType = 'notificationTransport';
@@ -47,7 +52,7 @@ describe('Sample business notification transport doc definition:', () => {
       recipient: 'foo.bar@example.com'
     };
 
-    testHelper.validationFunction(doc, oldDoc, { name: 'me', roles: [ `38-CHANGE_${expectedBasePrivilege}`, `${doc._id}-replace` ] });
+    testFixture.validationFunction(doc, oldDoc, { name: 'me', roles: [ `38-CHANGE_${expectedBasePrivilege}`, `${doc._id}-replace` ] });
   });
 
   it('cannot replace a notification transport document when the properties are invalid', () => {
@@ -64,14 +69,14 @@ describe('Sample business notification transport doc definition:', () => {
     let validationFuncError = null;
     expect(() => {
       try {
-        testHelper.validationFunction(doc, oldDoc, { name: 'me', roles: [ `73-CHANGE_${expectedBasePrivilege}`, `${doc._id}-replace` ] });
+        testFixture.validationFunction(doc, oldDoc, { name: 'me', roles: [ `73-CHANGE_${expectedBasePrivilege}`, `${doc._id}-replace` ] });
       } catch (ex) {
         validationFuncError = ex;
         throw ex;
       }
     }).to.throw();
 
-    testHelper.verifyValidationErrors(
+    testFixture.verifyValidationErrors(
       expectedDocType,
       [ errorFormatter.typeConstraintViolation('type', 'string'), errorFormatter.requiredValueViolation('recipient') ],
       validationFuncError);
@@ -103,7 +108,7 @@ describe('Sample business notification transport doc definition:', () => {
       recipient: 'different.foo.bar@example.com'
     };
 
-    testHelper.validationFunction(doc, oldDoc, { name: 'me', roles: [ `14-REMOVE_${expectedBasePrivilege}`, `${doc._id}-delete` ] });
+    testFixture.validationFunction(doc, oldDoc, { name: 'me', roles: [ `14-REMOVE_${expectedBasePrivilege}`, `${doc._id}-delete` ] });
   });
 
   it('cannot delete a notification transport document when the user fails the custom authorization', () => {
@@ -124,7 +129,7 @@ describe('Sample business notification transport doc definition:', () => {
     let validationFuncError = null;
     expect(() => {
       try {
-        testHelper.validationFunction(doc, oldDoc, userContext);
+        testFixture.validationFunction(doc, oldDoc, userContext);
       } catch (ex) {
         validationFuncError = ex;
         throw ex;

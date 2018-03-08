@@ -1,18 +1,23 @@
-const sampleSpecHelper = require('./helpers/sample-spec-helper');
-const testHelper = require('../src/testing/test-helper');
-const errorFormatter = testHelper.validationErrorFormatter;
+const sampleSpecHelperFactory = require('./helpers/sample-spec-helper-factory');
+const testFixtureMaker = require('../src/testing/test-fixture-maker');
 
 describe('Sample payment processor settlement doc definition', () => {
+  let testFixture;
+  let errorFormatter;
+  let sampleSpecHelper;
+
   beforeEach(() => {
-    testHelper.initValidationFunction('build/validation-functions/test-sample-validation-function.js');
+    testFixture = testFixtureMaker.initFromValidationFunction('build/validation-functions/test-sample-validation-function.js');
+    errorFormatter = testFixture.validationErrorFormatter;
+    sampleSpecHelper = sampleSpecHelperFactory.init(testFixture);
   });
 
   function verifySettlementWritten(businessId, doc, oldDoc) {
-    testHelper.verifyDocumentAccepted(doc, oldDoc, sampleSpecHelper.getExpectedAuthorization('payment-settlement-write'));
+    testFixture.verifyDocumentAccepted(doc, oldDoc, sampleSpecHelper.getExpectedAuthorization('payment-settlement-write'));
   }
 
   function verifySettlementNotWritten(businessId, doc, oldDoc, expectedErrorMessages) {
-    testHelper.verifyDocumentRejected(
+    testFixture.verifyDocumentRejected(
       doc,
       oldDoc,
       'paymentProcessorSettlement',

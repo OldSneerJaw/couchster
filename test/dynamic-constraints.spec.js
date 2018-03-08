@@ -1,9 +1,11 @@
-const testHelper = require('../src/testing/test-helper');
-const errorFormatter = testHelper.validationErrorFormatter;
+const testFixtureMaker = require('../src/testing/test-fixture-maker');
+const errorFormatter = require('../src/testing/validation-error-formatter');
 
 describe('Dynamic constraints', () => {
+  let testFixture;
+
   beforeEach(() => {
-    testHelper.initValidationFunction('build/validation-functions/test-dynamic-constraints-validation-function.js');
+    testFixture = testFixtureMaker.initFromValidationFunction('build/validation-functions/test-dynamic-constraints-validation-function.js');
   });
 
   it('allows a new doc to be created when the property constraints are satisfied', () => {
@@ -15,7 +17,7 @@ describe('Dynamic constraints', () => {
       validationByValueProperty: 119
     };
 
-    testHelper.verifyDocumentCreated(doc);
+    testFixture.verifyDocumentCreated(doc);
   });
 
   it('allows an existing doc to be replaced when the property constraints are satisfied', () => {
@@ -34,7 +36,7 @@ describe('Dynamic constraints', () => {
       validationByValueProperty: -35
     };
 
-    testHelper.verifyDocumentReplaced(doc, oldDoc);
+    testFixture.verifyDocumentReplaced(doc, oldDoc);
   });
 
   it('blocks a doc from being created when the property constraints are violated', () => {
@@ -46,7 +48,7 @@ describe('Dynamic constraints', () => {
       validationByValueProperty: -1
     };
 
-    testHelper.verifyDocumentNotCreated(
+    testFixture.verifyDocumentNotCreated(
       doc,
       doc.type,
       [
@@ -72,7 +74,7 @@ describe('Dynamic constraints', () => {
       validationByValueProperty: 18
     };
 
-    testHelper.verifyDocumentNotReplaced(
+    testFixture.verifyDocumentNotReplaced(
       doc,
       oldDoc,
       doc.type,

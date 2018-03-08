@@ -1,9 +1,11 @@
-const testHelper = require('../src/testing/test-helper');
-const errorFormatter = testHelper.validationErrorFormatter;
+const testFixtureMaker = require('../src/testing/test-fixture-maker');
+const errorFormatter = require('../src/testing/validation-error-formatter');
 
 describe('Time zone validation type:', () => {
+  let testFixture;
+
   beforeEach(() => {
-    testHelper.initValidationFunction('build/validation-functions/test-timezone-validation-function.js');
+    testFixture = testFixtureMaker.initFromValidationFunction('build/validation-functions/test-timezone-validation-function.js');
   });
 
   describe('format', () => {
@@ -14,7 +16,7 @@ describe('Time zone validation type:', () => {
         formatValidationProp: 'Z'
       };
 
-      testHelper.verifyDocumentCreated(doc);
+      testFixture.verifyDocumentCreated(doc);
     });
 
     it('allows a valid time zone with a colon separator', () => {
@@ -24,7 +26,7 @@ describe('Time zone validation type:', () => {
         formatValidationProp: '-08:00'
       };
 
-      testHelper.verifyDocumentCreated(doc);
+      testFixture.verifyDocumentCreated(doc);
     });
 
     it('rejects a time zone without a colon separator', () => {
@@ -34,7 +36,7 @@ describe('Time zone validation type:', () => {
         formatValidationProp: '+1030'
       };
 
-      testHelper.verifyDocumentNotCreated(doc, 'timezoneDoc', errorFormatter.timezoneFormatInvalid('formatValidationProp'));
+      testFixture.verifyDocumentNotCreated(doc, 'timezoneDoc', errorFormatter.timezoneFormatInvalid('formatValidationProp'));
     });
 
     it('rejects a time zone without a positive or negative sign', () => {
@@ -44,7 +46,7 @@ describe('Time zone validation type:', () => {
         formatValidationProp: '10:30'
       };
 
-      testHelper.verifyDocumentNotCreated(doc, 'timezoneDoc', errorFormatter.timezoneFormatInvalid('formatValidationProp'));
+      testFixture.verifyDocumentNotCreated(doc, 'timezoneDoc', errorFormatter.timezoneFormatInvalid('formatValidationProp'));
     });
 
     it('rejects a time zone without a minute component', () => {
@@ -54,7 +56,7 @@ describe('Time zone validation type:', () => {
         formatValidationProp: '-08'
       };
 
-      testHelper.verifyDocumentNotCreated(doc, 'timezoneDoc', errorFormatter.timezoneFormatInvalid('formatValidationProp'));
+      testFixture.verifyDocumentNotCreated(doc, 'timezoneDoc', errorFormatter.timezoneFormatInvalid('formatValidationProp'));
     });
 
     it('rejects a time zone that is less than the minimum possible value', () => {
@@ -64,7 +66,7 @@ describe('Time zone validation type:', () => {
         formatValidationProp: '-24:00'
       };
 
-      testHelper.verifyDocumentNotCreated(doc, 'timezoneDoc', errorFormatter.timezoneFormatInvalid('formatValidationProp'));
+      testFixture.verifyDocumentNotCreated(doc, 'timezoneDoc', errorFormatter.timezoneFormatInvalid('formatValidationProp'));
     });
 
     it('rejects a time zone that is greater than the maximum possible value', () => {
@@ -74,7 +76,7 @@ describe('Time zone validation type:', () => {
         formatValidationProp: '+24:00'
       };
 
-      testHelper.verifyDocumentNotCreated(doc, 'timezoneDoc', errorFormatter.timezoneFormatInvalid('formatValidationProp'));
+      testFixture.verifyDocumentNotCreated(doc, 'timezoneDoc', errorFormatter.timezoneFormatInvalid('formatValidationProp'));
     });
 
     it('rejects a time zone that is not a string', () => {
@@ -84,7 +86,7 @@ describe('Time zone validation type:', () => {
         formatValidationProp: -0800
       };
 
-      testHelper.verifyDocumentNotCreated(doc, 'timezoneDoc', errorFormatter.typeConstraintViolation('formatValidationProp', 'timezone'));
+      testFixture.verifyDocumentNotCreated(doc, 'timezoneDoc', errorFormatter.typeConstraintViolation('formatValidationProp', 'timezone'));
     });
   });
 
@@ -96,7 +98,7 @@ describe('Time zone validation type:', () => {
         minAndMaxInclusiveValuesProp: '-00:00'
       };
 
-      testHelper.verifyDocumentCreated(doc);
+      testFixture.verifyDocumentCreated(doc);
     });
 
     it('allow zero/zulu time zone when it is within the minimum and maximum value range', () => {
@@ -106,7 +108,7 @@ describe('Time zone validation type:', () => {
         minAndMaxInclusiveValuesProp: 'Z'
       };
 
-      testHelper.verifyDocumentCreated(doc);
+      testFixture.verifyDocumentCreated(doc);
     });
 
     it('reject a time zone that is less than the minimum range constraint', () => {
@@ -116,7 +118,7 @@ describe('Time zone validation type:', () => {
         minAndMaxInclusiveValuesProp: '-00:01'
       };
 
-      testHelper.verifyDocumentNotCreated(
+      testFixture.verifyDocumentNotCreated(
         doc,
         'timezoneDoc',
         errorFormatter.minimumValueViolation('minAndMaxInclusiveValuesProp', 'Z'));
@@ -129,7 +131,7 @@ describe('Time zone validation type:', () => {
         minAndMaxInclusiveValuesProp: '+00:01'
       };
 
-      testHelper.verifyDocumentNotCreated(
+      testFixture.verifyDocumentNotCreated(
         doc,
         'timezoneDoc',
         errorFormatter.maximumValueViolation('minAndMaxInclusiveValuesProp', '+00:00'));
@@ -144,7 +146,7 @@ describe('Time zone validation type:', () => {
         minAndMaxExclusiveValuesProp: '+12:30'
       };
 
-      testHelper.verifyDocumentCreated(doc);
+      testFixture.verifyDocumentCreated(doc);
     });
 
     it('allow zero/zulu time zone when it is within the minimum and maximum value range', () => {
@@ -154,7 +156,7 @@ describe('Time zone validation type:', () => {
         minAndMaxExclusiveValuesProp: 'Z'
       };
 
-      testHelper.verifyDocumentCreated(doc);
+      testFixture.verifyDocumentCreated(doc);
     });
 
     it('reject a time zone that is less than the minimum range constraint', () => {
@@ -164,7 +166,7 @@ describe('Time zone validation type:', () => {
         minAndMaxExclusiveValuesProp: '-12:00'
       };
 
-      testHelper.verifyDocumentNotCreated(
+      testFixture.verifyDocumentNotCreated(
         doc,
         'timezoneDoc',
         errorFormatter.minimumValueExclusiveViolation('minAndMaxExclusiveValuesProp', '-11:31'));
@@ -177,7 +179,7 @@ describe('Time zone validation type:', () => {
         minAndMaxExclusiveValuesProp: '-11:31'
       };
 
-      testHelper.verifyDocumentNotCreated(
+      testFixture.verifyDocumentNotCreated(
         doc,
         'timezoneDoc',
         errorFormatter.minimumValueExclusiveViolation('minAndMaxExclusiveValuesProp', '-11:31'));
@@ -190,7 +192,7 @@ describe('Time zone validation type:', () => {
         minAndMaxExclusiveValuesProp: '+13:15'
       };
 
-      testHelper.verifyDocumentNotCreated(
+      testFixture.verifyDocumentNotCreated(
         doc,
         'timezoneDoc',
         errorFormatter.maximumValueExclusiveViolation('minAndMaxExclusiveValuesProp', '+12:31'));
@@ -203,7 +205,7 @@ describe('Time zone validation type:', () => {
         minAndMaxExclusiveValuesProp: '+12:31'
       };
 
-      testHelper.verifyDocumentNotCreated(
+      testFixture.verifyDocumentNotCreated(
         doc,
         'timezoneDoc',
         errorFormatter.maximumValueExclusiveViolation('minAndMaxExclusiveValuesProp', '+12:31'));
@@ -218,7 +220,7 @@ describe('Time zone validation type:', () => {
         equalityValidationProp: 'Z'
       };
 
-      testHelper.verifyDocumentCreated(doc);
+      testFixture.verifyDocumentCreated(doc);
     });
 
     it('allows a value that specifies UTC as positive zero', () => {
@@ -228,7 +230,7 @@ describe('Time zone validation type:', () => {
         equalityValidationProp: '+00:00'
       };
 
-      testHelper.verifyDocumentCreated(doc);
+      testFixture.verifyDocumentCreated(doc);
     });
 
     it('allows a value that specifies UTC as negative zero', () => {
@@ -238,7 +240,7 @@ describe('Time zone validation type:', () => {
         equalityValidationProp: '-00:00'
       };
 
-      testHelper.verifyDocumentCreated(doc);
+      testFixture.verifyDocumentCreated(doc);
     });
 
     it('rejects a value that differs from the expected value', () => {
@@ -248,7 +250,7 @@ describe('Time zone validation type:', () => {
         equalityValidationProp: '+21:45'
       };
 
-      testHelper.verifyDocumentNotCreated(
+      testFixture.verifyDocumentNotCreated(
         doc,
         'timezoneMustEqualDocType',
         [ errorFormatter.mustEqualViolation('equalityValidationProp', 'Z') ]);
@@ -269,7 +271,7 @@ describe('Time zone validation type:', () => {
         immutableValidationProp: '+09:15'
       };
 
-      testHelper.verifyDocumentReplaced(doc, oldDoc);
+      testFixture.verifyDocumentReplaced(doc, oldDoc);
     });
 
     it('rejects a time zone that differs from the old time zone', () => {
@@ -285,7 +287,7 @@ describe('Time zone validation type:', () => {
         immutableValidationProp: '-11:00'
       };
 
-      testHelper.verifyDocumentNotReplaced(doc, oldDoc, 'timezoneDoc', [ errorFormatter.immutableItemViolation('immutableValidationProp') ]);
+      testFixture.verifyDocumentNotReplaced(doc, oldDoc, 'timezoneDoc', [ errorFormatter.immutableItemViolation('immutableValidationProp') ]);
     });
   });
 });

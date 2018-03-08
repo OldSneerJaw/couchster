@@ -1,26 +1,31 @@
-const sampleSpecHelper = require('./helpers/sample-spec-helper');
-const testHelper = require('../src/testing/test-helper');
-const errorFormatter = testHelper.validationErrorFormatter;
+const sampleSpecHelperFactory = require('./helpers/sample-spec-helper-factory');
+const testFixtureMaker = require('../src/testing/test-fixture-maker');
 
 describe('Sample Business config doc definition', () => {
+  let testFixture;
+  let errorFormatter;
+  let sampleSpecHelper;
+
   beforeEach(() => {
-    testHelper.initValidationFunction('build/validation-functions/test-sample-validation-function.js');
+    testFixture = testFixtureMaker.initFromValidationFunction('build/validation-functions/test-sample-validation-function.js');
+    errorFormatter = testFixture.validationErrorFormatter;
+    sampleSpecHelper = sampleSpecHelperFactory.init(testFixture);
   });
 
   function verifyBusinessConfigCreated(businessId, doc) {
-    testHelper.verifyDocumentCreated(doc, sampleSpecHelper.getExpectedAuthorization([ `${businessId}-CHANGE_BUSINESS` ]));
+    testFixture.verifyDocumentCreated(doc, sampleSpecHelper.getExpectedAuthorization([ `${businessId}-CHANGE_BUSINESS` ]));
   }
 
   function verifyBusinessConfigReplaced(businessId, doc, oldDoc) {
-    testHelper.verifyDocumentReplaced(doc, oldDoc, sampleSpecHelper.getExpectedAuthorization([ `${businessId}-CHANGE_BUSINESS` ]));
+    testFixture.verifyDocumentReplaced(doc, oldDoc, sampleSpecHelper.getExpectedAuthorization([ `${businessId}-CHANGE_BUSINESS` ]));
   }
 
   function verifyBusinessConfigDeleted(businessId, oldDoc) {
-    testHelper.verifyDocumentDeleted(oldDoc, sampleSpecHelper.getExpectedAuthorization([ `${businessId}-REMOVE_BUSINESS` ]));
+    testFixture.verifyDocumentDeleted(oldDoc, sampleSpecHelper.getExpectedAuthorization([ `${businessId}-REMOVE_BUSINESS` ]));
   }
 
   function verifyBusinessConfigRejected(businessId, doc, oldDoc, expectedErrorMessages) {
-    testHelper.verifyDocumentNotReplaced(
+    testFixture.verifyDocumentNotReplaced(
       doc,
       oldDoc,
       'business',

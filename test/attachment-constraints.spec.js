@@ -1,9 +1,11 @@
-const testHelper = require('../src/testing/test-helper');
-const errorFormatter = testHelper.validationErrorFormatter;
+const testFixtureMaker = require('../src/testing/test-fixture-maker');
+const errorFormatter = require('../src/testing/validation-error-formatter');
 
 describe('File attachment constraints:', () => {
+  let testFixture;
+
   beforeEach(() => {
-    testHelper.initValidationFunction('build/validation-functions/test-attachment-constraints-validation-function.js');
+    testFixture = testFixtureMaker.initFromValidationFunction('build/validation-functions/test-attachment-constraints-validation-function.js');
   });
 
   describe('with static validation', () => {
@@ -29,7 +31,7 @@ describe('File attachment constraints:', () => {
           attachmentRefProp: 'baz.foo' // The attachmentReference overrides the document's supported extensions and content types
         };
 
-        testHelper.verifyDocumentCreated(doc);
+        testFixture.verifyDocumentCreated(doc);
       });
 
       it('should allow replacement when document attachments do not violate the constraints', () => {
@@ -49,7 +51,7 @@ describe('File attachment constraints:', () => {
           type: 'staticRegularAttachmentsDoc'
         };
 
-        testHelper.verifyDocumentReplaced(doc, oldDoc);
+        testFixture.verifyDocumentReplaced(doc, oldDoc);
       });
 
       describe('maximum attachment size constraints', () => {
@@ -74,7 +76,7 @@ describe('File attachment constraints:', () => {
             attachmentRefProp: 'bar.html' // The attachmentReference's maximum size of 40 overrides the document's maximum individual size of 25
           };
 
-          testHelper.verifyDocumentNotCreated(doc, 'staticRegularAttachmentsDoc', errorFormatter.maximumTotalAttachmentSizeViolation(40));
+          testFixture.verifyDocumentNotCreated(doc, 'staticRegularAttachmentsDoc', errorFormatter.maximumTotalAttachmentSizeViolation(40));
         });
 
         it('should block replacement when document attachments exceed the limits', () => {
@@ -93,7 +95,7 @@ describe('File attachment constraints:', () => {
             type: 'staticRegularAttachmentsDoc'
           };
 
-          testHelper.verifyDocumentNotReplaced(
+          testFixture.verifyDocumentNotReplaced(
             doc,
             oldDoc,
             'staticRegularAttachmentsDoc',
@@ -129,7 +131,7 @@ describe('File attachment constraints:', () => {
             type: 'staticRegularAttachmentsDoc'
           };
 
-          testHelper.verifyDocumentNotCreated(doc, 'staticRegularAttachmentsDoc', errorFormatter.maximumAttachmentCountViolation(3));
+          testFixture.verifyDocumentNotCreated(doc, 'staticRegularAttachmentsDoc', errorFormatter.maximumAttachmentCountViolation(3));
         });
 
         it('should block replacement when document attachments exceed the limit', () => {
@@ -160,7 +162,7 @@ describe('File attachment constraints:', () => {
             type: 'staticRegularAttachmentsDoc'
           };
 
-          testHelper.verifyDocumentNotReplaced(
+          testFixture.verifyDocumentNotReplaced(
             doc,
             oldDoc,
             'staticRegularAttachmentsDoc',
@@ -191,7 +193,7 @@ describe('File attachment constraints:', () => {
             type: 'staticRegularAttachmentsDoc'
           };
 
-          testHelper.verifyDocumentNotCreated(
+          testFixture.verifyDocumentNotCreated(
             doc,
             'staticRegularAttachmentsDoc',
             [
@@ -221,7 +223,7 @@ describe('File attachment constraints:', () => {
             type: 'staticRegularAttachmentsDoc'
           };
 
-          testHelper.verifyDocumentNotReplaced(
+          testFixture.verifyDocumentNotReplaced(
             doc,
             oldDoc,
             'staticRegularAttachmentsDoc',
@@ -252,7 +254,7 @@ describe('File attachment constraints:', () => {
             type: 'staticRegularAttachmentsDoc'
           };
 
-          testHelper.verifyDocumentNotCreated(
+          testFixture.verifyDocumentNotCreated(
             doc,
             'staticRegularAttachmentsDoc',
             [
@@ -282,7 +284,7 @@ describe('File attachment constraints:', () => {
             type: 'staticRegularAttachmentsDoc'
           };
 
-          testHelper.verifyDocumentNotReplaced(
+          testFixture.verifyDocumentNotReplaced(
             doc,
             oldDoc,
             'staticRegularAttachmentsDoc',
@@ -305,7 +307,7 @@ describe('File attachment constraints:', () => {
           attachmentRefProp: 'foo.pdf'
         };
 
-        testHelper.verifyDocumentCreated(doc);
+        testFixture.verifyDocumentCreated(doc);
       });
 
       it('should block creation of a document whose attachments violate the constraint', () => {
@@ -325,7 +327,7 @@ describe('File attachment constraints:', () => {
           attachmentRefProp: 'foo.pdf'
         };
 
-        testHelper.verifyDocumentNotCreated(
+        testFixture.verifyDocumentNotCreated(
           doc,
           'staticAttachmentRefsOnlyDoc',
           errorFormatter.requireAttachmentReferencesViolation('bar.txt'));
@@ -348,7 +350,7 @@ describe('File attachment constraints:', () => {
           type: 'staticAttachmentRefsOnlyDoc'
         };
 
-        testHelper.verifyDocumentReplaced(doc, oldDoc);
+        testFixture.verifyDocumentReplaced(doc, oldDoc);
       });
 
       it('should block replacement when document attachments violate the constraint', () => {
@@ -372,7 +374,7 @@ describe('File attachment constraints:', () => {
           type: 'staticAttachmentRefsOnlyDoc'
         };
 
-        testHelper.verifyDocumentNotReplaced(
+        testFixture.verifyDocumentNotReplaced(
           doc,
           oldDoc,
           'staticAttachmentRefsOnlyDoc',
@@ -410,7 +412,7 @@ describe('File attachment constraints:', () => {
         attachmentReferences: [ 'foo.pdf', 'bar.html', 'baz.foo' ]
       };
 
-      testHelper.verifyDocumentCreated(doc);
+      testFixture.verifyDocumentCreated(doc);
     });
 
     it('should block creation of a document whose attachments violate the constraints', () => {
@@ -443,7 +445,7 @@ describe('File attachment constraints:', () => {
         attachmentReferences: [ 'foo.pdf', 'bar.html' ]
       };
 
-      testHelper.verifyDocumentNotCreated(
+      testFixture.verifyDocumentNotCreated(
         doc,
         'dynamicAttachmentsDoc',
         [
@@ -470,7 +472,7 @@ describe('File attachment constraints:', () => {
         requireAttachmentReferences: false
       };
 
-      testHelper.verifyDocumentNotCreated(doc, 'dynamicAttachmentsDoc', [ errorFormatter.allowAttachmentsViolation() ]);
+      testFixture.verifyDocumentNotCreated(doc, 'dynamicAttachmentsDoc', [ errorFormatter.allowAttachmentsViolation() ]);
     });
   });
 });
