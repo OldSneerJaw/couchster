@@ -1,6 +1,9 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/). All notable changes will be documented in this file.
 
+## [Unreleased]
+Nothing yet.
+
 ## [0.2.0] - 2018-03-08
 ### Added
 - [#2](https://github.com/OldSneerJaw/couchster/issues/2): Option to allow any database member to write revisions for a specific document type
