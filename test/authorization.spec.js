@@ -1,17 +1,18 @@
 const { expect } = require('chai');
-const testHelper = require('../src/testing/test-helper');
+const testFixtureMaker = require('../src/testing/test-fixture-maker');
 
 describe('Authorization:', () => {
+  let testFixture;
 
   beforeEach(() => {
-    testHelper.initValidationFunction('build/validation-functions/test-authorization-validation-function.js');
+    testFixture = testFixtureMaker.initFromValidationFunction('build/validation-functions/test-authorization-validation-function.js');
   });
 
   describe('for a document with explicit role definitions', () => {
     it('allows document creation for a user that is specified as a database administrator by username', () => {
       const doc = { _id: 'explicitRolesDoc', stringProp: 'foobar' };
 
-      testHelper.validationFunction(
+      testFixture.validationFunction(
         doc,
         void 0,
         { name: 'me' },
@@ -23,7 +24,7 @@ describe('Authorization:', () => {
     it('rejects document creation for a user with no matching add roles', () => {
       const doc = { _id: 'explicitRolesDoc', stringProp: 'foobar' };
 
-      testHelper.verifyAccessDenied(doc, void 0, { name: 'me', roles: [ 'replace', 'update', 'remove', 'delete' ] });
+      testFixture.verifyAccessDenied(doc, void 0, { name: 'me', roles: [ 'replace', 'update', 'remove', 'delete' ] });
     });
 
     it('rejects document creation if the user context is null', () => {
@@ -36,13 +37,13 @@ describe('Authorization:', () => {
       const doc = { _id: 'explicitRolesDoc', stringProp: 'foobar' };
       const oldDoc = { _id: 'explicitRolesDoc' };
 
-      testHelper.verifyAccessDenied(doc, oldDoc, { name: 'me', roles: [ 'add', 'remove', 'delete' ] });
+      testFixture.verifyAccessDenied(doc, oldDoc, { name: 'me', roles: [ 'add', 'remove', 'delete' ] });
     });
 
     it('rejects document deletion for a user with no matching remove roles', () => {
       const doc = { _id: 'explicitRolesDoc', _deleted: true };
 
-      testHelper.verifyAccessDenied(doc, void 0, { name: 'me', roles: [ 'add', 'replace', 'update' ] });
+      testFixture.verifyAccessDenied(doc, void 0, { name: 'me', roles: [ 'add', 'replace', 'update' ] });
     });
   });
 
@@ -51,7 +52,7 @@ describe('Authorization:', () => {
       const doc = { _id: 'writeOnlyRolesDoc', stringProp: 'foobar' };
       const oldDoc = { _id: 'writeOnlyRolesDoc' };
 
-      testHelper.validationFunction(
+      testFixture.validationFunction(
         doc,
         oldDoc,
         {
@@ -66,20 +67,20 @@ describe('Authorization:', () => {
     it('rejects document creation for a user with no matching roles', () => {
       const doc = { _id: 'writeOnlyRolesDoc', stringProp: 'foobar' };
 
-      testHelper.verifyAccessDenied(doc, void 0, { name: 'me', roles: [ 'invalid' ] });
+      testFixture.verifyAccessDenied(doc, void 0, { name: 'me', roles: [ 'invalid' ] });
     });
 
     it('rejects document replacement for a user with no matching roles', () => {
       const doc = { _id: 'writeOnlyRolesDoc', stringProp: 'foobar' };
       const oldDoc = { _id: 'writeOnlyRolesDoc' };
 
-      testHelper.verifyAccessDenied(doc, oldDoc, { name: 'me', roles: [ ] });
+      testFixture.verifyAccessDenied(doc, oldDoc, { name: 'me', roles: [ ] });
     });
 
     it('rejects document deletion for a user with no matching roles', () => {
       const doc = { _id: 'writeOnlyRolesDoc', _deleted: true };
 
-      testHelper.verifyAccessDenied(doc, void 0, { name: 'me', roles: [ '', ' ' ] });
+      testFixture.verifyAccessDenied(doc, void 0, { name: 'me', roles: [ '', ' ' ] });
     });
 
     it('rejects document deletion if the user context is null', () => {
@@ -94,7 +95,7 @@ describe('Authorization:', () => {
     it('allows document addition for a user with only the add role', () => {
       const doc = { _id: 'writeAndAddRolesDoc' };
 
-      testHelper.validationFunction(doc, void 0, { name: 'me', roles: [ 'add' ] });
+      testFixture.validationFunction(doc, void 0, { name: 'me', roles: [ 'add' ] });
     });
 
     it('rejects document replacement for a user with only the add role', () => {
@@ -104,7 +105,7 @@ describe('Authorization:', () => {
       };
       const oldDoc = { _id: 'writeAndAddRolesDoc' };
 
-      testHelper.verifyAccessDenied(doc, oldDoc, { name: 'me', roles: [ 'add' ] });
+      testFixture.verifyAccessDenied(doc, oldDoc, { name: 'me', roles: [ 'add' ] });
     });
 
     it('rejects document deletion for a user with only the add role', () => {
@@ -114,7 +115,7 @@ describe('Authorization:', () => {
       };
       const oldDoc = { _id: 'writeAndAddRolesDoc' };
 
-      testHelper.verifyAccessDenied(doc, oldDoc, { name: 'me', roles: [ 'add' ] });
+      testFixture.verifyAccessDenied(doc, oldDoc, { name: 'me', roles: [ 'add' ] });
     });
   });
 
@@ -136,7 +137,7 @@ describe('Authorization:', () => {
         users: rawUsers
       };
 
-      testHelper.verifyDocumentCreated(doc, expectedSuccessfulAuthorization);
+      testFixture.verifyDocumentCreated(doc, expectedSuccessfulAuthorization);
     });
 
     it('allows document replacement for a user with a matching role', () => {
@@ -150,7 +151,7 @@ describe('Authorization:', () => {
         users: rawUsers
       };
 
-      testHelper.verifyDocumentReplaced(doc, oldDoc, expectedSuccessfulAuthorization);
+      testFixture.verifyDocumentReplaced(doc, oldDoc, expectedSuccessfulAuthorization);
     });
 
     it('allows document deletion for a server admin user', () => {
@@ -160,7 +161,7 @@ describe('Authorization:', () => {
         users: rawUsers
       };
 
-      testHelper.verifyDocumentDeleted(oldDoc, expectedSuccessfulAuthorization);
+      testFixture.verifyDocumentDeleted(oldDoc, expectedSuccessfulAuthorization);
     });
 
     it('rejects document creation for a user with no matching roles or username', () => {
@@ -172,7 +173,7 @@ describe('Authorization:', () => {
       };
 
       // The user context matches raw username and role, but the authorization functions expect them to be prefixed with the DB name
-      testHelper.verifyAccessDenied(doc, null, { db: testDbName, name: 'write-user1', roles: [ 'write-role1' ] });
+      testFixture.verifyAccessDenied(doc, null, { db: testDbName, name: 'write-user1', roles: [ 'write-role1' ] });
     });
 
     it('rejects document replacement for a user with no matching roles or username', () => {
@@ -187,7 +188,7 @@ describe('Authorization:', () => {
       };
 
       // The user context matches raw username and role, but the authorization functions expect them to be prefixed with the DB name
-      testHelper.verifyAccessDenied(doc, oldDoc, { db: testDbName, name: 'write-user2', roles: [ 'write-role2' ] });
+      testFixture.verifyAccessDenied(doc, oldDoc, { db: testDbName, name: 'write-user2', roles: [ 'write-role2' ] });
     });
 
     it('rejects document replacement if the user context is null', () => {
@@ -216,7 +217,7 @@ describe('Authorization:', () => {
       };
 
       // The user context matches raw username and role, but the authorization functions expect them to be prefixed with the DB name
-      testHelper.verifyAccessDenied(doc, oldDoc, { name: 'write-user1', roles: [ 'write-role2' ] });
+      testFixture.verifyAccessDenied(doc, oldDoc, { name: 'write-user1', roles: [ 'write-role2' ] });
     });
   });
 
@@ -227,7 +228,7 @@ describe('Authorization:', () => {
         stringProp: 'foobar'
       };
 
-      testHelper.verifyAccessDenied(doc, null, { name: 'replace1' });
+      testFixture.verifyAccessDenied(doc, null, { name: 'replace1' });
     });
 
     it('rejects document replacement for a user without a matching username', () => {
@@ -239,7 +240,7 @@ describe('Authorization:', () => {
         _id: 'explicitUsernamesDoc'
       };
 
-      testHelper.verifyAccessDenied(doc, oldDoc, { name: 'add2' });
+      testFixture.verifyAccessDenied(doc, oldDoc, { name: 'add2' });
     });
 
     it('rejects document deletion for a user without a matching username', () => {
@@ -251,7 +252,7 @@ describe('Authorization:', () => {
         _id: 'explicitUsernamesDoc'
       };
 
-      testHelper.verifyAccessDenied(doc, oldDoc, { name: 'add1' });
+      testFixture.verifyAccessDenied(doc, oldDoc, { name: 'add1' });
     });
   });
 
@@ -264,7 +265,7 @@ describe('Authorization:', () => {
         stringProp: 'foobar'
       };
 
-      testHelper.verifyAccessDenied(doc, null, userContext);
+      testFixture.verifyAccessDenied(doc, null, userContext);
     });
 
     it('allows document replacement', () => {
@@ -277,7 +278,7 @@ describe('Authorization:', () => {
         stringProp: 'barfoo'
       };
 
-      testHelper.validationFunction(doc, oldDoc, userContext);
+      testFixture.validationFunction(doc, oldDoc, userContext);
     });
 
     it('rejects document deletion', () => {
@@ -290,7 +291,7 @@ describe('Authorization:', () => {
         stringProp: 'foobar'
       };
 
-      testHelper.verifyAccessDenied(doc, oldDoc, userContext);
+      testFixture.verifyAccessDenied(doc, oldDoc, userContext);
     });
   });
 
@@ -303,7 +304,7 @@ describe('Authorization:', () => {
         stringProp: 'foobar'
       };
 
-      testHelper.validationFunction(doc, void 0, userContext);
+      testFixture.validationFunction(doc, void 0, userContext);
     });
 
     it('rejects document replacement', () => {
@@ -316,7 +317,7 @@ describe('Authorization:', () => {
         stringProp: 'barfoo'
       };
 
-      testHelper.verifyAccessDenied(doc, oldDoc, userContext);
+      testFixture.verifyAccessDenied(doc, oldDoc, userContext);
     });
 
     it('rejects document deletion', () => {
@@ -329,7 +330,7 @@ describe('Authorization:', () => {
         stringProp: 'foobar'
       };
 
-      testHelper.verifyAccessDenied(doc, oldDoc, userContext);
+      testFixture.verifyAccessDenied(doc, oldDoc, userContext);
     });
   });
 
@@ -340,7 +341,7 @@ describe('Authorization:', () => {
         floatProp: -1.8
       };
 
-      testHelper.validationFunction(doc, null, { name: 'me' });
+      testFixture.validationFunction(doc, null, { name: 'me' });
     });
 
     it('allows document replacement by an authenticated user', () => {
@@ -350,7 +351,7 @@ describe('Authorization:', () => {
       };
       const oldDoc = { _id: 'staticUniversalAccessDoc' };
 
-      testHelper.validationFunction(doc, oldDoc, { name: 'me' });
+      testFixture.validationFunction(doc, oldDoc, { name: 'me' });
     });
 
     it('allows document deletion by an authenticated user', () => {
@@ -359,7 +360,7 @@ describe('Authorization:', () => {
         floatProp: 0
       };
 
-      testHelper.validationFunction({ _id: oldDoc._id, _deleted: true }, oldDoc, { name: 'me' });
+      testFixture.validationFunction({ _id: oldDoc._id, _deleted: true }, oldDoc, { name: 'me' });
     });
 
     it('rejects document created by an unauthenticated user', () => {
@@ -381,7 +382,7 @@ describe('Authorization:', () => {
         allowAccess: true
       };
 
-      testHelper.validationFunction(doc, null, testUserContext);
+      testFixture.validationFunction(doc, null, testUserContext);
     });
 
     it('allows document replacement by an authenticated user when the configuration option is enabled in the old document', () => {
@@ -391,7 +392,7 @@ describe('Authorization:', () => {
         allowAccess: true
       };
 
-      testHelper.validationFunction(doc, oldDoc, testUserContext);
+      testFixture.validationFunction(doc, oldDoc, testUserContext);
     });
 
     it('allows document creation by an authenticated user when the database name matches the magic value', () => {
@@ -400,7 +401,7 @@ describe('Authorization:', () => {
         allowAccess: false
       };
 
-      testHelper.validationFunction(doc, null, { db: 'all-members-write-access-db', name: 'me', roles: [ '1' ] });
+      testFixture.validationFunction(doc, null, { db: 'all-members-write-access-db', name: 'me', roles: [ '1' ] });
     });
 
     it('rejects document creation by an authenticated user when the configuration option is disabled', () => {
@@ -409,7 +410,7 @@ describe('Authorization:', () => {
         allowAccess: false
       };
 
-      testHelper.verifyAccessDenied(doc, null, testUserContext);
+      testFixture.verifyAccessDenied(doc, null, testUserContext);
     });
 
     it('allows document creation by a DB admin even when the configuration option is disabled', () => {
@@ -421,7 +422,7 @@ describe('Authorization:', () => {
         allowAccess: true
       };
 
-      testHelper.validationFunction(doc, null, testUserContext, testSecurityInfo);
+      testFixture.validationFunction(doc, null, testUserContext, testSecurityInfo);
     });
   });
 
@@ -429,7 +430,7 @@ describe('Authorization:', () => {
     let validationFuncError = null;
     expect(() => {
       try {
-        testHelper.validationFunction(doc, oldDoc, null);
+        testFixture.validationFunction(doc, oldDoc, null);
       } catch (ex) {
         validationFuncError = ex;
         throw ex;
