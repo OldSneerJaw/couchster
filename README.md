@@ -133,17 +133,17 @@ typeFilter: simpleTypeFilter
 And an example of a more complex custom type filter:
 
 ```
-typeFilter: function(doc, oldDoc, currentDocType) {
+typeFilter: function(newDoc, oldDoc, currentDocType) {
   var typePropertyMatches;
   if (oldDoc) {
-    if (doc._deleted) {
+    if (newDoc._deleted) {
       typePropertyMatches = oldDoc.type === currentDocType;
     } else {
-      typePropertyMatches = doc.type === oldDoc.type && oldDoc.type === currentDocType;
+      typePropertyMatches = newDoc.type === oldDoc.type && oldDoc.type === currentDocType;
     }
   } else {
     // The old document does not exist or was deleted - we can rely on the new document's type
-    typePropertyMatches = doc.type === currentDocType;
+    typePropertyMatches = newDoc.type === currentDocType;
   }
 
   if (typePropertyMatches) {
@@ -152,7 +152,7 @@ typeFilter: function(doc, oldDoc, currentDocType) {
     // The type property did not match - fall back to matching the document ID pattern
     var docIdRegex = /^message\.[A-Za-z0-9_-]+$/;
 
-    return docIdRegex.test(doc._id);
+    return docIdRegex.test(newDoc._id);
   }
 }
 ```
@@ -176,14 +176,14 @@ authorizedRoles: {
 Or, as a function:
 
 ```
-authorizedRoles: function(doc, oldDoc) {
+authorizedRoles: function(newDoc, oldDoc, dbName) {
   return {
-    write: oldDoc ? oldDoc.roles : doc.roles
+    write: oldDoc ? oldDoc.roles : newDoc.roles
   };
 }
 ```
 
-* `propertyValidators`: (required) An object/hash of validators that specify the format of each of the document type's supported properties. Each entry consists of a key that specifies the property name and a value that specifies the validation to perform on that property. Each property element must declare a type and, optionally, some number of additional parameters. Any property that is not declared here will be rejected by the validation function unless the `allowUnknownProperties` document constraint is set to `true`. In addition to a static value (e.g. `propertyValidators: { ... }`), this property may also be assigned a value dynamically via a function (e.g. `propertyValidators: function(doc, oldDoc) { ... }`) where the parameters are as follows: (1) the document (if deleted, the `_deleted` property will be `true`) and (2) the document that is being replaced (if any; it will be `null` if it has been deleted or does not exist).
+* `propertyValidators`: (required) An object/hash of validators that specify the format of each of the document type's supported properties. Each entry consists of a key that specifies the property name and a value that specifies the validation to perform on that property. Each property element must declare a type and, optionally, some number of additional parameters. Any property that is not declared here will be rejected by the validation function unless the `allowUnknownProperties` document constraint is set to `true`. In addition to a static value (e.g. `propertyValidators: { ... }`), this property may also be assigned a value dynamically via a function (e.g. `propertyValidators: function(newDoc, oldDoc) { ... }`) where the parameters are as follows: (1) the document (if deleted, the `_deleted` property will be `true`) and (2) the document that is being replaced (if any; it will be `null` if it has been deleted or does not exist).
 
 An example static definition:
 
@@ -203,8 +203,8 @@ propertyValidators: {
 And a dynamic definition:
 
 ```
-propertyValidators: function(doc, oldDoc) {
-  var dynamicProp = (doc._id.indexOf('foobar') >= 0) ? { type: 'string' } : { type: 'float' }
+propertyValidators: function(newDoc, oldDoc) {
+  var dynamicProp = (newDoc._id.indexOf('foobar') >= 0) ? { type: 'string' } : { type: 'float' }
 
   return {
     myDynamicProp: dynamicProp
@@ -216,19 +216,19 @@ propertyValidators: function(doc, oldDoc) {
 
 Additional properties that provide finer grained control over documents:
 
-* `allowUnknownProperties`: (optional) Whether to allow the existence of document properties that are not explicitly declared in the document type definition. Not applied recursively to objects that are nested within documents of this type. In addition to a static value (e.g. `allowUnknownProperties: true`), this constraint may also be assigned a value dynamically via a function (e.g. `allowUnknownProperties: function(doc, oldDoc) { ... }`) where the parameters are as follows: (1) the document (if deleted, the `_deleted` property will be `true`) and (2) the document that is being replaced (if any; it will be `null` if it has been deleted or does not exist). Defaults to `false`.
-* `immutable`: (optional) The document cannot be replaced or deleted after it is created. Note that, when this constraint is enabled, even if attachments are allowed for this document type (see the `allowAttachments` parameter for more info), it will not be possible to create, modify or delete attachments in a document that already exists, which means that they must be created inline in the document's `_attachments` property when the document is first created. In addition to a static value (e.g. `immutable: true`), this property may also be assigned a value dynamically via a function (e.g. `immutable: function(doc, oldDoc) { ... }`) where the parameters are as follows: (1) the document (if deleted, the `_deleted` property will be `true`) and (2) the document that is being replaced (if any; it will be `null` if it has been deleted or does not exist). Defaults to `false`.
-* `cannotReplace`: (optional) As with the `immutable` constraint, the document cannot be replaced after it is created. However, this constraint does not prevent the document from being deleted. Note that, even if attachments are allowed for this document type (see the `allowAttachments` document constraint for more info), it will not be possible to create, modify or delete attachments in a document that already exists, which means that they must be created inline in the document's `_attachments` property when the document is first created. In addition to a static value (e.g. `cannotReplace: true`), this constraint may also be assigned a value dynamically via a function (e.g. `cannotReplace: function(doc, oldDoc) { ... }`) where the parameters are as follows: (1) the document (if deleted, the `_deleted` property will be `true`) and (2) the document that is being replaced (if any; it will be `null` if it has been deleted or does not exist). Defaults to `false`.
-* `cannotDelete`: (optional) As with the `immutable` constraint, the document cannot be deleted after it is created. However, this constraint does not prevent the document from being replaced. In addition to a static value (e.g. `cannotDelete: true`), this constraint may also be assigned a value dynamically via a function (e.g. `cannotDelete: function(doc, oldDoc) { ... }`) where the parameters are as follows: (1) the document (if deleted, the `_deleted` property will be `true`) and (2) the document that is being replaced (if any; it will be `null` if it has been deleted or does not exist). Defaults to `false`.
-* `allowAttachments`: (optional) Whether to allow the addition of [file attachments](http://docs.couchdb.org/en/latest/intro/api.html#attachments) for the document type. In addition to a static value (e.g. `allowAttachments: true`), this constraint may also be assigned a value dynamically via a function (e.g. `allowAttachments: function(doc, oldDoc) { ... }`) where the parameters are as follows: (1) the document (if deleted, the `_deleted` property will be `true`) and (2) the document that is being replaced (if any; it will be `null` if it has been deleted or does not exist). Defaults to `false` to prevent malicious/misbehaving clients from polluting the database with unwanted files. See the `attachmentConstraints` constraint and the `attachmentReference` validation type for more options.
-* `attachmentConstraints`: (optional) Various constraints to apply to file attachments associated with a document type. Its settings only apply if the document definition's `allowAttachments` constraint is `true`. In addition to a static value (e.g. `attachmentConstraints: { }`), this constraint may also be assigned a value dynamically via a function (e.g. `attachmentConstraints: function(doc, oldDoc) { ... }`) where the parameters are as follows: (1) the document (if deleted, the `_deleted` property will be `true`) and (2) the document that is being replaced (if any; it will be `null` if it has been deleted or does not exist). Additional parameters:
-  * `maximumAttachmentCount`: (optional) The maximum number of attachments that may be assigned to a single document of this type. In addition to a static value (e.g. `maximumAttachmentCount: 2`), this constraint may also be assigned a value dynamically via a function (e.g. `maximumAttachmentCount: function(doc, oldDoc) { ... }`) where the parameters are as follows: (1) the document (if deleted, the `_deleted` property will be `true`) and (2) the document that is being replaced (if any; it will be `null` if it has been deleted or does not exist). Unlimited by default.
-  * `maximumIndividualSize`: (optional) The maximum file size, in bytes, allowed for any single attachment assigned to a document of this type. In addition to a static value (e.g. `maximumIndividualSize: 256`), this constraint may also be assigned a value dynamically via a function (e.g. `maximumIndividualSize: function(doc, oldDoc) { ... }`) where the parameters are as follows: (1) the document (if deleted, the `_deleted` property will be `true`) and (2) the document that is being replaced (if any; it will be `null` if it has been deleted or does not exist). Unlimited by default.
-  * `maximumTotalSize`: (optional) The maximum total size, in bytes, of _all_ attachments assigned to a single document of this type. In other words, when the sizes of all of a document's attachments are added together, it must not exceed this value. In addition to a static value (e.g. `maximumTotalSize: 1024`), this constraint may also be assigned a value dynamically via a function (e.g. `maximumTotalSize: function(doc, oldDoc) { ... }`) where the parameters are as follows: (1) the document (if deleted, the `_deleted` property will be `true`) and (2) the document that is being replaced (if any; it will be `null` if it has been deleted or does not exist). Unlimited by default.
-  * `supportedExtensions`: (optional) An array of case-insensitive file extensions that are allowed for an attachment's filename (e.g. "txt", "jpg", "pdf"). In addition to a static value (e.g. `supportedExtensions: [ 'png', 'gif', 'jpg' ]`), this constraint may also be assigned a value dynamically via a function (e.g. `supportedExtensions: function(doc, oldDoc) { ... }`) where the parameters are as follows: (1) the document (if deleted, the `_deleted` property will be `true`) and (2) the document that is being replaced (if any; it will be `null` if it has been deleted or does not exist). No restriction by default.
-  * `supportedContentTypes`: (optional) An array of content/MIME types that are allowed for an attachment's contents (e.g. "image/png", "text/html", "application/xml"). In addition to a static value (e.g. `supportedContentTypes: [ 'image/png', 'image/gif', 'image/jpeg' ]`), this constraint may also be assigned a value dynamically via a function (e.g. `supportedContentTypes: function(doc, oldDoc) { ... }`) where the parameters are as follows: (1) the document (if deleted, the `_deleted` property will be `true`) and (2) the document that is being replaced (if any; it will be `null` if it has been deleted or does not exist). No restriction by default.
-  * `requireAttachmentReferences`: (optional) Whether every one of a document's attachments must have a corresponding `attachmentReference`-type property referencing it. In addition to a static value (e.g. `requireAttachmentReferences: true`), this constraint may also be assigned a value dynamically via a function (e.g. `requireAttachmentReferences: function(doc, oldDoc) { ... }`) where the parameters are as follows: (1) the document (if deleted, the `_deleted` property will be `true`) and (2) the document that is being replaced (if any; it will be `null` if it has been deleted or does not exist). Defaults to `false`.
-* `grantAllMembersWriteAccess`: (optional) Whether to allow any authenticated user that is a member of the database to add, replace or remove documents of this type, regardless of which roles are assigned to them. If set to `true`, overrides the authorization configuration provided by the `authorizedRoles` and `authorizedUsers` constraints, if any. In addition to a static value (e.g. `grantAllMembersWriteAccess: true`), this constraint may also be assigned a value dynamically via a function (e.g. `grantAllMembersWriteAccess: function(doc, oldDoc, dbName) { ... }`) where the parameters are as follows: (1) the new document (if deleted, the `_deleted` property will be `true`), (2) the old document that is being replaced (if any; it will be `null` if it has been deleted or does not exist) and (3) the name of the current database. Defaults to `false`.
+* `allowUnknownProperties`: (optional) Whether to allow the existence of document properties that are not explicitly declared in the document type definition. Not applied recursively to objects that are nested within documents of this type. In addition to a static value (e.g. `allowUnknownProperties: true`), this constraint may also be assigned a value dynamically via a function (e.g. `allowUnknownProperties: function(newDoc, oldDoc) { ... }`) where the parameters are as follows: (1) the document (if deleted, the `_deleted` property will be `true`) and (2) the document that is being replaced (if any; it will be `null` if it has been deleted or does not exist). Defaults to `false`.
+* `immutable`: (optional) The document cannot be replaced or deleted after it is created. Note that, when this constraint is enabled, even if attachments are allowed for this document type (see the `allowAttachments` parameter for more info), it will not be possible to create, modify or delete attachments in a document that already exists, which means that they must be created inline in the document's `_attachments` property when the document is first created. In addition to a static value (e.g. `immutable: true`), this property may also be assigned a value dynamically via a function (e.g. `immutable: function(newDoc, oldDoc) { ... }`) where the parameters are as follows: (1) the document (if deleted, the `_deleted` property will be `true`) and (2) the document that is being replaced (if any; it will be `null` if it has been deleted or does not exist). Defaults to `false`.
+* `cannotReplace`: (optional) As with the `immutable` constraint, the document cannot be replaced after it is created. However, this constraint does not prevent the document from being deleted. Note that, even if attachments are allowed for this document type (see the `allowAttachments` document constraint for more info), it will not be possible to create, modify or delete attachments in a document that already exists, which means that they must be created inline in the document's `_attachments` property when the document is first created. In addition to a static value (e.g. `cannotReplace: true`), this constraint may also be assigned a value dynamically via a function (e.g. `cannotReplace: function(newDoc, oldDoc) { ... }`) where the parameters are as follows: (1) the document (if deleted, the `_deleted` property will be `true`) and (2) the document that is being replaced (if any; it will be `null` if it has been deleted or does not exist). Defaults to `false`.
+* `cannotDelete`: (optional) As with the `immutable` constraint, the document cannot be deleted after it is created. However, this constraint does not prevent the document from being replaced. In addition to a static value (e.g. `cannotDelete: true`), this constraint may also be assigned a value dynamically via a function (e.g. `cannotDelete: function(newDoc, oldDoc) { ... }`) where the parameters are as follows: (1) the document (if deleted, the `_deleted` property will be `true`) and (2) the document that is being replaced (if any; it will be `null` if it has been deleted or does not exist). Defaults to `false`.
+* `allowAttachments`: (optional) Whether to allow the addition of [file attachments](http://docs.couchdb.org/en/latest/intro/api.html#attachments) for the document type. In addition to a static value (e.g. `allowAttachments: true`), this constraint may also be assigned a value dynamically via a function (e.g. `allowAttachments: function(newDoc, oldDoc) { ... }`) where the parameters are as follows: (1) the document (if deleted, the `_deleted` property will be `true`) and (2) the document that is being replaced (if any; it will be `null` if it has been deleted or does not exist). Defaults to `false` to prevent malicious/misbehaving clients from polluting the database with unwanted files. See the `attachmentConstraints` constraint and the `attachmentReference` validation type for more options.
+* `attachmentConstraints`: (optional) Various constraints to apply to file attachments associated with a document type. Its settings only apply if the document definition's `allowAttachments` constraint is `true`. In addition to a static value (e.g. `attachmentConstraints: { }`), this constraint may also be assigned a value dynamically via a function (e.g. `attachmentConstraints: function(newDoc, oldDoc) { ... }`) where the parameters are as follows: (1) the document (if deleted, the `_deleted` property will be `true`) and (2) the document that is being replaced (if any; it will be `null` if it has been deleted or does not exist). Additional parameters:
+  * `maximumAttachmentCount`: (optional) The maximum number of attachments that may be assigned to a single document of this type. In addition to a static value (e.g. `maximumAttachmentCount: 2`), this constraint may also be assigned a value dynamically via a function (e.g. `maximumAttachmentCount: function(newDoc, oldDoc) { ... }`) where the parameters are as follows: (1) the document (if deleted, the `_deleted` property will be `true`) and (2) the document that is being replaced (if any; it will be `null` if it has been deleted or does not exist). Unlimited by default.
+  * `maximumIndividualSize`: (optional) The maximum file size, in bytes, allowed for any single attachment assigned to a document of this type. In addition to a static value (e.g. `maximumIndividualSize: 256`), this constraint may also be assigned a value dynamically via a function (e.g. `maximumIndividualSize: function(newDoc, oldDoc) { ... }`) where the parameters are as follows: (1) the document (if deleted, the `_deleted` property will be `true`) and (2) the document that is being replaced (if any; it will be `null` if it has been deleted or does not exist). Unlimited by default.
+  * `maximumTotalSize`: (optional) The maximum total size, in bytes, of _all_ attachments assigned to a single document of this type. In other words, when the sizes of all of a document's attachments are added together, it must not exceed this value. In addition to a static value (e.g. `maximumTotalSize: 1024`), this constraint may also be assigned a value dynamically via a function (e.g. `maximumTotalSize: function(newDoc, oldDoc) { ... }`) where the parameters are as follows: (1) the document (if deleted, the `_deleted` property will be `true`) and (2) the document that is being replaced (if any; it will be `null` if it has been deleted or does not exist). Unlimited by default.
+  * `supportedExtensions`: (optional) An array of case-insensitive file extensions that are allowed for an attachment's filename (e.g. "txt", "jpg", "pdf"). In addition to a static value (e.g. `supportedExtensions: [ 'png', 'gif', 'jpg' ]`), this constraint may also be assigned a value dynamically via a function (e.g. `supportedExtensions: function(newDoc, oldDoc) { ... }`) where the parameters are as follows: (1) the document (if deleted, the `_deleted` property will be `true`) and (2) the document that is being replaced (if any; it will be `null` if it has been deleted or does not exist). No restriction by default.
+  * `supportedContentTypes`: (optional) An array of content/MIME types that are allowed for an attachment's contents (e.g. "image/png", "text/html", "application/xml"). In addition to a static value (e.g. `supportedContentTypes: [ 'image/png', 'image/gif', 'image/jpeg' ]`), this constraint may also be assigned a value dynamically via a function (e.g. `supportedContentTypes: function(newDoc, oldDoc) { ... }`) where the parameters are as follows: (1) the document (if deleted, the `_deleted` property will be `true`) and (2) the document that is being replaced (if any; it will be `null` if it has been deleted or does not exist). No restriction by default.
+  * `requireAttachmentReferences`: (optional) Whether every one of a document's attachments must have a corresponding `attachmentReference`-type property referencing it. In addition to a static value (e.g. `requireAttachmentReferences: true`), this constraint may also be assigned a value dynamically via a function (e.g. `requireAttachmentReferences: function(newDoc, oldDoc) { ... }`) where the parameters are as follows: (1) the document (if deleted, the `_deleted` property will be `true`) and (2) the document that is being replaced (if any; it will be `null` if it has been deleted or does not exist). Defaults to `false`.
+* `grantAllMembersWriteAccess`: (optional) Whether to allow any authenticated user that is a member of the database to add, replace or remove documents of this type, regardless of which roles are assigned to them. If set to `true`, overrides the authorization configuration provided by the `authorizedRoles` and `authorizedUsers` constraints, if any. In addition to a static value (e.g. `grantAllMembersWriteAccess: true`), this constraint may also be assigned a value dynamically via a function (e.g. `grantAllMembersWriteAccess: function(newDoc, oldDoc, dbName) { ... }`) where the parameters are as follows: (1) the new document (if deleted, the `_deleted` property will be `true`), (2) the old document that is being replaced (if any; it will be `null` if it has been deleted or does not exist) and (3) the name of the current database. Defaults to `false`.
 * `authorizedUsers`: (required if `authorizedRoles` or `grantAllMembersWriteAccess` are missing/`undefined`) The names of users that are explicitly authorized to add, replace and remove documents of this type. If used in combination with the `authorizedRoles` document constraint, authorization will be granted if the user making the modification matches at least one of the usernames and/or authorized roles for the corresponding operation type (add, replace or remove). Administrator users are always allowed to write documents of this type, whether they are explicitly included or not. May be specified as either a plain object or a function that returns a dynamically-constructed object and accepts as parameters (1) the new document, (2) the old document that is being replaced (if any) and (3) the name of the current database. NOTE: In cases where the document is in the process of being deleted, the first parameter's `_deleted` property will be `true`, and if the old document has been deleted or simply does not exist, the second parameter will be `null`. Either way the object is specified, it may include the following properties, each of which may be either an array of usernames or a single username as a string:
   * `add`: (optional) The user(s) that have the ability to create new documents of this type.
   * `replace`: (optional) The user(s) that have the ability to replace existing documents of this type.
@@ -248,9 +248,9 @@ authorizedUsers: {
 Or, as a function:
 
 ```
-authorizedUsers: function(doc, oldDoc) {
+authorizedUsers: function(newDoc, oldDoc, dbName) {
   return {
-    write: oldDoc ? oldDoc.users : doc.users
+    write: oldDoc ? oldDoc.users : newDoc.users
   };
 }
 ```
@@ -267,9 +267,9 @@ An example of an `onValidationSucceeded` custom action that performs additional 
 
 ```
 customActions: {
-  onValidationSucceeded: function(doc, oldDoc, customActionMetadata, userContext, securityInfo) {
+  onValidationSucceeded: function(newDoc, oldDoc, customActionMetadata, userContext, securityInfo) {
     // At least one of the "a" and "b" properties must have a value
-    if (isValueNullOrUndefined(doc.a) && isValueNullOrUndefined(doc.b)) {
+    if (isValueNullOrUndefined(newDoc.a) && isValueNullOrUndefined(newDoc.b)) {
       throw { forbidden: 'items "a" and "b" must not both be missing' };
     }
   }
@@ -416,7 +416,7 @@ Validation for all simple and complex data types support the following additiona
 * `immutableStrict`: The item cannot be changed from its existing value if the document is being replaced. Differs from `immutable` in that specialized string validation types (e.g. `date`, `datetime`, `time`, `timezone`, `uuid`) are not compared semantically; for example, the two `time` values of "12:45" and "12:45:00.000" are _not_ considered equal because the strings are not strictly equal. Defaults to `false`.
 * `immutableWhenSet`: As with the `immutable` constraint, the item cannot be changed from its existing value if the document is being replaced. However, it differs in that it does not prevent modification if the item is either `null` or missing/`undefined` in the existing document. Differs from `immutableWhenSetStrict` in that it checks for semantic equality of specialized string validation types (e.g. `date`, `datetime`, `time`, `timezone`, `uuid`); for example, the two `datetime` values of "2018-01-01T21:09:00.000Z" and "2018T16:09-05:00" are considered equal with this constraint since they represent the same point in time. Defaults to `false`.
 * `immutableWhenSetStrict`: As with the `immutableWhenSet` constraint, the item cannot be changed if it already has a value. However, it differs in that specialized string validation types (e.g. `date`, `datetime`, `time`, `timezone`, `uuid`) are not compared semantically; for example, the two `date` values of "2018" and "2018-01-01" are _not_ considered equal because the strings are not strictly equal. Defaults to `false`.
-* `mustEqual`: The value of the item must be equal to the specified value. Useful in cases where the item's value should be computed from other properties of the document (e.g. a reference ID that is encoded into the document's ID or a number that is the result of some calculation performed on other properties in the document). For that reason, this constraint is perhaps most useful when specified as a dynamic constraint (e.g. `mustEqual: function(doc, oldDoc, value, oldValue) { ... }`) rather than as a static value (e.g. `mustEqual: 'foobar'`). If this constraint is set to `null`, then only values of `null` or missing/`undefined` will be accepted for the corresponding property or element. Differs from `mustEqualStrict` in that it checks for semantic equality of specialized string validation types (e.g. `date`, `datetime`, `time`, `timezone`, `uuid`); for example, the two `datetime` values of "2018-02-12T11:02:00.000-08:00" and "2018-02-12T11:02-0800" are considered equal with this constraint since they represent the same point in time. No constraint by default.
+* `mustEqual`: The value of the item must be equal to the specified value. Useful in cases where the item's value should be computed from other properties of the document (e.g. a reference ID that is encoded into the document's ID or a number that is the result of some calculation performed on other properties in the document). For that reason, this constraint is perhaps most useful when specified as a dynamic constraint (e.g. `mustEqual: function(newDoc, oldDoc, value, oldValue) { ... }`) rather than as a static value (e.g. `mustEqual: 'foobar'`). If this constraint is set to `null`, then only values of `null` or missing/`undefined` will be accepted for the corresponding property or element. Differs from `mustEqualStrict` in that it checks for semantic equality of specialized string validation types (e.g. `date`, `datetime`, `time`, `timezone`, `uuid`); for example, the two `datetime` values of "2018-02-12T11:02:00.000-08:00" and "2018-02-12T11:02-0800" are considered equal with this constraint since they represent the same point in time. No constraint by default.
 * `mustEqualStrict`: The value of the property or element must be strictly equal to the specified value. Differs from `mustEqual` in that specialized string validation types (e.g. `date`, `datetime`, `time`, `timezone`, `uuid`) are not compared semantically; for example, the two `timezone` values of "Z" and "+00:00" are _not_ considered equal because the strings are not strictly equal. No constraint by default.
 * `customValidation`: A function that accepts as parameters (1) the new document, (2) the old document that is being replaced/deleted (if any), (3) an object that contains metadata about the current item to validate, (4) a stack of the items (e.g. object properties, array elements, hashtable element values) that have gone through validation, where the last/top element contains metadata for the direct parent of the item currently being validated and the first/bottom element is metadata for the root (i.e. the document itself), (5) the CouchDB [user context](http://docs.couchdb.org/en/latest/json-structure.html#userctx-object) of the authenticated user (or `null` if the request is not authenticated), and (6) the CouchDB [security object](http://docs.couchdb.org/en/latest/json-structure.html#security-object) for the database. In cases where the document is in the process of being deleted, the first parameter's `_deleted` property will be `true` and, if the document does not yet exist or it was deleted, the second parameter will be `null`. Generally, custom validation should not throw exceptions; it's recommended to return an array/list of error descriptions so the validation function can compile a list of all validation errors that were encountered once full validation is complete. A return value of `null`, `undefined` or an empty array indicate there were no validation errors. An example:
 
@@ -429,7 +429,7 @@ propertyValidators: {
     type: 'integer',
     minimumValue: 1,
     maximumValue: 100,
-    customValidation: function(doc, oldDoc, currentItemEntry, validationItemStack, userContext, securityInfo) {
+    customValidation: function(newDoc, oldDoc, currentItemEntry, validationItemStack, userContext, securityInfo) {
       var parentObjectElement = validationItemStack[validationItemStack.length - 1];
       var parentObjectName = parentObjectElement.itemName;
       var parentObjectValue = parentObjectElement.itemValue;
@@ -475,7 +475,7 @@ propertyValidators: {
 
 ##### Dynamic constraint validation
 
-In addition to defining any of the item validation constraints above, including `type`, as static values (e.g. `maximumValue: 99`, `mustNotBeEmpty: true`), it is possible to specify them dynamically via function (e.g. `regexPattern: function(doc, oldDoc, value, oldValue) { ... }`). This is useful if, for example, the constraint should be based on the value of another property/element in the document or computed based on the previous stored value of the current property/element. The function should expect to receive the following parameters:
+In addition to defining any of the item validation constraints above, including `type`, as static values (e.g. `maximumValue: 99`, `mustNotBeEmpty: true`), it is possible to specify them dynamically via function (e.g. `regexPattern: function(newDoc, oldDoc, value, oldValue) { ... }`). This is useful if, for example, the constraint should be based on the value of another property/element in the document or computed based on the previous stored value of the current property/element. The function should expect to receive the following parameters:
 
 1. The current document.
 2. The document that is being replaced (if any). Note that, if the document is missing (e.g. it doesn't exist yet) or it has been deleted, this parameter will be `null`.
@@ -490,7 +490,7 @@ propertyValidators: {
     type: 'integer',
     required: true,
     // The value must always increase by at least one with each revision
-    minimumValue: function(doc, oldDoc, value, oldValue) {
+    minimumValue: function(newDoc, oldDoc, value, oldValue) {
       return !isValueNullOrUndefined(oldValue) ? oldValue + 1 : 0;
     }
   },
@@ -498,16 +498,16 @@ propertyValidators: {
     type: 'enum',
     required: true,
     // The list of valid categories depends on the beginning of the document's ID
-    predefinedValues: function(doc, oldDoc, value, oldValue) {
-      return (doc._id.indexOf('integerDoc-') === 0) ? [ 1, 2, 3 ] : [ 'a', 'b', 'c' ];
+    predefinedValues: function(newDoc, oldDoc, value, oldValue) {
+      return (newDoc._id.indexOf('integerDoc-') === 0) ? [ 1, 2, 3 ] : [ 'a', 'b', 'c' ];
     }
   },
   referenceId: {
     type: 'string',
     required: true,
     // The reference ID must be constructed from the value of the category field
-    regexPattern: function(doc, oldDoc, value, oldValue) {
-      return new RegExp('^foobar-' + doc.category + '-[a-zA-Z_-]+$');
+    regexPattern: function(newDoc, oldDoc, value, oldValue) {
+      return new RegExp('^foobar-' + newDoc.category + '-[a-zA-Z_-]+$');
     }
   }
 }
@@ -522,8 +522,8 @@ For example, a document definitions file implemented as an object:
 ```
 {
   myDocType1: {
-    typeFilter: function(doc, oldDoc, docType) {
-      return oldDoc ? oldDoc.type === docType : doc.type === docType;
+    typeFilter: function(newDoc, oldDoc, docType) {
+      return oldDoc ? oldDoc.type === docType : newDoc.type === docType;
     },
     authorizedRoles: {
       add: 'create',
@@ -538,8 +538,8 @@ For example, a document definitions file implemented as an object:
     }
   },
   myDocType2: {
-    typeFilter: function(doc, oldDoc, docType) {
-      return oldDoc ? oldDoc.type === docType : doc.type === docType;
+    typeFilter: function(newDoc, oldDoc, docType) {
+      return oldDoc ? oldDoc.type === docType : newDoc.type === docType;
     },
     authorizedRoles: {
       add: 'create',
@@ -566,8 +566,8 @@ function() {
     remove: 'delete'
   };
 
-  function myDocTypeFilter(doc, oldDoc, docType) {
-    return oldDoc ? oldDoc.type === docType : doc.type === docType;
+  function myDocTypeFilter(newDoc, oldDoc, docType) {
+    return oldDoc ? oldDoc.type === docType : newDoc.type === docType;
   }
 
   return {
@@ -601,7 +601,7 @@ As demonstrated above, the advantage of defining a function rather than an objec
 
 Document definitions are also modular. By invoking the `importDocumentDefinitionFragment` macro, the contents of external files can be imported into the main document definitions file. For example, each individual document definition from the example above can be specified as a fragment in its own separate file:
 
-* `my-doc-type1.js`:
+* `my-doc-type1-fragment.js`:
 
 ```
 {
@@ -616,7 +616,7 @@ Document definitions are also modular. By invoking the `importDocumentDefinition
 }
 ```
 
-* `my-doc-type2.js`:
+* `my-doc-type2-fragment.js`:
 
 ```
 {
@@ -641,8 +641,8 @@ function() {
     remove: 'delete'
   };
 
-  function myDocTypeFilter(doc, oldDoc, docType) {
-    return oldDoc ? oldDoc.type === docType : doc.type === docType;
+  function myDocTypeFilter(newDoc, oldDoc, docType) {
+    return oldDoc ? oldDoc.type === docType : newDoc.type === docType;
   }
 
   return {
@@ -703,7 +703,7 @@ Now you can begin writing specs/test cases inside the `describe` block using the
 
 ```
 it('can create a myDocType document', function() {
-  var doc = {
+  var newDoc = {
     _id: 'myDocId',
     type: 'myDocType',
     foo: 'bar',
@@ -712,7 +712,7 @@ it('can create a myDocType document', function() {
   }
 
   testFixture.verifyDocumentCreated(
-    doc,
+    newDoc,
     {
       expectedRoles: [ 'my-add-role' ],
       expectedUsers: [ 'my-add-user' ]
@@ -724,14 +724,14 @@ Or to verify that a document cannot be created because it fails validation:
 
 ```
 it('cannot create a myDocType doc when required property foo is missing', function() {
-  var doc = {
+  var newDoc = {
     _id: 'myDocId',
     type: 'myDocType',
     bar: 79
   };
 
   testFixture.verifyDocumentNotCreated(
-    doc,
+    newDoc,
     'myDocType',
     [ testFixture.validationErrorFormatter.requiredValueViolation('foo') ],
     {
