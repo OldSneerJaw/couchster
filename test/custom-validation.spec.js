@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const testFixtureMaker = require('../src/testing/test-fixture-maker.js');
+const testFixtureMaker = require('../src/testing/test-fixture-maker');
 
 describe('Custom validation constraint:', () => {
   let testFixture;

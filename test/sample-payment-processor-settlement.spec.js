@@ -1,4 +1,4 @@
-const sampleSpecHelperFactory = require('./helpers/sample-spec-helper-factory');
+const sampleSpecHelperMaker = require('./helpers/sample-spec-helper-maker');
 const testFixtureMaker = require('../src/testing/test-fixture-maker');
 
 describe('Sample payment processor settlement doc definition', () => {
@@ -9,7 +9,7 @@ describe('Sample payment processor settlement doc definition', () => {
   beforeEach(() => {
     testFixture = testFixtureMaker.initFromValidationFunction('build/validation-functions/test-sample-validation-function.js');
     errorFormatter = testFixture.validationErrorFormatter;
-    sampleSpecHelper = sampleSpecHelperFactory.init(testFixture);
+    sampleSpecHelper = sampleSpecHelperMaker.init(testFixture);
   });
 
   function verifySettlementWritten(businessId, doc, oldDoc) {

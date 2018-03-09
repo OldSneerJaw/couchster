@@ -690,7 +690,8 @@ Create a new `describe` block to encapsulate the forthcoming test cases and also
 
 ```
 describe('My new validation function', function() {
-  let testFixture;
+  var testFixture;
+
   beforeEach(function() {
     testFixture = testFixtureMaker.initFromDocumentDefinitions('/path/to/my-doc-definitions.js');
   });
@@ -709,7 +710,7 @@ it('can create a myDocType document', function() {
     foo: 'bar',
     bar: -32,
     members: [ 'joe', 'nancy' ]
-  }
+  };
 
   testFixture.verifyDocumentCreated(
     newDoc,
