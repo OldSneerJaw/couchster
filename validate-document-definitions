@@ -5,7 +5,6 @@ const docDefinitionsLoader = require('./src/loading/document-definitions-loader'
 const docDefinitionsValidator = require('./src/validation/document-definitions-validator');
 
 const errorStatus = 1;
-
 const { version } = require('./package');
 
 // Parse the commandline arguments
@@ -16,7 +15,7 @@ commander.arguments('<document_definitions_file>')
 commander.on('--help', () => {
   // Add some extra information after the main body of the usage/help text
   console.info(`
-  For example:  ${commander.name()} /path/to/my-doc-definitions.js
+  For example: ${commander.name()} /path/to/my-doc-definitions.js
 
   See the README for more information.`);
 });

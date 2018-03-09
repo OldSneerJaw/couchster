@@ -33,11 +33,17 @@ describe('Validation function loader', () => {
   });
 
   it('should load a validation function as a multi-line JavaScript block', () => {
-    validateLoadSuccess('my\n  \r\nfinal\rsync `func`', null, 'my\n\nfinal\nsync `func`');
+    validateLoadSuccess(
+      'my\n  \r\nfinal\rvalidation `func`',
+      null,
+      'my\n\nfinal\nvalidation `func`');
   });
 
   it('should load a validation function as a JSON string', () => {
-    validateLoadSuccess('my\n  \r\n"final"\rsync \\func\\', { jsonString: true }, '"my\\n\\n\\"final\\"\\nsync \\\\func\\\\"');
+    validateLoadSuccess(
+      'my\n  \r\n"final"\rvalidation \\func\\',
+      { jsonString: true },
+      '"my\\n\\n\\"final\\"\\nvalidation \\\\func\\\\"');
   });
 
   it('should throw an exception if the validation function template file does not exist', () => {

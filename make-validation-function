@@ -7,7 +7,6 @@ const mkdirp = require('./lib/mkdirp/index');
 const validationFunctionLoader = require('./src/loading/validation-function-loader');
 
 const errorStatus = 1;
-
 const { version } = require('./package');
 
 // Parse the commandline arguments

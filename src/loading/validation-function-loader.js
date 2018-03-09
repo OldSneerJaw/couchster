@@ -41,19 +41,19 @@ function loadFromFile(docDefinitionsFile, formatOptions) {
 
 function formatValidationFunction(rawValidationFuncString, formatOptions) {
   // Normalize code block indentation, normalize line endings and then replace blank lines with empty lines
-  const intermediateFuncString = indent.js(rawValidationFuncString, { tabString: '  ' })
+  const normalizedFuncString = indent.js(rawValidationFuncString, { tabString: '  ' })
     .replace(/(?:\r\n)|(?:\r)/g, () => '\n')
     .replace(/^\s+$/gm, () => '');
 
   if (formatOptions.jsonString) {
     // Escape all escape sequences, backslash characters and line ending characters then wrap the result in quotes to
     // make it a valid JSON string
-    const formattedFuncString = intermediateFuncString.replace(/\\/g, () => '\\\\')
+    const formattedFuncString = normalizedFuncString.replace(/\\/g, () => '\\\\')
       .replace(/"/g, () => '\\"')
       .replace(/\n/g, () => `\\n`);
 
     return `"${formattedFuncString}"`;
   } else {
-    return intermediateFuncString;
+    return normalizedFuncString;
   }
 }
