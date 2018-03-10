@@ -49,23 +49,23 @@ function attachmentModule(utils, buildItemPath, resolveDocConstraint, resolveIte
 
   function validateAttachments(doc, oldDoc, docDefinition) {
     var validationErrors = [ ];
-    var attachmentConstraints = resolveDocConstraint(doc, oldDoc, docDefinition.attachmentConstraints);
+    var attachmentConstraints = resolveDocConstraint(docDefinition.attachmentConstraints);
 
     var maximumAttachmentCount =
-      attachmentConstraints ? resolveDocConstraint(doc, oldDoc, attachmentConstraints.maximumAttachmentCount) : null;
+      attachmentConstraints ? resolveDocConstraint(attachmentConstraints.maximumAttachmentCount) : null;
     var maximumIndividualAttachmentSize =
-      attachmentConstraints ? resolveDocConstraint(doc, oldDoc, attachmentConstraints.maximumIndividualSize) : null;
+      attachmentConstraints ? resolveDocConstraint(attachmentConstraints.maximumIndividualSize) : null;
     var maximumTotalAttachmentSize =
-      attachmentConstraints ? resolveDocConstraint(doc, oldDoc, attachmentConstraints.maximumTotalSize) : null;
+      attachmentConstraints ? resolveDocConstraint(attachmentConstraints.maximumTotalSize) : null;
 
-    var supportedExtensions = attachmentConstraints ? resolveDocConstraint(doc, oldDoc, attachmentConstraints.supportedExtensions) : null;
+    var supportedExtensions = attachmentConstraints ? resolveDocConstraint(attachmentConstraints.supportedExtensions) : null;
     var supportedExtensionsRegex = supportedExtensions ? buildSupportedExtensionsRegex(supportedExtensions) : null;
 
     var supportedContentTypes =
-      attachmentConstraints ? resolveDocConstraint(doc, oldDoc, attachmentConstraints.supportedContentTypes) : null;
+      attachmentConstraints ? resolveDocConstraint(attachmentConstraints.supportedContentTypes) : null;
 
     var requireAttachmentReferences =
-      attachmentConstraints ? resolveDocConstraint(doc, oldDoc, attachmentConstraints.requireAttachmentReferences) : false;
+      attachmentConstraints ? resolveDocConstraint(attachmentConstraints.requireAttachmentReferences) : false;
 
     var totalSize = 0;
     var attachmentCount = 0;
@@ -117,7 +117,7 @@ function attachmentModule(utils, buildItemPath, resolveDocConstraint, resolveIte
       validationErrors.push('documents of this type must not have more than ' + maximumAttachmentCount + ' attachments');
     }
 
-    if (!resolveDocConstraint(doc, oldDoc, docDefinition.allowAttachments) && attachmentCount > 0) {
+    if (!resolveDocConstraint(docDefinition.allowAttachments) && attachmentCount > 0) {
       validationErrors.push('document type does not support attachments');
     }
 
