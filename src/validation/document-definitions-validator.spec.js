@@ -16,6 +16,7 @@ describe('Document definitions validator:', () => {
     const fakeDocDefinitions = {
       myDoc1: {
         grantAllMembersWriteAccess: (a, b, c, extraParam) => extraParam, // Too many parameters
+        documentIdRegexPattern: { }, // Must be a RegExp object
         allowUnknownProperties: 1, // Must be a boolean
         immutable: true,
         cannotDelete: true, // Must not be defined if "immutable" is also defined
@@ -33,6 +34,7 @@ describe('Document definitions validator:', () => {
     expect(results).to.have.members(
       [
         'myDoc1.grantAllMembersWriteAccess: \"grantAllMembersWriteAccess\" must have an arity lesser or equal to 3',
+        'myDoc1.documentIdRegexPattern: \"documentIdRegexPattern\" must be an instance of \"RegExp\"',
         'myDoc1.typeFilter: "typeFilter" is required',
         'myDoc1.propertyValidators: "propertyValidators" is required',
         'myDoc1.allowUnknownProperties: \"allowUnknownProperties\" must be a boolean',
@@ -54,6 +56,7 @@ describe('Document definitions validator:', () => {
           },
           authorizedUsers: { }, // Must have at least one permission type
           grantAllMembersWriteAccess: true, // Must not be defined with "authorizedRoles" or "authorizedUsers"
+          documentIdRegexPattern: (a, extraParam) => extraParam, // Too many parameters
           immutable: true,
           cannotReplace: false, // Must not be defined if "immutable" is also defined
           allowAttachments: false, // Must be true since "attachmentConstraints" is defined
@@ -205,6 +208,7 @@ describe('Document definitions validator:', () => {
         'myDoc1.authorizedRoles.view: \"view\" is not allowed',
         'myDoc1.authorizedUsers: \"authorizedUsers\" must have at least 1 children',
         'myDoc1.grantAllMembersWriteAccess: \"grantAllMembersWriteAccess\" must be one of [false]',
+        'myDoc1.documentIdRegexPattern: \"documentIdRegexPattern\" must have an arity lesser or equal to 1',
         'myDoc1.immutable: \"immutable\" conflict with forbidden peer \"cannotReplace\"',
         'myDoc1.allowAttachments: \"allowAttachments\" must be one of [true]',
         'myDoc1.attachmentConstraints.maximumAttachmentCount: \"maximumAttachmentCount\" must be larger than or equal to 1',
