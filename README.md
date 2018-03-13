@@ -35,7 +35,7 @@ For validation of documents in Couchbase Sync Gateway, see the [synctos](https:/
 
 # Installation
 
-Couchster is distributed as an [npm](https://www.npmjs.com/) package and it requires that [Node.js](https://nodejs.org/) v8.9.0 or higher is installed in order to run.
+Couchster is distributed as an [npm](https://www.npmjs.com/) package, and its minimum officially supported version of [Node.js](https://nodejs.org/) is v8.9.0. Both of these required components can be acquired by [installing](https://nodejs.org/en/download/package-manager/) Node.js.
 
 If your project does not already have an npm `package.json` file, run `npm init` to create one. Don't worry too much about the answers to the questions it asks right now; the file it produces can be updated as needed later.
 
@@ -754,6 +754,8 @@ To execute the tests in the `test/` directory, ensure that the project's `packag
   "test": "mocha test/"
 }
 ```
+
+Once the test script is configured in `package.json`, run the tests with the `npm test` command.
 
 You will find many more test examples in this project's `test/` directory and in the example project [couchster-test-examples](https://github.com/OldSneerJaw/couchster-test-examples).
 
