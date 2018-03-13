@@ -37,7 +37,9 @@ For validation of documents in Couchbase Sync Gateway, see the [synctos](https:/
 
 Couchster is distributed as an [npm](https://www.npmjs.com/) package and it requires that [Node.js](https://nodejs.org/) v8.9.0 or higher is installed in order to run.
 
-To add couchster to your project, run `npm install couchster` from the project's root directory to install the package locally. Or, better yet, if you define a `package.json` file in your project, you can run `npm install couchster --savedev` to automatically install locally and insert the package into your `package.json`'s developer dependencies.
+If your project does not already have an npm `package.json` file, run `npm init` to create one. Don't worry too much about the answers to the questions it asks right now; the file it produces can be updated as needed later.
+
+Next, to install couchster locally (i.e. in your project's `node_modules` directory) and to add it to your project as a development dependency automatically, run `npm install couchster --save-dev` from the project's root directory.
 
 For more info on npm package management, see the official npm documentation for [How to install local packages](https://docs.npmjs.com/getting-started/installing-npm-packages-locally) and [Working with package.json](https://docs.npmjs.com/getting-started/using-a-package.json).
 
@@ -679,7 +681,7 @@ And some alternate assertion libraries:
 * [expect.js](https://www.npmjs.com/package/expect.js)
 * [should.js](https://www.npmjs.com/package/should)
 
-Once your testing libraries have been set up as development dependencies in your project's [`package.json`](https://docs.npmjs.com/getting-started/using-a-package.json) file, run `npm install` to download them.
+Install the testing libraries locally and add them as development dependencies in the project's [`package.json`](https://docs.npmjs.com/getting-started/using-a-package.json) file (e.g. `npm install mocha --save-dev`, `npm install chai --save-dev`).
 
 After that, create a new specification file in your project's `test/` directory (e.g. `test/foobar-spec.js`) and import the test-fixture-maker module into the empty spec:
 
@@ -744,6 +746,14 @@ it('cannot create a myDocType doc when required property foo is missing', functi
 ```
 
 The `testFixture.validationErrorFormatter` object in the preceding example provides a variety of functions that can be used to specify expected validation error messages. See the `src/testing/validation-error-formatter.js` module in this project for documentation.
+
+To execute the tests in the `test/` directory, ensure that the project's `package.json` file contains a "test" script. For example:
+
+```
+"scripts": {
+  "test": "mocha test/"
+}
+```
 
 You will find many more test examples in this project's `test/` directory and in the example project [couchster-test-examples](https://github.com/OldSneerJaw/couchster-test-examples).
 
