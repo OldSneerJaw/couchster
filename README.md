@@ -35,7 +35,7 @@ For validation of documents in Couchbase Sync Gateway, see the [synctos](https:/
 
 # Installation
 
-Couchster is distributed as an [npm](https://www.npmjs.com/) package, and its minimum officially supported version of [Node.js](https://nodejs.org/) is v8.9.0. Both of these required components can be acquired by [installing](https://nodejs.org/en/download/package-manager/) Node.js.
+Couchster is distributed as an [npm](https://www.npmjs.com/) package, and the minimum version of [Node.js](https://nodejs.org/) that it officially supports is v8.9.0. Both of these required components can be acquired at once by [installing](https://nodejs.org/en/download/package-manager/) Node.js.
 
 If your project does not already have an npm `package.json` file, run `npm init` to create one. Don't worry too much about the answers to the questions it asks right now; the file it produces can be updated as needed later.
 
