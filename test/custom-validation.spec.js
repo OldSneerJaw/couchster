@@ -64,7 +64,7 @@ describe('Custom validation constraint:', () => {
     let validationFuncError = null;
     expect(() => {
       try {
-        testFixture.validationFunction(doc, oldDoc, testUserContext, testSecurityInfo);
+        testFixture.testEnvironment.validationFunction(doc, oldDoc, testUserContext, testSecurityInfo);
       } catch (ex) {
         validationFuncError = ex;
         throw ex;

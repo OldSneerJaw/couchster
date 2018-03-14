@@ -39,7 +39,7 @@ describe('Test fixture maker:', () => {
     });
 
     it('fails if authorization is NOT denied', () => {
-      testFixture.validationFunction = () => { };
+      testFixture.testEnvironment.validationFunction = () => { };
 
       expect(() => {
         testFixture.verifyAccessDenied({ }, null, { }, null);
@@ -77,7 +77,7 @@ describe('Test fixture maker:', () => {
     });
 
     function verifyTestEnvironment(testFixture) {
-      expect(testFixture.validationFunction).to.equal(fakeTestEnvironment.validationFunction);
+      expect(testFixture.testEnvironment.validationFunction).to.equal(fakeTestEnvironment.validationFunction);
     }
   });
 
@@ -89,7 +89,7 @@ describe('Test fixture maker:', () => {
     });
 
     it('fails if the document type is recognized', () => {
-      testFixture.validationFunction = () => { };
+      testFixture.testEnvironment.validationFunction = () => { };
 
       expect(() => {
         testFixture.verifyUnknownDocumentType({ });
@@ -106,7 +106,7 @@ describe('Test fixture maker:', () => {
     });
 
     it('fails if the validation function does not throw an error', () => {
-      testFixture.validationFunction = () => { };
+      testFixture.testEnvironment.validationFunction = () => { };
 
       expect(() => {
         testFixture.verifyDocumentRejected({ }, null, docType, [ ], { expectedRoles: 'my-role' });
@@ -116,7 +116,7 @@ describe('Test fixture maker:', () => {
     it('fails if the validation error message format is invalid', () => {
       const errorMessage = 'Foo: bar';
 
-      testFixture.validationFunction = () => {
+      testFixture.testEnvironment.validationFunction = () => {
         throw { forbidden: errorMessage };
       };
 
@@ -129,7 +129,7 @@ describe('Test fixture maker:', () => {
       const expectedErrors = [ 'my-error-1', 'my-error-2' ];
       const errorMessage = `Invalid ${docType} document: ${expectedErrors[0]}`;
 
-      testFixture.validationFunction = () => {
+      testFixture.testEnvironment.validationFunction = () => {
         throw { forbidden: errorMessage };
       };
 
@@ -144,7 +144,7 @@ describe('Test fixture maker:', () => {
       const expectedErrors = [ actualErrors[0] ];
       const expectedErrorMessage = `Invalid ${docType} document: ${expectedErrors[0]}`;
 
-      testFixture.validationFunction = () => {
+      testFixture.testEnvironment.validationFunction = () => {
         throw { forbidden: actualErrorMessage };
       };
 

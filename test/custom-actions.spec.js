@@ -38,7 +38,7 @@ describe('Custom actions:', () => {
       let validationFuncError = null;
       expect(() => {
         try {
-          testFixture.validationFunction(doc, null, { });
+          testFixture.testEnvironment.validationFunction(doc, null, { });
         } catch (ex) {
           validationFuncError = ex;
 
@@ -107,7 +107,7 @@ describe('Custom actions:', () => {
     let validationFuncError = null;
     expect(() => {
       try {
-        testFixture.validationFunction(doc, oldDoc, userContext, securityInfo);
+        testFixture.testEnvironment.validationFunction(doc, oldDoc, userContext, securityInfo);
       } catch (ex) {
         validationFuncError = ex;
         throw ex;

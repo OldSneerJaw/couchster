@@ -52,7 +52,10 @@ describe('Sample business notification transport doc definition:', () => {
       recipient: 'foo.bar@example.com'
     };
 
-    testFixture.validationFunction(doc, oldDoc, { name: 'me', roles: [ `38-CHANGE_${expectedBasePrivilege}`, `${doc._id}-replace` ] });
+    testFixture.testEnvironment.validationFunction(
+      doc,
+      oldDoc,
+      { name: 'me', roles: [ `38-CHANGE_${expectedBasePrivilege}`, `${doc._id}-replace` ] });
   });
 
   it('cannot replace a notification transport document when the properties are invalid', () => {
@@ -69,7 +72,10 @@ describe('Sample business notification transport doc definition:', () => {
     let validationFuncError = null;
     expect(() => {
       try {
-        testFixture.validationFunction(doc, oldDoc, { name: 'me', roles: [ `73-CHANGE_${expectedBasePrivilege}`, `${doc._id}-replace` ] });
+        testFixture.testEnvironment.validationFunction(
+          doc,
+          oldDoc,
+          { name: 'me', roles: [ `73-CHANGE_${expectedBasePrivilege}`, `${doc._id}-replace` ] });
       } catch (ex) {
         validationFuncError = ex;
         throw ex;
@@ -108,7 +114,10 @@ describe('Sample business notification transport doc definition:', () => {
       recipient: 'different.foo.bar@example.com'
     };
 
-    testFixture.validationFunction(doc, oldDoc, { name: 'me', roles: [ `14-REMOVE_${expectedBasePrivilege}`, `${doc._id}-delete` ] });
+    testFixture.testEnvironment.validationFunction(
+      doc,
+      oldDoc,
+      { name: 'me', roles: [ `14-REMOVE_${expectedBasePrivilege}`, `${doc._id}-delete` ] });
   });
 
   it('cannot delete a notification transport document when the user fails the custom authorization', () => {
@@ -129,7 +138,7 @@ describe('Sample business notification transport doc definition:', () => {
     let validationFuncError = null;
     expect(() => {
       try {
-        testFixture.validationFunction(doc, oldDoc, userContext);
+        testFixture.testEnvironment.validationFunction(doc, oldDoc, userContext);
       } catch (ex) {
         validationFuncError = ex;
         throw ex;

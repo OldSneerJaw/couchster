@@ -27,20 +27,9 @@ exports.initFromDocumentDefinitions = function(filePath) {
 };
 
 function init(rawValidationFunction, validationFunctionFile) {
-  const fixture = {
-    /**
-     * The generated document validation function to use for testing.
-     *
-     * @param {Object} doc The document to write. May include property "_deleted=true" to simulate a delete operation.
-     * @param {Object} oldDoc The document to replace or delete. May be null or undefined or include property "_deleted=true" to simulate a
-     *                        create operation.
-     * @param {Object} userContext The CouchDB [user context](http://docs.couchdb.org/en/latest/json-structure.html#userctx-object)
-     *                             of the authenticated user
-     * @param {Object} securityInfo The CouchDB [security object](http://docs.couchdb.org/en/latest/json-structure.html#security-object)
-     *                              for the database
-     */
-    validationFunction: testEnvironmentMaker.init(rawValidationFunction, validationFunctionFile).validationFunction,
+  const testEnvironment = testEnvironmentMaker.init(rawValidationFunction, validationFunctionFile);
 
+  const fixture = {
     /**
      * An object that contains functions that are used to format expected validation error messages in specifications. Documentation can be
      * found in the "validation-error-formatter" module.
@@ -199,7 +188,13 @@ function init(rawValidationFunction, validationFunctionFile) {
      * @param {Object} oldDoc The document to replace or delete. May be null or undefined or include property "_deleted=true" to simulate a
      *                        create operation.
      */
-    verifyUnknownDocumentType
+    verifyUnknownDocumentType,
+
+    /**
+     * The test environment that the test fixture uses to simulate execution of the validation function. Exposes the
+     * validation function itself via the "validationFunction" property.
+     */
+    testEnvironment
   };
 
   // Implementation begins here
@@ -209,7 +204,7 @@ function init(rawValidationFunction, validationFunctionFile) {
     const userContexts = generateAuthorizedUserContexts(expectedAuthorization);
 
     userContexts.forEach((userContext) => {
-      fixture.validationFunction(doc, oldDoc || null, userContext, { });
+      testEnvironment.validationFunction(doc, oldDoc || null, userContext, { });
     });
   }
 
@@ -231,7 +226,7 @@ function init(rawValidationFunction, validationFunctionFile) {
     userContexts.forEach((userContext) => {
       let validationFuncError = null;
       try {
-        fixture.validationFunction(doc, oldDoc || null, userContext);
+        testEnvironment.validationFunction(doc, oldDoc || null, userContext);
       } catch (ex) {
         validationFuncError = ex;
       }
@@ -296,7 +291,7 @@ function init(rawValidationFunction, validationFunctionFile) {
   function verifyAccessDenied(doc, oldDoc, userContext, securityInfo) {
     let validationFuncError = null;
     try {
-      fixture.validationFunction(doc, oldDoc || null, userContext, securityInfo);
+      testEnvironment.validationFunction(doc, oldDoc || null, userContext, securityInfo);
     } catch (ex) {
       validationFuncError = ex;
     }
@@ -311,7 +306,7 @@ function init(rawValidationFunction, validationFunctionFile) {
   function verifyUnknownDocumentType(doc, oldDoc) {
     let validationFuncError = null;
     try {
-      fixture.validationFunction(doc, oldDoc || null, { }, { });
+      testEnvironment.validationFunction(doc, oldDoc || null, { }, { });
     } catch (ex) {
       validationFuncError = ex;
     }

@@ -12,7 +12,7 @@ describe('Authorization:', () => {
     it('allows document creation for a user that is specified as a database administrator by username', () => {
       const doc = { _id: 'explicitRolesDoc', stringProp: 'foobar' };
 
-      testFixture.validationFunction(
+      testFixture.testEnvironment.validationFunction(
         doc,
         void 0,
         { name: 'me' },
@@ -52,7 +52,7 @@ describe('Authorization:', () => {
       const doc = { _id: 'writeOnlyRolesDoc', stringProp: 'foobar' };
       const oldDoc = { _id: 'writeOnlyRolesDoc' };
 
-      testFixture.validationFunction(
+      testFixture.testEnvironment.validationFunction(
         doc,
         oldDoc,
         {
@@ -95,7 +95,7 @@ describe('Authorization:', () => {
     it('allows document addition for a user with only the add role', () => {
       const doc = { _id: 'writeAndAddRolesDoc' };
 
-      testFixture.validationFunction(doc, void 0, { name: 'me', roles: [ 'add' ] });
+      testFixture.testEnvironment.validationFunction(doc, void 0, { name: 'me', roles: [ 'add' ] });
     });
 
     it('rejects document replacement for a user with only the add role', () => {
@@ -278,7 +278,7 @@ describe('Authorization:', () => {
         stringProp: 'barfoo'
       };
 
-      testFixture.validationFunction(doc, oldDoc, userContext);
+      testFixture.testEnvironment.validationFunction(doc, oldDoc, userContext);
     });
 
     it('rejects document deletion', () => {
@@ -304,7 +304,7 @@ describe('Authorization:', () => {
         stringProp: 'foobar'
       };
 
-      testFixture.validationFunction(doc, void 0, userContext);
+      testFixture.testEnvironment.validationFunction(doc, void 0, userContext);
     });
 
     it('rejects document replacement', () => {
@@ -341,7 +341,7 @@ describe('Authorization:', () => {
         floatProp: -1.8
       };
 
-      testFixture.validationFunction(doc, null, { name: 'me' });
+      testFixture.testEnvironment.validationFunction(doc, null, { name: 'me' });
     });
 
     it('allows document replacement by an authenticated user', () => {
@@ -351,7 +351,7 @@ describe('Authorization:', () => {
       };
       const oldDoc = { _id: 'staticUniversalAccessDoc' };
 
-      testFixture.validationFunction(doc, oldDoc, { name: 'me' });
+      testFixture.testEnvironment.validationFunction(doc, oldDoc, { name: 'me' });
     });
 
     it('allows document deletion by an authenticated user', () => {
@@ -360,7 +360,7 @@ describe('Authorization:', () => {
         floatProp: 0
       };
 
-      testFixture.validationFunction({ _id: oldDoc._id, _deleted: true }, oldDoc, { name: 'me' });
+      testFixture.testEnvironment.validationFunction({ _id: oldDoc._id, _deleted: true }, oldDoc, { name: 'me' });
     });
 
     it('rejects document created by an unauthenticated user', () => {
@@ -382,7 +382,7 @@ describe('Authorization:', () => {
         allowAccess: true
       };
 
-      testFixture.validationFunction(doc, null, testUserContext);
+      testFixture.testEnvironment.validationFunction(doc, null, testUserContext);
     });
 
     it('allows document replacement by an authenticated user when the configuration option is enabled in the old document', () => {
@@ -392,7 +392,7 @@ describe('Authorization:', () => {
         allowAccess: true
       };
 
-      testFixture.validationFunction(doc, oldDoc, testUserContext);
+      testFixture.testEnvironment.validationFunction(doc, oldDoc, testUserContext);
     });
 
     it('allows document creation by an authenticated user when the database name matches the magic value', () => {
@@ -401,7 +401,7 @@ describe('Authorization:', () => {
         allowAccess: false
       };
 
-      testFixture.validationFunction(doc, null, { db: 'all-members-write-access-db', name: 'me', roles: [ '1' ] });
+      testFixture.testEnvironment.validationFunction(doc, null, { db: 'all-members-write-access-db', name: 'me', roles: [ '1' ] });
     });
 
     it('rejects document creation by an authenticated user when the configuration option is disabled', () => {
@@ -422,7 +422,7 @@ describe('Authorization:', () => {
         allowAccess: true
       };
 
-      testFixture.validationFunction(doc, null, testUserContext, testSecurityInfo);
+      testFixture.testEnvironment.validationFunction(doc, null, testUserContext, testSecurityInfo);
     });
   });
 
@@ -430,7 +430,7 @@ describe('Authorization:', () => {
     let validationFuncError = null;
     expect(() => {
       try {
-        testFixture.validationFunction(doc, oldDoc, null);
+        testFixture.testEnvironment.validationFunction(doc, oldDoc, null);
       } catch (ex) {
         validationFuncError = ex;
         throw ex;
