@@ -6,7 +6,7 @@ function attachmentModule(utils, buildItemPath, resolveDocConstraint, resolveIte
     validateAttachments: validateAttachments
   };
 
-  function validateAttachmentReference(validator, itemStack, docAttachments) {
+  function validateAttachmentReference(doc, validator, itemStack) {
     var validationErrors = [ ];
     var currentItemEntry = itemStack[itemStack.length - 1];
     var itemValue = currentItemEntry.itemValue;
@@ -29,8 +29,8 @@ function attachmentModule(utils, buildItemPath, resolveDocConstraint, resolveIte
       // validate it if it's present. The good news is that, because adding an attachment is a two part operation (create/update the
       // document and add the attachment), the validation function will be run once for each part, thus ensuring the content is verified once
       // both parts have been synced.
-      if (docAttachments && docAttachments[itemValue]) {
-        var attachment = docAttachments[itemValue];
+      if (doc._attachments && doc._attachments[itemValue]) {
+        var attachment = doc._attachments[itemValue];
 
         var supportedContentTypes = resolveItemConstraint(validator.supportedContentTypes);
         if (supportedContentTypes && supportedContentTypes.indexOf(attachment.content_type) < 0) {
@@ -47,7 +47,7 @@ function attachmentModule(utils, buildItemPath, resolveDocConstraint, resolveIte
     return validationErrors;
   }
 
-  function validateAttachments(doc, oldDoc, docDefinition) {
+  function validateAttachments(doc, docDefinition) {
     var validationErrors = [ ];
     var attachmentConstraints = resolveDocConstraint(docDefinition.attachmentConstraints);
 

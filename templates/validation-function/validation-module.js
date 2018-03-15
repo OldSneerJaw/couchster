@@ -101,7 +101,7 @@ function validationModule(utils, simpleTypeFilter, typeIdValidator) {
       validateProperties(resolvedPropertyValidators, resolveDocConstraint(docDefinition.allowUnknownProperties), true);
 
       if (doc._attachments) {
-        storeOptionalValidationErrors(attachmentModule.validateAttachments(doc, oldDoc, docDefinition));
+        storeOptionalValidationErrors(attachmentModule.validateAttachments(doc, docDefinition));
       }
 
       // The following functions are nested within this function so they can share access to the doc, oldDoc and validationErrors params and
@@ -321,7 +321,7 @@ function validationModule(utils, simpleTypeFilter, typeIdValidator) {
               validateHashtable(validator);
               break;
             case 'attachmentReference':
-              storeOptionalValidationErrors(attachmentModule.validateAttachmentReference(validator, itemStack, doc._attachments));
+              storeOptionalValidationErrors(attachmentModule.validateAttachmentReference(doc, validator, itemStack));
               break;
             default:
               // This is not a document validation error; the item validator is configured incorrectly and must be fixed
