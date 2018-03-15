@@ -13,16 +13,16 @@ function makeValidationEnvironment(simpleMock) {
   const toJSON = JSON.stringify;
 
   return {
-    doc: doc,
-    oldDoc: oldDoc,
-    typeIdValidator: typeIdValidator,
-    simpleTypeFilter: simpleTypeFilter,
-    isDocumentMissingOrDeleted: isDocumentMissingOrDeleted,
-    isValueNullOrUndefined: isValueNullOrUndefined,
-    isArray: isArray,
-    log: log,
-    sum: sum,
-    toJSON: toJSON,
+    doc,
+    oldDoc,
+    typeIdValidator,
+    simpleTypeFilter,
+    isDocumentMissingOrDeleted,
+    isValueNullOrUndefined,
+    isArray,
+    log,
+    sum,
+    toJSON,
     documentDefinitions: %DOC_DEFINITIONS_PLACEHOLDER%
   };
 }

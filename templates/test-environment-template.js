@@ -6,10 +6,10 @@ function makeTestEnvironment(simpleMock) {
   const toJSON = JSON.stringify;
 
   return {
-    isArray: isArray,
-    log: log,
-    sum: sum,
-    toJSON: toJSON,
+    isArray,
+    log,
+    sum,
+    toJSON,
     validationFunction: %VALIDATION_FUNC_PLACEHOLDER%
   };
 }
