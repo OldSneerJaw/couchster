@@ -28,7 +28,7 @@ function validationModule(utils, simpleTypeFilter, typeIdValidator) {
   }
 
   // Ensures the document structure and content are valid
-  function validateDoc(doc, oldDoc, userContext, securityInfo, docDefinition, docType) {
+  function validateDoc(newDoc, oldDoc, userContext, securityInfo, docDefinition, docType) {
     var validationErrors = [ ];
 
     validateDocImmutability();
@@ -36,7 +36,7 @@ function validationModule(utils, simpleTypeFilter, typeIdValidator) {
     validateDocumentIdRegexPattern();
 
     // Only validate the document's contents if it's being created or replaced. There's no need if it's being deleted.
-    if (!doc._deleted) {
+    if (!newDoc._deleted) {
       validateDocContents();
     }
 
@@ -48,14 +48,14 @@ function validationModule(utils, simpleTypeFilter, typeIdValidator) {
 
     // Resolves a constraint defined at the document level (e.g. `propertyValidators`, `allowUnknownProperties`, `immutable`).
     function resolveDocConstraint(constraintDefinition) {
-      return (typeof constraintDefinition === 'function') ? constraintDefinition(doc, oldDoc) : constraintDefinition;
+      return (typeof constraintDefinition === 'function') ? constraintDefinition(newDoc, oldDoc) : constraintDefinition;
     }
 
     function validateDocImmutability() {
       if (!utils.isDocumentMissingOrDeleted(oldDoc)) {
         if (resolveDocConstraint(docDefinition.immutable)) {
           validationErrors.push('documents of this type cannot be replaced or deleted');
-        } else if (doc._deleted) {
+        } else if (newDoc._deleted) {
           if (resolveDocConstraint(docDefinition.cannotDelete)) {
             validationErrors.push('documents of this type cannot be deleted');
           }
@@ -68,11 +68,11 @@ function validationModule(utils, simpleTypeFilter, typeIdValidator) {
     }
 
     function validateDocumentIdRegexPattern() {
-      if (!doc._deleted && !oldDoc) {
+      if (!newDoc._deleted && !oldDoc) {
         // The constraint only applies when a document is created
         var documentIdRegexPattern = resolveDocConstraint(docDefinition.documentIdRegexPattern);
 
-        if (documentIdRegexPattern instanceof RegExp && !documentIdRegexPattern.test(doc._id)) {
+        if (documentIdRegexPattern instanceof RegExp && !documentIdRegexPattern.test(newDoc._id)) {
           validationErrors.push('document ID must conform to expected pattern ' + documentIdRegexPattern);
         }
       }
@@ -81,7 +81,7 @@ function validationModule(utils, simpleTypeFilter, typeIdValidator) {
     function validateDocContents() {
       var itemStack = [
         {
-          itemValue: doc,
+          itemValue: newDoc,
           oldItemValue: oldDoc,
           itemName: null
         }
@@ -100,17 +100,17 @@ function validationModule(utils, simpleTypeFilter, typeIdValidator) {
       // Execute each of the document's property validators while ignoring internal document properties at the root level
       validateProperties(resolvedPropertyValidators, resolveDocConstraint(docDefinition.allowUnknownProperties), true);
 
-      if (doc._attachments) {
-        storeOptionalValidationErrors(attachmentModule.validateAttachments(doc, docDefinition));
+      if (newDoc._attachments) {
+        storeOptionalValidationErrors(attachmentModule.validateAttachments(newDoc, docDefinition));
       }
 
-      // The following functions are nested within this function so they can share access to the doc, oldDoc and validationErrors params and
+      // The following functions are nested within this function so they can share access to the newDoc, oldDoc and validationErrors params and
       // the attachmentReferenceValidators and itemStack variables
       function resolveItemConstraint(constraintDefinition) {
         if (typeof constraintDefinition === 'function') {
           var currentItemEntry = itemStack[itemStack.length - 1];
 
-          return constraintDefinition(doc, oldDoc, currentItemEntry.itemValue, currentItemEntry.oldItemValue);
+          return constraintDefinition(newDoc, oldDoc, currentItemEntry.itemValue, currentItemEntry.oldItemValue);
         } else {
           return constraintDefinition;
         }
@@ -321,7 +321,7 @@ function validationModule(utils, simpleTypeFilter, typeIdValidator) {
               validateHashtable(validator);
               break;
             case 'attachmentReference':
-              storeOptionalValidationErrors(attachmentModule.validateAttachmentReference(doc, validator, itemStack));
+              storeOptionalValidationErrors(attachmentModule.validateAttachmentReference(newDoc, validator, itemStack));
               break;
             default:
               // This is not a document validation error; the item validator is configured incorrectly and must be fixed
@@ -469,7 +469,7 @@ function validationModule(utils, simpleTypeFilter, typeIdValidator) {
         var customValidationItemStack = itemStack.slice(0, -1);
 
         var customValidationErrors =
-          validator.customValidation(doc, oldDoc, currentItemEntry, customValidationItemStack, userContext, securityInfo);
+          validator.customValidation(newDoc, oldDoc, currentItemEntry, customValidationItemStack, userContext, securityInfo);
 
         if (Array.isArray(customValidationErrors)) {
           for (var errorIndex = 0; errorIndex < customValidationErrors.length; errorIndex++) {

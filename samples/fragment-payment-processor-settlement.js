@@ -1,10 +1,10 @@
 function() {
   // some common reuseable stuff
-  var docBusinessId = getBusinessId(doc, oldDoc);
+  var docBusinessId = getBusinessId(newDoc, oldDoc);
   var PROCESSOR_ID_MATCH_GROUP = 1;
   var SETTLEMENT_ID_MATCH_GROUP = 2;
   var typeRegex = createBusinessEntityRegex('paymentProcessor\\.([A-Za-z0-9_-]+)\\.processedSettlement\\.([A-Za-z0-9_-]+)');
-  var typeRegexMatchGroups = typeRegex.exec(doc._id);
+  var typeRegexMatchGroups = typeRegex.exec(newDoc._id);
 
   return {
     typeFilter: function(doc, oldDoc) {

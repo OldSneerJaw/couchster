@@ -1,5 +1,5 @@
 function makeValidationEnvironment(simpleMock) {
-  const doc = { };
+  const newDoc = { };
   const oldDoc = { };
   const typeIdValidator = { type: 'string' };
   const simpleTypeFilter = simpleMock.stub();
@@ -13,7 +13,7 @@ function makeValidationEnvironment(simpleMock) {
   const toJSON = JSON.stringify;
 
   return {
-    doc,
+    newDoc,
     oldDoc,
     typeIdValidator,
     simpleTypeFilter,

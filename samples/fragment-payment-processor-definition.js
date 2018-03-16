@@ -1,5 +1,7 @@
 {
-  authorizedRoles: toDefaultDbRoles(doc, oldDoc, 'CUSTOMER_PAYMENT_PROCESSORS'),
+  authorizedRoles: function(doc, oldDoc) {
+    return toDefaultDbRoles(doc, oldDoc, 'CUSTOMER_PAYMENT_PROCESSORS');
+  },
   typeFilter: function(doc, oldDoc) {
     return createBusinessEntityRegex('paymentProcessor\\.[A-Za-z0-9_-]+$').test(doc._id);
   },

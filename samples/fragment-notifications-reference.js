@@ -1,5 +1,7 @@
 {
-  authorizedRoles: toDefaultDbRoles(doc, oldDoc, 'NOTIFICATIONS'),
+  authorizedRoles: function(doc, oldDoc) {
+    return toDefaultDbRoles(doc, oldDoc, 'NOTIFICATIONS');
+  },
   typeFilter: function(doc, oldDoc) {
     return createBusinessEntityRegex('notifications$').test(doc._id);
   },

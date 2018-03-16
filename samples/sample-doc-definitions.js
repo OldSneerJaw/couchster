@@ -49,12 +49,10 @@ function() {
   function toDefaultDbRoles(doc, oldDoc, basePrivilegeName) {
     var businessId = getBusinessId(doc, oldDoc);
 
-    return function(doc, oldDoc) {
-      return {
-        add: [ toDbRole(businessId, 'ADD_' + basePrivilegeName) ],
-        replace: [ toDbRole(businessId, 'CHANGE_' + basePrivilegeName) ],
-        remove: [ toDbRole(businessId, 'REMOVE_' + basePrivilegeName) ]
-      };
+    return {
+      add: [ toDbRole(businessId, 'ADD_' + basePrivilegeName) ],
+      replace: [ toDbRole(businessId, 'CHANGE_' + basePrivilegeName) ],
+      remove: [ toDbRole(businessId, 'REMOVE_' + basePrivilegeName) ]
     };
   }
 

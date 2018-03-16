@@ -1,5 +1,7 @@
 {
-  authorizedRoles: toDefaultDbRoles(doc, oldDoc, 'INVOICE_PAYMENT_REQUISITIONS'),
+  authorizedRoles: function(doc, oldDoc) {
+    return toDefaultDbRoles(doc, oldDoc, 'INVOICE_PAYMENT_REQUISITIONS');
+  },
   typeFilter: function(doc, oldDoc) {
     return createBusinessEntityRegex('invoice\\.[A-Za-z0-9_-]+.paymentRequisitions$').test(doc._id);
   },
