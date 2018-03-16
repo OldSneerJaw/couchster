@@ -1,13 +1,9 @@
 function() {
-  // some common reuseable stuff
-  var docBusinessId = getBusinessId(newDoc, oldDoc);
-  var PROCESSOR_ID_MATCH_GROUP = 1;
-  var SETTLEMENT_ID_MATCH_GROUP = 2;
-  var typeRegex = createBusinessEntityRegex('paymentProcessor\\.([A-Za-z0-9_-]+)\\.processedSettlement\\.([A-Za-z0-9_-]+)');
-  var typeRegexMatchGroups = typeRegex.exec(newDoc._id);
-
   return {
     typeFilter: function(doc, oldDoc) {
+      var typeRegex =
+        createBusinessEntityRegex('paymentProcessor\\.[A-Za-z0-9_-]+\\.processedSettlement\\.[A-Za-z0-9_-]+');
+
       return typeRegex.test(doc._id);
     },
     authorizedRoles: function(doc, oldDoc) {
@@ -16,15 +12,18 @@ function() {
         write: 'payment-settlement-write'
       };
     },
+    documentIdRegexPattern: function(doc) {
+      // Note that this regex uses double quotes rather than single quotes as a workaround to https://github.com/Kashoo/synctos/issues/116
+      return new RegExp("^biz\\." + doc.businessId + "\\.paymentProcessor\\." + doc.processorId + "\\.processedSettlement\\." + doc.settlementId + "$");
+    },
     immutable: true,
     propertyValidators: {
       businessId: {
         // The ID of the business with which the settlement is associated
         type: 'integer',
         required: true,
-        minimumValue: Number(docBusinessId),
-        maximumValue: Number(docBusinessId),
-        immutable: true
+        immutable: true,
+        minimumValue: 1
       },
       transferId: {
         // The ID of the Books transfer record that represents the settlement
@@ -37,25 +36,13 @@ function() {
         // The ID of the settlement as provided by the payment processor
         type: 'string',
         required: true,
-        mustNotBeEmpty: true,
-        immutable: true,
-        regexPattern: function(doc, oldDoc, value, oldValue) {
-          var expectedSettlementId = typeRegexMatchGroups[SETTLEMENT_ID_MATCH_GROUP];
-
-          return new RegExp('^' + expectedSettlementId + '$');
-        }
+        immutable: true
       },
       processorId: {
         // The Kashoo payment processor associated with the settlement
         type: 'string',
         required: true,
-        mustNotBeEmpty: true,
-        immutable: true,
-        regexPattern: function(doc, oldDoc, value, oldValue) {
-          var expectedProcessorId = typeRegexMatchGroups[PROCESSOR_ID_MATCH_GROUP];
-
-          return new RegExp('^' + expectedProcessorId + '$');
-        }
+        immutable: true
       },
       capturedAt: {
         // The date that the settlement was completed (captured)
