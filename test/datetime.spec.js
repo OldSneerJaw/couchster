@@ -410,8 +410,6 @@ describe('Date/time validation type', () => {
         exclusiveRangeValidationAsDatetimesProp: new Date('2018-02-08T12:22:37.900').toISOString() // Output as UTC
       };
 
-      console.log('exclusiveRangeValidationAsDatetimesProp: ' + doc.exclusiveRangeValidationAsDatetimesProp);
-
       testFixture.verifyDocumentNotCreated(
         doc,
         'datetimeDoc',
