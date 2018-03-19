@@ -74,12 +74,12 @@ describe('Custom validation constraint:', () => {
     testFixture.verifyValidationErrors(
       'customValidationDoc',
       [
-        'doc: ' + JSON.stringify(doc),
-        'oldDoc: ' + JSON.stringify(oldDoc),
-        'currentItemEntry: ' + JSON.stringify(expectedCurrentItemEntry),
-        'validationItemStack: ' + JSON.stringify(expectedValidationItemStack),
-        'userContext: ' + JSON.stringify(testUserContext),
-        'securityInfo: ' + JSON.stringify(testSecurityInfo)
+        `doc: ${JSON.stringify(doc)}`,
+        `oldDoc: ${JSON.stringify(oldDoc)}`,
+        `currentItemEntry: ${JSON.stringify(expectedCurrentItemEntry)}`,
+        `validationItemStack: ${JSON.stringify(expectedValidationItemStack)}`,
+        `userContext: ${JSON.stringify(testUserContext)}`,
+        `securityInfo: ${JSON.stringify(testSecurityInfo)}`
       ],
       validationFuncError);
   });
