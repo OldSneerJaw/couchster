@@ -42,8 +42,8 @@ exports.documentIdRegexPatternViolation = (expectedRegex) => `document ID must c
  * @param {string} itemPath The full path of the property or element in which the error occurs (e.g. "objectProp.arrayProp[3].enumProp")
  * @param {(string[]|integer[])} expectedPredefinedValues A list of predefined values that are allowed for the item in question
  */
-exports.enumPredefinedValueViolation = (itemPath, expectedPredefinedValues) =>
-  `item "${itemPath}" must be one of the predefined values: ${expectedPredefinedValues.join(',')}`;
+exports.enumPredefinedValueViolation =
+  (itemPath, expectedPredefinedValues) => `item "${itemPath}" must be one of the predefined values: ${expectedPredefinedValues.join(',')}`;
 
 /**
  * Formats a message for the error that occurs when a hashtable key is an empty string.
@@ -58,8 +58,8 @@ exports.hashtableKeyEmpty = (hashtablePath) => `hashtable "${hashtablePath}" mus
  * @param {string} hashtablePath The full path of the hashtable in which the error occurs (e.g. "objectProp.arrayProp[2].hashtableProp")
  * @param {integer} expectedMaximumSize The maximum number of elements
  */
-exports.hashtableMaximumSizeViolation = (hashtablePath, expectedMaximumSize) =>
-  `hashtable "${hashtablePath}" must not be larger than ${expectedMaximumSize} elements`;
+exports.hashtableMaximumSizeViolation =
+  (hashtablePath, expectedMaximumSize) => `hashtable "${hashtablePath}" must not be larger than ${expectedMaximumSize} elements`;
 
 /**
  * Formats a message for the error that occurs when a hashtable has less than the minimum number of elements.
@@ -67,8 +67,8 @@ exports.hashtableMaximumSizeViolation = (hashtablePath, expectedMaximumSize) =>
  * @param {string} hashtablePath The full path of the hashtable in which the error occurs (e.g. "objectProp.arrayProp[2].hashtableProp")
  * @param {integer} expectedMinimumSize The minimum number of elements
  */
-exports.hashtableMinimumSizeViolation = (hashtablePath, expectedMinimumSize) =>
-  `hashtable "${hashtablePath}" must not be smaller than ${expectedMinimumSize} elements`;
+exports.hashtableMinimumSizeViolation =
+  (hashtablePath, expectedMinimumSize) => `hashtable "${hashtablePath}" must not be smaller than ${expectedMinimumSize} elements`;
 
 /**
  * Formats a message for the error that occurs when there is an attempt to replace or delete an immutable document.
@@ -88,8 +88,8 @@ exports.immutableItemViolation = (itemPath) => `item "${itemPath}" cannot be mod
  *
  * @param {integer} maxCount The maximum number of attachments that are allowed
  */
-exports.maximumAttachmentCountViolation = (maxCount) =>
-  `documents of this type must not have more than ${maxCount} attachments`;
+exports.maximumAttachmentCountViolation =
+  (maxCount) => `documents of this type must not have more than ${maxCount} attachments`;
 
 /**
  * Formats a message for the error that occurs when a document's attachment exceeds the maximum individual attachment size.
@@ -97,8 +97,8 @@ exports.maximumAttachmentCountViolation = (maxCount) =>
  * @param {string} attachmentName The name of the attachment in question
  * @param {integer} maxSize The maximum size, in bytes, that is allowed
  */
-exports.maximumIndividualAttachmentSizeViolation = (attachmentName, maxSize) =>
-  `attachment ${attachmentName} must not exceed ${maxSize} bytes`;
+exports.maximumIndividualAttachmentSizeViolation =
+  (attachmentName, maxSize) => `attachment ${attachmentName} must not exceed ${maxSize} bytes`;
 
 /**
  * Formats a message for the error that occurs when a string or array's length is greater than the maximum allowed.
@@ -106,8 +106,8 @@ exports.maximumIndividualAttachmentSizeViolation = (attachmentName, maxSize) =>
  * @param {string} itemPath The full path of the property or element in which the error occurs (e.g. "objectProp.arrayProp[2].stringProp")
  * @param {integer} maxLength The maximum length that is allowed
  */
-exports.maximumLengthViolation = (itemPath, maxLength) =>
-  `length of item "${itemPath}" must not be greater than ${maxLength}`;
+exports.maximumLengthViolation =
+  (itemPath, maxLength) => `length of item "${itemPath}" must not be greater than ${maxLength}`;
 
 /**
  * Formats a message for the error that occurs when an attachment reference points to a file that is larger than the maximum allowed size.
@@ -116,16 +116,16 @@ exports.maximumLengthViolation = (itemPath, maxLength) =>
  *                          (e.g. "hashtableProp[my-key].attachmentRefProp")
  * @param {integer} maxSize The maximum size, in bytes, that is allowed
  */
-exports.maximumSizeAttachmentViolation = (itemPath, maxSize) =>
-  `attachment reference "${itemPath}" must not be larger than ${maxSize} bytes`;
+exports.maximumSizeAttachmentViolation =
+  (itemPath, maxSize) => `attachment reference "${itemPath}" must not be larger than ${maxSize} bytes`;
 
 /**
  * Formats a message for the error that occurs when a document's attachments exceed the maximum total attachment size.
  *
  * @param {integer} maxSize The maximum size, in bytes, that is allowed
  */
-exports.maximumTotalAttachmentSizeViolation = (maxSize) =>
-  `documents of this type must not have a combined attachment size greater than ${maxSize} bytes`;
+exports.maximumTotalAttachmentSizeViolation =
+  (maxSize) => `documents of this type must not have a combined attachment size greater than ${maxSize} bytes`;
 
 /**
  * Formats a message for the error that occurs when a value is greater than the maximum allowed.
@@ -141,8 +141,8 @@ exports.maximumValueViolation = (itemPath, maxValue) => `item "${itemPath}" must
  * @param {string} itemPath The full path of the property or element in which the error occurs (e.g. "objectProp.dateProp")
  * @param {(float|integer|string)} maxValue The maximum value (exclusive) that is allowed
  */
-exports.maximumValueExclusiveViolation = (itemPath, maxValue) =>
-  `item "${itemPath}" must not be greater than or equal to ${maxValue}`;
+exports.maximumValueExclusiveViolation =
+  (itemPath, maxValue) => `item "${itemPath}" must not be greater than or equal to ${maxValue}`;
 
 /**
  * Formats a message for the error that occurs when a string or array's length is less than the minimum allowed.
@@ -150,8 +150,8 @@ exports.maximumValueExclusiveViolation = (itemPath, maxValue) =>
  * @param {string} itemPath The full path of the property or element in which the error occurs (e.g. "objectProp.arrayProp")
  * @param {integer} minLength The minimum length that is allowed
  */
-exports.minimumLengthViolation = (itemPath, minLength) =>
-  `length of item "${itemPath}" must not be less than ${minLength}`;
+exports.minimumLengthViolation =
+  (itemPath, minLength) => `length of item "${itemPath}" must not be less than ${minLength}`;
 
 /**
  * Formats a message for the error that occurs when a value is less than the minimum allowed.
@@ -167,8 +167,8 @@ exports.minimumValueViolation = (itemPath, minValue) => `item "${itemPath}" must
  * @param {string} itemPath The full path of the property or element in which the error occurs (e.g. "arrayProp[0].datetimeProp")
  * @param {(float|integer|string)} minValue The minimum value (exclusive) that is allowed
  */
-exports.minimumValueExclusiveViolation = (itemPath, minValue) =>
-  `item "${itemPath}" must not be less than or equal to ${minValue}`;
+exports.minimumValueExclusiveViolation =
+  (itemPath, minValue) => `item "${itemPath}" must not be less than or equal to ${minValue}`;
 
 /**
  * Formats a message for the error that occurs when a string has leading or trailing whitespace even though it is forbidden.
@@ -183,8 +183,8 @@ exports.mustBeTrimmedViolation = (itemPath) => `item "${itemPath}" must not have
  * @param {string} itemPath The full path of the property or element in which the error occurs (e.g. "objectProp.integerProp")
  * @param {*} expectedItemValue The value that is expected
  */
-exports.mustEqualViolation = (itemPath, expectedItemValue) =>
-  `value of item "${itemPath}" must equal ${JSON.stringify(expectedItemValue)}`;
+exports.mustEqualViolation =
+  (itemPath, expectedItemValue) => `value of item "${itemPath}" must equal ${JSON.stringify(expectedItemValue)}`;
 
 /**
  * Formats a message for the error that occurs when there is an attempt to assign an empty string or array to a property or element where
@@ -215,8 +215,8 @@ exports.mustNotBeNullValueViolation = (itemPath) => `item "${itemPath}" must not
  *                                  (e.g. "objectProp.hashtableProp[my-key]")
  * @param {RegExp} expectedRegex The regular expression pattern that is expected
  */
-exports.regexPatternHashtableKeyViolation = (hashtableKeyPath, expectedRegex) =>
-  `hashtable key "${hashtableKeyPath}" must conform to expected format ${expectedRegex}`;
+exports.regexPatternHashtableKeyViolation =
+  (hashtableKeyPath, expectedRegex) => `hashtable key "${hashtableKeyPath}" must conform to expected format ${expectedRegex}`;
 
 /**
  * Formats a message for the error that occurs when a property or element value fails to satisfy the regular expression pattern.
@@ -224,8 +224,8 @@ exports.regexPatternHashtableKeyViolation = (hashtableKeyPath, expectedRegex) =>
  * @param {string} itemPath The full path of the property or element in which the error occurs (e.g. "hashtableProp[my-key].stringProp")
  * @param {RegExp} expectedRegex The regular expression pattern that is expected
  */
-exports.regexPatternItemViolation = (itemPath, expectedRegex) =>
-  `item "${itemPath}" must conform to expected format ${expectedRegex}`;
+exports.regexPatternItemViolation =
+  (itemPath, expectedRegex) => `item "${itemPath}" must conform to expected format ${expectedRegex}`;
 
 /**
  * Formats a message for the error that occurs when a file attachment violates the constraint that all of that document type's file
@@ -233,8 +233,8 @@ exports.regexPatternItemViolation = (itemPath, expectedRegex) =>
  *
  * @param {string} attachmentName The name of the attachment in question
  */
-exports.requireAttachmentReferencesViolation = (attachmentName) =>
-  `attachment ${attachmentName} must have a corresponding attachment reference property`;
+exports.requireAttachmentReferencesViolation =
+  (attachmentName) => `attachment ${attachmentName} must have a corresponding attachment reference property`;
 
 /**
  * Formats a message for the error that occurs when a required property or element value is null or undefined.
@@ -316,8 +316,8 @@ exports.timezoneFormatInvalid = (itemPath) => `item "${itemPath}" must be ${getT
  * @param {string} expectedType The validation type that was expected (e.g. "array", "attachmentReference", "boolean", "date", "datetime",
  *                              "float", "hashtable", "integer", "object", "string"). Throws an exception if the type is not recognized.
  */
-exports.typeConstraintViolation = (itemPath, expectedType) =>
-  `item "${itemPath}" must be ${getTypeDescription(expectedType)}`;
+exports.typeConstraintViolation =
+  (itemPath, expectedType) => `item "${itemPath}" must be ${getTypeDescription(expectedType)}`;
 
 /**
  * Formats a message for the error that occurs when the document type is unrecognized.
