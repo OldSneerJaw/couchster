@@ -1,6 +1,9 @@
 # Introduction
 
-[![Build Status](https://travis-ci.org/OldSneerJaw/couchster.svg?branch=master)](https://travis-ci.org/OldSneerJaw/couchster) [![npm version](https://badge.fury.io/js/couchster.svg)](https://badge.fury.io/js/couchster) [![dependencies Status](https://david-dm.org/OldSneerJaw/couchster/master/status.svg)](https://david-dm.org/OldSneerJaw/couchster/master) [![devDependencies Status](https://david-dm.org/OldSneerJaw/couchster/master/dev-status.svg)](https://david-dm.org/OldSneerJaw/couchster/master?type=dev)
+[![Build Status](https://travis-ci.org/OldSneerJaw/couchster.svg?branch=master)](https://travis-ci.org/OldSneerJaw/couchster)
+[![npm version](https://badge.fury.io/js/couchster.svg)](https://www.npmjs.com/package/couchster)
+[![dependencies Status](https://david-dm.org/OldSneerJaw/couchster/master/status.svg)](https://david-dm.org/OldSneerJaw/couchster/master)
+[![devDependencies Status](https://david-dm.org/OldSneerJaw/couchster/master/dev-status.svg)](https://david-dm.org/OldSneerJaw/couchster/master?type=dev)
 
 A utility to aid in the process of designing well-structured document validation functions for Apache CouchDB.
 
