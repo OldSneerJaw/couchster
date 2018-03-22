@@ -11,7 +11,7 @@ function timeModule(utils) {
 
   // Check that a given value is a valid ISO 8601 format date string with optional time and time zone components
   function isIso8601DateTimeString(value) {
-    var regex = /^(([0-9]{4})(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01]))?)?)(T((([01][0-9]|2[0-3])(:[0-5][0-9])(:[0-5][0-9](\.[0-9]{1,3})?)?)|(24:00(:00(\.0{1,3})?)?))(Z|([+-])([01][0-9]|2[0-3]):([0-5][0-9]))?)?$/;
+    var regex = /^(([+-]\d{6}|\d{4})(-(0[1-9]|1[0-2])(-(0[1-9]|[12]\d|3[01]))?)?)(T((([01]\d|2[0-3])(:[0-5]\d)(:[0-5]\d(\.\d{1,3})?)?)|(24:00(:00(\.0{1,3})?)?))(Z|([+-])([01]\d|2[0-3]):([0-5]\d))?)?$/;
 
     // Verify that it's in ISO 8601 format (via the regex) and that it represents a valid point in time (via Date.parse)
     return regex.test(value) && !isNaN(Date.parse(value));
@@ -19,7 +19,7 @@ function timeModule(utils) {
 
   // Check that a given value is a valid ISO 8601 date string without time and time zone components
   function isIso8601DateString(value) {
-    var regex = /^([0-9]{4})(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01]))?)?$/;
+    var regex = /^([+-]\d{6}|\d{4})(-(0[1-9]|1[0-2])(-(0[1-9]|[12]\d|3[01]))?)?$/;
 
     // Verify that it's in ISO 8601 format (via the regex) and that it represents a valid day (via Date.parse)
     return regex.test(value) && !isNaN(Date.parse(value));

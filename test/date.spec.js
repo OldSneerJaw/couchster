@@ -36,10 +36,28 @@ describe('Date validation type:', () => {
       testFixture.verifyDocumentCreated(doc);
     });
 
+    it('accepts a valid date with an extended year', () => {
+      const doc = {
+        _id: 'dateDoc',
+        formatValidationProp: '-000001-01-01'
+      };
+
+      testFixture.verifyDocumentCreated(doc);
+    });
+
     it('rejects a date with an invalid year', () => {
       const doc = {
         _id: 'dateDoc',
         formatValidationProp: '999-07-17'
+      };
+
+      testFixture.verifyDocumentNotCreated(doc, 'dateDoc', errorFormatter.dateFormatInvalid('formatValidationProp'));
+    });
+
+    it('rejects a date with an invalid extended year', () => {
+      const doc = {
+        _id: 'dateDoc',
+        formatValidationProp: '+1234567-12-02'
       };
 
       testFixture.verifyDocumentNotCreated(doc, 'dateDoc', errorFormatter.dateFormatInvalid('formatValidationProp'));

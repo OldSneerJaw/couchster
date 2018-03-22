@@ -81,10 +81,46 @@ describe('Date/time validation type', () => {
       testFixture.verifyDocumentCreated(doc);
     });
 
+    it('accepts a valid date/time with an extended year', () => {
+      const doc = {
+        _id: 'datetimeDoc',
+        formatValidationProp: '-123456-03-21T16:43-07:00'
+      };
+
+      testFixture.verifyDocumentCreated(doc);
+    });
+
+    it('accepts a valid date/time with an extended year and no time component', () => {
+      const doc = {
+        _id: 'datetimeDoc',
+        formatValidationProp: '+001985-10-26T08:15:00.000Z'
+      };
+
+      testFixture.verifyDocumentCreated(doc);
+    });
+
     it('rejects a date/time with an invalid year', () => {
       const doc = {
         _id: 'datetimeDoc',
         formatValidationProp: '10000-07-17T15:20:09.348-07:00'
+      };
+
+      testFixture.verifyDocumentNotCreated(doc, 'datetimeDoc', errorFormatter.datetimeFormatInvalid('formatValidationProp'));
+    });
+
+    it('rejects a date/time with an invalid extended year', () => {
+      const doc = {
+        _id: 'datetimeDoc',
+        formatValidationProp: '123456-04-17T11:43-07:00'
+      };
+
+      testFixture.verifyDocumentNotCreated(doc, 'datetimeDoc', errorFormatter.datetimeFormatInvalid('formatValidationProp'));
+    });
+
+    it('rejects a date/time with an invalid extended year and no time component', () => {
+      const doc = {
+        _id: 'datetimeDoc',
+        formatValidationProp: '+2018-03-21'
       };
 
       testFixture.verifyDocumentNotCreated(doc, 'datetimeDoc', errorFormatter.datetimeFormatInvalid('formatValidationProp'));
