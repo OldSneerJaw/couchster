@@ -37,6 +37,12 @@ function init(rawValidationFunction, validationFunctionFile) {
     validationErrorFormatter,
 
     /**
+     * Resets the test fixture's environment to its initial state. Should be called after each test case to ensure the
+     * environment is in a pristine state at all times.
+     */
+    resetTestEnvironment,
+
+    /**
      * Attempts to write the specified doc and then verifies that it completed successfully with the expected authorization.
      *
      * @param {Object} doc The document to write. May include property "_deleted=true" to simulate a delete operation.
@@ -199,6 +205,13 @@ function init(rawValidationFunction, validationFunctionFile) {
 
   // Implementation begins here
   const defaultWriteRole = 'write';
+
+  function resetTestEnvironment() {
+    const newEnvironment = testEnvironmentMaker.init(rawValidationFunction, validationFunctionFile);
+    Object.assign(testEnvironment, newEnvironment);
+
+    return testEnvironment;
+  }
 
   function verifyDocumentAccepted(doc, oldDoc, expectedAuthorization) {
     const userContexts = generateAuthorizedUserContexts(expectedAuthorization);

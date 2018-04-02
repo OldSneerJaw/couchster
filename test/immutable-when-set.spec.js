@@ -2,10 +2,11 @@ const testFixtureMaker = require('../src/testing/test-fixture-maker');
 const errorFormatter = require('../src/testing/validation-error-formatter');
 
 describe('Immutable when set constraint:', () => {
-  let testFixture;
+  const testFixture =
+    testFixtureMaker.initFromValidationFunction('build/validation-functions/test-immutable-when-set-validation-function.js');
 
-  beforeEach(() => {
-    testFixture = testFixtureMaker.initFromValidationFunction('build/validation-functions/test-immutable-when-set-validation-function.js');
+  afterEach(() => {
+    testFixture.resetTestEnvironment();
   });
 
   describe('a property with static validation', () => {

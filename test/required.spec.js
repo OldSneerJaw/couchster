@@ -2,10 +2,11 @@ const testFixtureMaker = require('../src/testing/test-fixture-maker');
 const errorFormatter = require('../src/testing/validation-error-formatter');
 
 describe('Required value constraint', () => {
-  let testFixture;
+  const testFixture =
+    testFixtureMaker.initFromValidationFunction('build/validation-functions/test-required-validation-function.js');
 
-  beforeEach(() => {
-    testFixture = testFixtureMaker.initFromValidationFunction('build/validation-functions/test-required-validation-function.js');
+  afterEach(() => {
+    testFixture.resetTestEnvironment();
   });
 
   describe('with static validation', () => {

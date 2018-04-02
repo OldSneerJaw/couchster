@@ -3,10 +3,11 @@ const testFixtureMaker = require('../src/testing/test-fixture-maker');
 const errorFormatter = require('../src/testing/validation-error-formatter');
 
 describe('Functionality that is common to all documents:', () => {
-  let testFixture;
+  const testFixture =
+    testFixtureMaker.initFromValidationFunction('build/validation-functions/test-general-validation-function.js');
 
-  beforeEach(() => {
-    testFixture = testFixtureMaker.initFromValidationFunction('build/validation-functions/test-general-validation-function.js');
+  afterEach(() => {
+    testFixture.resetTestEnvironment();
   });
 
   describe('the document type identifier', () => {

@@ -2,10 +2,11 @@ const testFixtureMaker = require('../src/testing/test-fixture-maker');
 const errorFormatter = require('../src/testing/validation-error-formatter');
 
 describe('String validation type', () => {
-  let testFixture;
+  const testFixture =
+    testFixtureMaker.initFromValidationFunction('build/validation-functions/test-string-validation-function.js');
 
-  beforeEach(() => {
-    testFixture = testFixtureMaker.initFromValidationFunction('build/validation-functions/test-string-validation-function.js');
+  afterEach(() => {
+    testFixture.resetTestEnvironment();
   });
 
   describe('length constraints', () => {

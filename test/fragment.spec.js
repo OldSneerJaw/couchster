@@ -1,10 +1,11 @@
 const testFixtureMaker = require('../src/testing/test-fixture-maker');
 
 describe('Document definition fragments:', () => {
-  let testFixture;
+  const testFixture =
+    testFixtureMaker.initFromValidationFunction('build/validation-functions/test-fragment-validation-function.js');
 
-  beforeEach(() => {
-    testFixture = testFixtureMaker.initFromValidationFunction('build/validation-functions/test-fragment-validation-function.js');
+  afterEach(() => {
+    testFixture.resetTestEnvironment();
   });
 
   it('can create documents for a document type whose definition was imported with a single-quoted filename', () => {

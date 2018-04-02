@@ -692,14 +692,14 @@ After that, create a new specification file in your project's `test/` directory 
 var testFixtureMaker = require('couchster').testFixtureMaker;
 ```
 
-Create a new `describe` block to encapsulate the forthcoming test cases and also initialize the couchster test fixture before each test case using the `beforeEach` function. For example:
+Create a new `describe` block to encapsulate the forthcoming test cases, initialize the couchster test fixture and also reset the state after each test case using the `afterEach` function. For example:
 
 ```
 describe('My new validation function', function() {
-  var testFixture;
+  var testFixture = testFixtureMaker.initFromDocumentDefinitions('/path/to/my-doc-definitions.js');
 
-  beforeEach(function() {
-    testFixture = testFixtureMaker.initFromDocumentDefinitions('/path/to/my-doc-definitions.js');
+  afterEach(function() {
+    testFixture.resetTestEnvironment();
   });
 
   ...

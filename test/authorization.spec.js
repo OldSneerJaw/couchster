@@ -2,10 +2,11 @@ const { expect } = require('chai');
 const testFixtureMaker = require('../src/testing/test-fixture-maker');
 
 describe('Authorization:', () => {
-  let testFixture;
+  const testFixture =
+    testFixtureMaker.initFromValidationFunction('build/validation-functions/test-authorization-validation-function.js');
 
-  beforeEach(() => {
-    testFixture = testFixtureMaker.initFromValidationFunction('build/validation-functions/test-authorization-validation-function.js');
+  afterEach(() => {
+    testFixture.resetTestEnvironment();
   });
 
   describe('for a document with explicit role definitions', () => {
