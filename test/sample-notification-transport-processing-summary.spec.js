@@ -2,14 +2,13 @@ const sampleSpecHelperMaker = require('./helpers/sample-spec-helper-maker');
 const testFixtureMaker = require('../src/testing/test-fixture-maker');
 
 describe('Sample notification transport processing summary doc definition', () => {
-  let testFixture;
-  let errorFormatter;
-  let sampleSpecHelper;
+  const testFixture =
+    testFixtureMaker.initFromValidationFunction('build/validation-functions/test-sample-validation-function.js');
+  const errorFormatter = testFixture.validationErrorFormatter;
+  const sampleSpecHelper = sampleSpecHelperMaker.init(testFixture);
 
-  beforeEach(() => {
-    testFixture = testFixtureMaker.initFromValidationFunction('build/validation-functions/test-sample-validation-function.js');
-    errorFormatter = testFixture.validationErrorFormatter;
-    sampleSpecHelper = sampleSpecHelperMaker.init(testFixture);
+  afterEach(() => {
+    testFixture.resetTestEnvironment();
   });
 
   function verifyProcessingSummaryWritten(doc, oldDoc) {

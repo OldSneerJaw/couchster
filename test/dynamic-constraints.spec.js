@@ -2,10 +2,11 @@ const testFixtureMaker = require('../src/testing/test-fixture-maker');
 const errorFormatter = require('../src/testing/validation-error-formatter');
 
 describe('Dynamic constraints', () => {
-  let testFixture;
+  const testFixture =
+    testFixtureMaker.initFromValidationFunction('build/validation-functions/test-dynamic-constraints-validation-function.js');
 
-  beforeEach(() => {
-    testFixture = testFixtureMaker.initFromValidationFunction('build/validation-functions/test-dynamic-constraints-validation-function.js');
+  afterEach(() => {
+    testFixture.resetTestEnvironment();
   });
 
   it('allows a new doc to be created when the property constraints are satisfied', () => {

@@ -1,10 +1,11 @@
 const testFixtureMaker = require('../src/testing/test-fixture-maker');
 
 describe('Simple type filter:', () => {
-  let testFixture;
+  const testFixture =
+    testFixtureMaker.initFromValidationFunction('build/validation-functions/test-simple-type-filter-validation-function.js');
 
-  beforeEach(() => {
-    testFixture = testFixtureMaker.initFromValidationFunction('build/validation-functions/test-simple-type-filter-validation-function.js');
+  afterEach(() => {
+    testFixture.resetTestEnvironment();
   });
 
   function testSimpleTypeFilter(docTypeId) {

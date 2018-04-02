@@ -35,7 +35,11 @@ describe('Test fixture maker:', () => {
     let testFixture;
 
     beforeEach(() => {
-      testFixture = testFixtureMaker.initFromDocumentDefinitions(fakeFilePath);
+      testFixture = testFixture === void 0 ? testFixtureMaker.initFromDocumentDefinitions(fakeFilePath) : testFixture;
+    });
+
+    afterEach(() => {
+      testFixture.resetTestEnvironment();
     });
 
     it('fails if authorization is NOT denied', () => {
@@ -85,7 +89,11 @@ describe('Test fixture maker:', () => {
     let testFixture;
 
     beforeEach(() => {
-      testFixture = testFixtureMaker.initFromDocumentDefinitions(fakeFilePath);
+      testFixture = testFixture === void 0 ? testFixtureMaker.initFromDocumentDefinitions(fakeFilePath) : testFixture;
+    });
+
+    afterEach(() => {
+      testFixture.resetTestEnvironment();
     });
 
     it('fails if the document type is recognized', () => {
@@ -102,7 +110,11 @@ describe('Test fixture maker:', () => {
     let testFixture;
 
     beforeEach(() => {
-      testFixture = testFixtureMaker.initFromDocumentDefinitions(fakeFilePath);
+      testFixture = testFixture === void 0 ? testFixtureMaker.initFromDocumentDefinitions(fakeFilePath) : testFixture;
+    });
+
+    afterEach(() => {
+      testFixture.resetTestEnvironment();
     });
 
     it('fails if the validation function does not throw an error', () => {

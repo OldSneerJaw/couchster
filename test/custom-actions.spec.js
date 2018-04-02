@@ -8,10 +8,11 @@ describe('Custom actions:', () => {
     expectedUsers: [ 'write-user' ]
   };
 
-  let testFixture;
+  const testFixture =
+    testFixtureMaker.initFromValidationFunction('build/validation-functions/test-custom-actions-validation-function.js');
 
-  beforeEach(() => {
-    testFixture = testFixtureMaker.initFromValidationFunction('build/validation-functions/test-custom-actions-validation-function.js');
+  afterEach(() => {
+    testFixture.resetTestEnvironment();
   });
 
   describe('the onTypeIdentificationSucceeded event', () => {

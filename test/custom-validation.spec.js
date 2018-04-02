@@ -2,10 +2,11 @@ const { expect } = require('chai');
 const testFixtureMaker = require('../src/testing/test-fixture-maker');
 
 describe('Custom validation constraint:', () => {
-  let testFixture;
+  const testFixture =
+    testFixtureMaker.initFromValidationFunction('build/validation-functions/test-custom-validation-validation-function.js');
 
-  beforeEach(() => {
-    testFixture = testFixtureMaker.initFromValidationFunction('build/validation-functions/test-custom-validation-validation-function.js');
+  afterEach(() => {
+    testFixture.resetTestEnvironment();
   });
 
   it('allows a document if custom validation succeeds', () => {
