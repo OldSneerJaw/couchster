@@ -22,9 +22,9 @@ function init(rawValidationFunction, validationFunctionFile) {
   const filePath = path.resolve(__dirname, '../../templates/environments/test-environment-template.js');
   const environmentTemplate = fs.readFileSync(filePath, 'utf8').trim();
 
-  // The test environment includes a placeholder string called "%VALIDATION_FUNC_PLACEHOLDER%" that is to be replaced with the contents of
+  // The test environment includes a placeholder string called "$VALIDATION_FUNC_PLACEHOLDER$" that is to be replaced with the contents of
   // the validation function
-  const environmentString = environmentTemplate.replace('%VALIDATION_FUNC_PLACEHOLDER%', () => rawValidationFunction);
+  const environmentString = environmentTemplate.replace('$VALIDATION_FUNC_PLACEHOLDER$', () => rawValidationFunction);
 
   // The code that is compiled must be an expression or a sequence of one or more statements. Surrounding it with parentheses makes it a
   // valid statement.

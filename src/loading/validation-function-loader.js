@@ -34,7 +34,7 @@ function loadFromFile(docDefinitionsFile, formatOptions) {
   const docDefinitions = docDefinitionsLoader.load(docDefinitionsFile);
 
   // Load the document definitions into the validation function template
-  const rawValidationFuncString = validationFuncTemplate.replace('%DOCUMENT_DEFINITIONS%', () => docDefinitions);
+  const rawValidationFuncString = validationFuncTemplate.replace('$DOCUMENT_DEFINITIONS$', () => docDefinitions);
 
   return formatValidationFunction(rawValidationFuncString, formatOptions || { });
 }

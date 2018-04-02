@@ -10,6 +10,6 @@ function makeTestEnvironment(simpleMock) {
     log,
     sum,
     toJSON,
-    validationFunction: %VALIDATION_FUNC_PLACEHOLDER%
+    validationFunction: $VALIDATION_FUNC_PLACEHOLDER$
   };
 }

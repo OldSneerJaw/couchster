@@ -23,6 +23,6 @@ function makeValidationEnvironment(simpleMock) {
     log,
     sum,
     toJSON,
-    documentDefinitions: %DOC_DEFINITIONS_PLACEHOLDER%
+    documentDefinitions: $DOC_DEFINITIONS_PLACEHOLDER$
   };
 }

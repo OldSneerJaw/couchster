@@ -4,6 +4,7 @@
   "node": false,
   "varstmt": false,
   "globals": {
+    "$DOCUMENT_DEFINITIONS$": false,
     "importValidationFunctionFragment": false,
     "isArray": false,
     "log": false,

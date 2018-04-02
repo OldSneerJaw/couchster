@@ -31,10 +31,10 @@ describe('Test environment maker', () => {
   });
 
   function verifyParse(rawValidationFunction, originalFilename) {
-    const envTemplateFileContents = 'template: %VALIDATION_FUNC_PLACEHOLDER%';
+    const envTemplateFileContents = 'template: $VALIDATION_FUNC_PLACEHOLDER$';
     fsMock.readFileSync.returnWith(envTemplateFileContents);
 
-    const expectedTestEnvString = envTemplateFileContents.replace('%VALIDATION_FUNC_PLACEHOLDER%', () => rawValidationFunction);
+    const expectedTestEnvString = envTemplateFileContents.replace('$VALIDATION_FUNC_PLACEHOLDER$', () => rawValidationFunction);
 
     const expectedResult = { bar: 'foo' };
     const mockVmEnvironment = simpleMock.stub();

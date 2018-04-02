@@ -59,7 +59,7 @@ function(newDoc, oldDoc, userContext, securityInfo) {
   // The document validation module is responsible for verifying the document's contents
   var validationModule = importValidationFunctionFragment('./validation-module.js')(utils, simpleTypeFilter, typeIdValidator);
 
-  var rawDocDefinitions = %DOCUMENT_DEFINITIONS%;
+  var rawDocDefinitions = $DOCUMENT_DEFINITIONS$;
 
   var docDefinitions;
   if (typeof rawDocDefinitions === 'function') {
