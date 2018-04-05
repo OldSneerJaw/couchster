@@ -3,14 +3,12 @@ const simpleMock = require('../../lib/simple-mock/index');
 const mockRequire = require('mock-require');
 
 describe('Test fixture maker:', () => {
-  let testFixtureMaker, fsMock, validationFunctionLoaderMock, testEnvironmentMakerMock, fakeTestEnvironment;
+  let testFixtureMaker, fsMock, validationFunctionLoaderMock, testEnvironmentMakerMock;
 
   const fakeFilePath = 'my-file-path';
   const fakeValidationFunctionContents = 'my-validation-function';
 
   beforeEach(() => {
-    fakeTestEnvironment = { validationFunction: simpleMock.stub() };
-
     // Stub out the "require" calls in the module under test
     fsMock = { readFileSync: simpleMock.stub() };
     fsMock.readFileSync.returnWith(fakeValidationFunctionContents);
@@ -21,7 +19,7 @@ describe('Test fixture maker:', () => {
     mockRequire('../loading/validation-function-loader', validationFunctionLoaderMock);
 
     testEnvironmentMakerMock = { init: simpleMock.stub() };
-    testEnvironmentMakerMock.init.returnWith(fakeTestEnvironment);
+    testEnvironmentMakerMock.init.callFn(fakeTestEnvironment);
     mockRequire('./test-environment-maker', testEnvironmentMakerMock);
 
     testFixtureMaker = mockRequire.reRequire('./test-fixture-maker');
@@ -32,10 +30,10 @@ describe('Test fixture maker:', () => {
   });
 
   describe('when verifying that document authorization is denied', () => {
-    let testFixture;
+    let testFixture = null;
 
     beforeEach(() => {
-      testFixture = testFixture === void 0 ? testFixtureMaker.initFromDocumentDefinitions(fakeFilePath) : testFixture;
+      testFixture = (testFixture === null) ? testFixtureMaker.initFromDocumentDefinitions(fakeFilePath) : testFixture;
     });
 
     afterEach(() => {
@@ -81,15 +79,18 @@ describe('Test fixture maker:', () => {
     });
 
     function verifyTestEnvironment(testFixture) {
-      expect(testFixture.testEnvironment.validationFunction).to.equal(fakeTestEnvironment.validationFunction);
+      // Verify the validation function source code
+      expect(testFixture.testEnvironment.validationFunction).to.be.a('function');
+      expect(testFixture.testEnvironment.validationFunction.toString())
+        .to.equal(fakeTestEnvironment().validationFunction.toString());
     }
   });
 
   describe('when verifying that a document type is unknown', () => {
-    let testFixture;
+    let testFixture = null;
 
     beforeEach(() => {
-      testFixture = testFixture === void 0 ? testFixtureMaker.initFromDocumentDefinitions(fakeFilePath) : testFixture;
+      testFixture = (testFixture === null) ? testFixtureMaker.initFromDocumentDefinitions(fakeFilePath) : testFixture;
     });
 
     afterEach(() => {
@@ -107,10 +108,10 @@ describe('Test fixture maker:', () => {
 
   describe('when verifying that document contents are invalid', () => {
     const docType = 'my-doc-type';
-    let testFixture;
+    let testFixture = null;
 
     beforeEach(() => {
-      testFixture = testFixture === void 0 ? testFixtureMaker.initFromDocumentDefinitions(fakeFilePath) : testFixture;
+      testFixture = (testFixture === null) ? testFixtureMaker.initFromDocumentDefinitions(fakeFilePath) : testFixture;
     });
 
     afterEach(() => {
@@ -166,3 +167,7 @@ describe('Test fixture maker:', () => {
     });
   });
 });
+
+function fakeTestEnvironment() {
+  return { validationFunction: simpleMock.stub() };
+}
