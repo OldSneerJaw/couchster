@@ -32,55 +32,20 @@ describe('Validation function loader', () => {
     mockRequire.stopAll();
   });
 
-  it('should load a validation function as a multi-line JavaScript block', () => {
-    validateLoadSuccess(
-      'my\n  \r\nfinal\rvalidation `func`',
-      null,
-      'my\n\nfinal\nvalidation `func`');
-  });
-
-  it('should load a validation function as a JSON string', () => {
-    validateLoadSuccess(
-      'my\n  \r\n"final"\rvalidation \\func\\',
-      { jsonString: true },
-      '"my\\n\\n\\"final\\"\\nvalidation \\\\func\\\\"');
-  });
-
-  it('should throw an exception if the validation function template file does not exist', () => {
-    const docDefinitionsFile = 'my/doc-definitions.js';
-    const expectedException = new Error('my-expected-exception');
-
-    fsMock.readFileSync.throwWith(expectedException);
-    fileFragmentLoaderMock.load.returnWith('');
-    docDefinitionsLoaderMock.load.returnWith('');
-    indentMock.js.returnWith('');
-
-    expect(() => {
-      validationFunctionLoader.load(docDefinitionsFile);
-    }).to.throw(expectedException.message);
-
-    expect(fsMock.readFileSync.callCount).to.equal(1);
-    expect(fsMock.readFileSync.calls[0].args).to.eql([ validationFuncTemplateFile, 'utf8' ]);
-
-    expect(fileFragmentLoaderMock.load.callCount).to.equal(0);
-
-    expect(docDefinitionsLoaderMock.load.callCount).to.equal(0);
-
-    expect(indentMock.js.callCount).to.equal(0);
-  });
-
-  function validateLoadSuccess(indentedValidationFunction, formatOptions, expectedValidationFunction) {
+  it('should load a validation function from valid document definitions', () => {
     const docDefinitionsFile = 'my/doc-definitions.js';
     const docDefinitionsContent = 'my-doc-definitions';
     const originalValidationFuncTemplate = 'my-original-validation-func-template';
     const updatedValidationFuncTemplate = 'function my-validation-func-template() { $DOCUMENT_DEFINITIONS$; }';
+    const indentedValidationFunction = 'my\n  \r\nfinal\rvalidation `func`';
+    const expectedValidationFunction = 'my\n\nfinal\nvalidation `func`';
 
     fsMock.readFileSync.returnWith(originalValidationFuncTemplate);
     fileFragmentLoaderMock.load.returnWith(updatedValidationFuncTemplate);
     docDefinitionsLoaderMock.load.returnWith(docDefinitionsContent);
     indentMock.js.returnWith(indentedValidationFunction);
 
-    const result = validationFunctionLoader.load(docDefinitionsFile, formatOptions);
+    const result = validationFunctionLoader.load(docDefinitionsFile);
 
     expect(result).to.equal(expectedValidationFunction);
 
@@ -88,7 +53,8 @@ describe('Validation function loader', () => {
     expect(fsMock.readFileSync.calls[0].args).to.eql([ validationFuncTemplateFile, 'utf8' ]);
 
     expect(fileFragmentLoaderMock.load.callCount).to.equal(1);
-    expect(fileFragmentLoaderMock.load.calls[0].args).to.eql([ validationFuncTemplateDir, expectedMacroName, originalValidationFuncTemplate ]);
+    expect(fileFragmentLoaderMock.load.calls[0].args)
+      .to.eql([ validationFuncTemplateDir, expectedMacroName, originalValidationFuncTemplate ]);
 
     expect(docDefinitionsLoaderMock.load.callCount).to.equal(1);
     expect(docDefinitionsLoaderMock.load.calls[0].args).to.eql([ docDefinitionsFile ]);
@@ -96,5 +62,5 @@ describe('Validation function loader', () => {
     expect(indentMock.js.callCount).to.equal(1);
     expect(indentMock.js.calls[0].args).to.eql(
       [ `function my-validation-func-template() { ${docDefinitionsContent}; }`, { tabString: '  ' } ]);
-  }
+  });
 });
