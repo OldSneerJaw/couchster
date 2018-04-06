@@ -11,6 +11,11 @@ exports.documentDefinitionsValidator = require('./validation/document-definition
 exports.validationFunctionLoader = require('./loading/validation-function-loader');
 
 /**
+ * The validation-function-writer module. Writes validation functions to files.
+ */
+exports.validationFunctionWriter = require('./saving/validation-function-writer');
+
+/**
  * The test-fixture-maker module. Provides a number of conveniences to test the behaviour of document definitions.
  */
 exports.testFixtureMaker = require('./testing/test-fixture-maker');

@@ -1,10 +1,8 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
-const path = require('path');
 const commander = require('./lib/commander/index');
-const mkdirp = require('./lib/mkdirp/index');
 const validationFunctionLoader = require('./src/loading/validation-function-loader');
+const validationFunctionWriter = require('./src/saving/validation-function-writer');
 
 const errorStatus = 1;
 const { version } = require('./package');
@@ -36,25 +34,14 @@ const outputFilename = commander.args[1];
 
 let validationFuncString;
 try {
+  validationFuncString = validationFunctionLoader.load(docDefnFilename);
+} catch (ex) {
+  process.exit(errorStatus);
+}
+
+try {
   const formatOptions = { jsonString: commander.jsonString };
-  validationFuncString = validationFunctionLoader.load(docDefnFilename, formatOptions);
-} catch (ex) {
-  process.exit(errorStatus);
-}
-
-try {
-  const outputDirectory = path.dirname(outputFilename);
-  if (!fs.existsSync(outputDirectory)) {
-    mkdirp.sync(outputDirectory);
-  }
-} catch (ex) {
-  console.error(`ERROR: Unable to create the validation function output directory: ${ex}`);
-
-  process.exit(errorStatus);
-}
-
-try {
-  fs.writeFileSync(outputFilename, validationFuncString, 'utf8');
+  validationFunctionWriter.save(outputFilename, validationFuncString, formatOptions);
 } catch (ex) {
   console.error(`ERROR: Unable to write the validation function to the output file: ${ex}`);
 
