@@ -7,6 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/). All notable c
 - [#10](https://github.com/OldSneerJaw/couchster/issues/10): Extended year format in date strings
 - [#11](https://github.com/OldSneerJaw/couchster/issues/11): Mechanism to reset test environment between test cases
 - [#13](https://github.com/OldSneerJaw/couchster/issues/13): Dedicated module for writing validation functions
+- [#15](https://github.com/OldSneerJaw/couchster/issues/15): Throw an Error object when there is an authorization or validation failure
 
 ## [0.2.0] - 2018-03-08
 ### Added

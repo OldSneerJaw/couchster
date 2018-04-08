@@ -144,6 +144,6 @@ describe('Sample business notification transport doc definition:', () => {
       }
     }).to.throw();
 
-    expect(validationFuncError).to.eql({ forbidden: 'Operation forbidden' });
+    expect(validationFuncError.forbidden).to.equal('Operation forbidden');
   }
 });
