@@ -16,18 +16,9 @@ function authorizationModule(utils) {
     }
   }
 
-  // A document definition may define its authorized roles or users as either a function or an object/hashtable
-  function resolveSchemaConstraint(newDoc, oldDoc, dbName, schemaConstraint) {
-    if (typeof schemaConstraint === 'function') {
-      return schemaConstraint(newDoc, oldDoc, dbName);
-    } else {
-      return schemaConstraint;
-    }
-  }
-
   // Retrieves a list of authorizations (e.g. roles, users) for the current document write operation type (add, replace or remove)
-  function resolveRequiredAuthorizations(newDoc, oldDoc, dbName, authorizationDefinition) {
-    var authorizationMap = resolveSchemaConstraint(newDoc, oldDoc, dbName, authorizationDefinition);
+  function resolveRequiredAuthorizations(newDoc, oldDoc, authorizationDefinition) {
+    var authorizationMap = utils.resolveDocumentConstraint(authorizationDefinition);
 
     if (utils.isValueNullOrUndefined(authorizationMap)) {
       // This document type does not define any authorizations (roles, users) at all
@@ -72,9 +63,9 @@ function authorizationModule(utils) {
       throw unauthorizedResult();
     }
 
-    var authorizedRoles = resolveRequiredAuthorizations(newDoc, oldDoc, userContext.db, docDefinition.authorizedRoles);
-    var authorizedUsers = resolveRequiredAuthorizations(newDoc, oldDoc, userContext.db, docDefinition.authorizedUsers);
-    var grantAllMembersWriteAccess = resolveSchemaConstraint(newDoc, oldDoc, userContext.db, docDefinition.grantAllMembersWriteAccess);
+    var authorizedRoles = resolveRequiredAuthorizations(newDoc, oldDoc, docDefinition.authorizedRoles);
+    var authorizedUsers = resolveRequiredAuthorizations(newDoc, oldDoc, docDefinition.authorizedUsers);
+    var grantAllMembersWriteAccess = utils.resolveDocumentConstraint(docDefinition.grantAllMembersWriteAccess);
 
     if (grantAllMembersWriteAccess) {
       // The document definition allows any authenticated DB member to write documents of this type

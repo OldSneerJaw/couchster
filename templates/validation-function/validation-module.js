@@ -46,21 +46,16 @@ function validationModule(utils, simpleTypeFilter, typeIdValidator) {
       return true;
     }
 
-    // Resolves a constraint defined at the document level (e.g. `propertyValidators`, `allowUnknownProperties`, `immutable`).
-    function resolveDocConstraint(constraintDefinition) {
-      return (typeof constraintDefinition === 'function') ? constraintDefinition(newDoc, oldDoc) : constraintDefinition;
-    }
-
     function validateDocImmutability() {
       if (!utils.isDocumentMissingOrDeleted(oldDoc)) {
-        if (resolveDocConstraint(docDefinition.immutable)) {
+        if (utils.resolveDocumentConstraint(docDefinition.immutable)) {
           validationErrors.push('documents of this type cannot be replaced or deleted');
         } else if (newDoc._deleted) {
-          if (resolveDocConstraint(docDefinition.cannotDelete)) {
+          if (utils.resolveDocumentConstraint(docDefinition.cannotDelete)) {
             validationErrors.push('documents of this type cannot be deleted');
           }
         } else {
-          if (resolveDocConstraint(docDefinition.cannotReplace)) {
+          if (utils.resolveDocumentConstraint(docDefinition.cannotReplace)) {
             validationErrors.push('documents of this type cannot be replaced');
           }
         }
@@ -70,7 +65,7 @@ function validationModule(utils, simpleTypeFilter, typeIdValidator) {
     function validateDocumentIdRegexPattern() {
       if (!newDoc._deleted && !oldDoc) {
         // The constraint only applies when a document is created
-        var documentIdRegexPattern = resolveDocConstraint(docDefinition.documentIdRegexPattern);
+        var documentIdRegexPattern = utils.resolveDocumentConstraint(docDefinition.documentIdRegexPattern);
 
         if (documentIdRegexPattern instanceof RegExp && !documentIdRegexPattern.test(newDoc._id)) {
           validationErrors.push('document ID must conform to expected pattern ' + documentIdRegexPattern);
@@ -87,7 +82,7 @@ function validationModule(utils, simpleTypeFilter, typeIdValidator) {
         }
       ];
 
-      var resolvedPropertyValidators = resolveDocConstraint(docDefinition.propertyValidators);
+      var resolvedPropertyValidators = utils.resolveDocumentConstraint(docDefinition.propertyValidators);
 
       // Ensure that, if the document type uses the simple type filter, it supports the "type" property
       if (docDefinition.typeFilter === simpleTypeFilter && utils.isValueNullOrUndefined(resolvedPropertyValidators.type)) {
@@ -95,10 +90,13 @@ function validationModule(utils, simpleTypeFilter, typeIdValidator) {
       }
 
       var attachmentModule =
-        importValidationFunctionFragment('attachment-module.js')(utils, buildItemPath, resolveDocConstraint, resolveItemConstraint);
+        importValidationFunctionFragment('attachment-module.js')(utils, buildItemPath, resolveItemConstraint);
 
       // Execute each of the document's property validators while ignoring internal document properties at the root level
-      validateProperties(resolvedPropertyValidators, resolveDocConstraint(docDefinition.allowUnknownProperties), true);
+      validateProperties(
+        resolvedPropertyValidators,
+        utils.resolveDocumentConstraint(docDefinition.allowUnknownProperties),
+        true);
 
       if (newDoc._attachments) {
         storeOptionalValidationErrors(attachmentModule.validateAttachments(newDoc, docDefinition));

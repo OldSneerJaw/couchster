@@ -46,11 +46,23 @@ function(newDoc, oldDoc, userContext, securityInfo) {
     return typeof value === 'number' && isFinite(value) && Math.floor(value) === value;
   }
 
+  // Retrieves the effective value of a top-level document constraint (e.g. "channels", "documentIdRegexPattern", "accessAssignments")
+  function resolveDocumentConstraint(constraintDefinition) {
+    if (typeof constraintDefinition === 'function') {
+      var dbName = userContext ? userContext.db : null;
+
+      return constraintDefinition(newDoc, oldDoc, dbName);
+    } else {
+      return constraintDefinition;
+    }
+  }
+
   var utils = {
     isDocumentMissingOrDeleted: isDocumentMissingOrDeleted,
     isValueAnInteger: isValueAnInteger,
     isValueNullOrUndefined: isValueNullOrUndefined,
-    padRight: padRight
+    padRight: padRight,
+    resolveDocumentConstraint: resolveDocumentConstraint
   };
 
   // The document authorization module is responsible for verifying the user's permissions (e.g. roles, usernames)
