@@ -80,7 +80,7 @@ function(newDoc, oldDoc, userContext, securityInfo) {
     docDefinitions = rawDocDefinitions;
   }
 
-  function getDocumentType(newDoc, oldDoc) {
+  function getDocumentType() {
     for (var docType in docDefinitions) {
       var docDefn = docDefinitions[docType];
       if (docDefn.typeFilter(newDoc, oldDoc, docType)) {
@@ -93,7 +93,7 @@ function(newDoc, oldDoc, userContext, securityInfo) {
   }
 
   // Now put the pieces together
-  var theDocType = getDocumentType(newDoc, oldDoc);
+  var theDocType = getDocumentType();
 
   if (isValueNullOrUndefined(theDocType)) {
     if (newDoc._deleted && authorizationModule.isAdminUser(userContext, securityInfo)) {
