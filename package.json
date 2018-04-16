@@ -33,6 +33,6 @@
     "couchster-validate": "./validate-document-definitions"
   },
   "engines": {
-    "node": ">=8.10.0"
+    "node": ">=8.11.0"
   }
 }
