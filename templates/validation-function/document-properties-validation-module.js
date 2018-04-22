@@ -3,7 +3,7 @@ function documentPropertiesValidationModule(utils, simpleTypeFilter, typeIdValid
   var comparisonModule = importValidationFunctionFragment('comparison-module.js')(utils, buildItemPath, timeModule);
 
   return {
-    validateProperties: function validateProperties(newDoc, oldDoc, userContext, securityInfo, docDefinition) {
+    validateProperties: function(newDoc, oldDoc, userContext, securityInfo, docDefinition) {
       var attachmentsValidationModule =
         importValidationFunctionFragment('attachments-validation-module.js')(utils, buildItemPath, resolveItemConstraint);
 

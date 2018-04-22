@@ -5,7 +5,7 @@ function validationModule(utils, simpleTypeFilter, typeIdValidator) {
     importValidationFunctionFragment('document-properties-validation-module.js')(utils, simpleTypeFilter, typeIdValidator);
 
   return {
-    validateDoc: function validateDoc(newDoc, oldDoc, userContext, securityInfo, docDefinition, docType) {
+    validateDoc: function(newDoc, oldDoc, userContext, securityInfo, docDefinition, docType) {
       var documentConstraintValidationErrors =
         documentConstraintsValidationModule.validateDocument(newDoc, oldDoc, docDefinition);
 
