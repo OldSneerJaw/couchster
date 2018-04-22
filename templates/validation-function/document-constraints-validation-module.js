@@ -1,6 +1,6 @@
 function documentConstraintsValidationModule(utils) {
   return {
-    validateDocument: function validateDocument(newDoc, oldDoc, docDefinition) {
+    validateDocument: function(newDoc, oldDoc, docDefinition) {
       var validationErrors = [ ];
 
       validateDocImmutability(newDoc, oldDoc, docDefinition, validationErrors);
