@@ -1,15 +1,14 @@
 function documentConstraintsValidationModule(utils) {
-  return { validateDocument: validateDocument };
+  return {
+    validateDocument: function validateDocument(newDoc, oldDoc, docDefinition) {
+      var validationErrors = [ ];
 
-  function validateDocument(newDoc, oldDoc, userContext, securityInfo, docDefinition) {
-    var validationErrors = [ ];
+      validateDocImmutability(newDoc, oldDoc, docDefinition, validationErrors);
+      validateDocumentIdRegexPattern(newDoc, oldDoc, docDefinition, validationErrors);
 
-    validateDocImmutability(newDoc, oldDoc, docDefinition, validationErrors);
-
-    validateDocumentIdRegexPattern(newDoc, oldDoc, docDefinition, validationErrors);
-
-    return validationErrors;
-  }
+      return validationErrors;
+    }
+  };
 
   function validateDocImmutability(newDoc, oldDoc, docDefinition, validationErrors) {
     if (!utils.isDocumentMissingOrDeleted(oldDoc)) {
