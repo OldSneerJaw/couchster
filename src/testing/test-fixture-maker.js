@@ -27,7 +27,7 @@ exports.initFromDocumentDefinitions = function(filePath) {
 };
 
 function init(rawValidationFunction, validationFunctionFile) {
-  const testEnvironment = testEnvironmentMaker.init(rawValidationFunction, validationFunctionFile);
+  const testEnvironment = testEnvironmentMaker.create(rawValidationFunction, validationFunctionFile);
 
   const fixture = {
     /**
@@ -207,7 +207,7 @@ function init(rawValidationFunction, validationFunctionFile) {
   const defaultWriteRole = 'write';
 
   function resetTestEnvironment() {
-    const newEnvironment = testEnvironmentMaker.init(rawValidationFunction, validationFunctionFile);
+    const newEnvironment = testEnvironmentMaker.create(rawValidationFunction, validationFunctionFile);
     Object.assign(testEnvironment, newEnvironment);
 
     return testEnvironment;

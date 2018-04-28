@@ -36,7 +36,8 @@ describe('Validation function loader', () => {
     const docDefinitionsFile = 'my/doc-definitions.js';
     const docDefinitionsContent = 'my-doc-definitions';
     const originalValidationFuncTemplate = 'my-original-validation-func-template';
-    const updatedValidationFuncTemplate = 'function my-validation-func-template() { $DOCUMENT_DEFINITIONS$; }';
+    const updatedValidationFuncTemplate =
+      'function my-validation-func-template() { $DOCUMENT_DEFINITIONS_PLACEHOLDER$; }';
     const indentedValidationFunction = 'my\n  \r\nfinal\rvalidation `func`';
     const expectedValidationFunction = 'my\n\nfinal\nvalidation `func`';
 

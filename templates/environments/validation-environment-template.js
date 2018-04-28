@@ -6,7 +6,6 @@ function makeValidationEnvironment(simpleMock) {
   const isDocumentMissingOrDeleted = simpleMock.stub();
   const isValueNullOrUndefined = simpleMock.stub();
 
-  // CouchDB utility functions
   const isArray = Array.isArray;
   const log = simpleMock.stub();
   const toJSON = JSON.stringify;
