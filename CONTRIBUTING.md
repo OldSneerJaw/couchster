@@ -104,3 +104,25 @@ Once a change has been posted as a GitHub pull request, a couchster project main
 Special care should be taken to ensure that each submission is captured as a GitHub issue, thoroughly documented in `README.md` and in `CHANGELOG.md`'s "Unreleased" section, comprehensively covered by test cases, includes examples in the sample document definitions directory, does not introduce breaking changes to public APIs, does not introduce new package dependencies and does not make use of advanced JavaScript/ECMAScript language features that are not supported by the [version](https://developer.mozilla.org/en-US/docs/Mozilla/Projects/SpiderMonkey/Releases/1.8.5) of the SpiderMonkey JavaScript engine/interpreter that is used by CouchDB.
 
 If/when a change is deemed satisfactory, it is the responsibility of the reviewer to merge the pull request and delete its feature branch, where possible.
+
+# Publishing
+
+When it is time to publish a new release, a project maintainer should follow these steps:
+
+1. Create a GitHub issue/ticket for the release (e.g. https://github.com/OldSneerJaw/couchster/issues/19) with the [task](https://github.com/OldSneerJaw/couchster/issues?q=is%3Aissue+label%3Atask) label and assigned to your own GitHub user
+2. Create a release branch (e.g. `v1.0.0-release`)
+3. Create a GitHub release candidate tag (e.g. `v1.0.0-rc.1`) from the HEAD of the release branch; include the version's changelog content in the description and mark it as a "pre-release"
+4. Validate the release candidate with a real project, for example, by changing the package's "couchster" dependency version to target the release candidate tag (e.g. "git@github.com:OldSneerJaw/couchster.git#v1.0.0-rc.1") and then running `npm install && npm test`. Confirm that a generated validation function also works with a live CouchDB instance.
+5. Create a new branch (e.g. `issue-19-release-1.0.0`) based off of the _release_ branch, rather than the master branch:
+    1. Modify the "Unreleased" section of `CHANGELOG.md` to display the new version number and date stamp. Be sure to also create a new range comparison link for the new version (e.g. `[1.0.0]: https://github.com/OldSneerJaw/couchster/compare/v0.2.0...v1.0.0`) and update the range comparison link for the "Unreleased" section (e.g. `[Unreleased]: https://github.com/OldSneerJaw/couchster/compare/v1.0.0...HEAD`) at the bottom of the file.
+    2. Update the "version" property in `package.json` and then regenerate the package lock file using `npm install`
+    3. Upgrade the project's npm development dependencies (i.e. the "devDependencies" property in `package.json`) as necessary
+    4. Create a pull request that targets the _release_ branch, rather than the master branch (e.g. https://github.com/OldSneerJaw/couchster/pull/21)
+6. After the pull request is reviewed and merged, create a GitHub release tag (e.g. `v1.0.0`) from the HEAD of the release branch; include the version's changelog content in the description
+7. Publish the new version to npm: `git checkout <release_branch_name> && git reset --hard && git pull && npm publish`
+8. Merge the release branch into the master branch
+9. Delete the release branch
+10. Restore the "Unreleased" section to `CHANGELOG.md` in the master branch. Ensure that the range comparison link at the bottom of the file for the "Unreleased" section is accurate (e.g. `[Unreleased]: https://github.com/OldSneerJaw/couchster/compare/v1.0.0...HEAD`).
+11. Upgrade the project's runtime dependencies (i.e. the contents of the `lib` directory) as necessary
+12. Post a release announcement to the official Apache CouchDB mailing list: https://mail-archives.apache.org/mod_mbox/couchdb-user/
+13. Close the GitHub issue/ticket for the release
