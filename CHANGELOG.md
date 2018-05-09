@@ -1,7 +1,7 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/). All notable changes will be documented in this file.
 
-## [Unreleased]
+## [1.0.0] - 2018-05-10
 ### Added
 - [#8](https://github.com/OldSneerJaw/couchster/issues/8): Regular expression pattern constraint for document ID
 - [#10](https://github.com/OldSneerJaw/couchster/issues/10): Extended year format in date strings
@@ -23,6 +23,7 @@ This project adheres to [Semantic Versioning](http://semver.org/). All notable c
 ## [0.1.0] - 2018-02-28
 Adapted from [synctos](https://github.com/Kashoo/synctos) for use with CouchDB
 
-[Unreleased]: https://github.com/OldSneerJaw/couchster/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/OldSneerJaw/couchster/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/OldSneerJaw/couchster/compare/v0.2.0...v1.0.0
 [0.2.0]: https://github.com/OldSneerJaw/couchster/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/OldSneerJaw/couchster/compare/73ba6a5...v0.1.0
