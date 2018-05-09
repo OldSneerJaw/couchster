@@ -658,6 +658,8 @@ function() {
 
 As you can see, the fragments can also reference functions (e.g. `myDocTypeFilter`) and variables (e.g. `authorizedRoles`) that were defined in the main document definitions file. Organizing document definitions in this manner helps to keep configuration manageable.
 
+NOTE: couchster does not currently support CouchDB's implementation of [CommonJS modules](http://docs.couchdb.org/en/latest/query-server/javascript.html#commonjs-modules) and the [`require`](http://docs.couchdb.org/en/latest/query-server/javascript.html#require) function.
+
 ### Helper functions
 
 Custom code (e.g. type filters, custom validation functions, custom actions) within document definitions have access to CouchDB's built in [utility functions](http://docs.couchdb.org/en/latest/query-server/javascript.html). In addition, couchster provides some predefined functions for common operations:
