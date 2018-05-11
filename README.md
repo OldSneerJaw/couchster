@@ -320,18 +320,18 @@ Validation for simple data types (e.g. strings, booleans, integers, floating poi
   * `minimumValueExclusive`: Reject dates that are less than or equal to this. May be either an ECMAScript ISO 8601 date string without time and time zone components OR a JavaScript `Date` object. No restriction by default.
   * `maximumValue`: Reject dates that are greater than this. May be either an ECMAScript ISO 8601 date string without time and time zone components OR a JavaScript `Date` object. No restriction by default.
   * `maximumValueExclusive`: Reject dates that are greater than or equal to this. May be either an ECMAScript ISO 8601 date string without time and time zone components OR a JavaScript `Date` object. No restriction by default.
-* `time`: The value is a simplified [ECMAScript ISO 8601](https://www.ecma-international.org/ecma-262/5.1/#sec-15.9.1.15) time string _without_ date and time zone components (e.g. "18:57:35.328"). Differs from the ECMAScript time specification in that a value of "24:00:00.000" is not valid. Additional parameters:
-  * `minimumValue`: Reject times that are less than this. Must be an ECMAScript ISO 8601 time string without date and time zone components.
-  * `minimumValueExclusive`: Reject times that are less than or equal to this. Must be an ECMAScript ISO 8601 time string without date and time zone components.
-  * `maximumValue`: Reject times that are greater than this. Must be an ECMAScript ISO 8601 time string without date and time zone components.
-  * `maximumValueExclusive`: Reject times that are greater than or equal to this. Must be an ECMAScript ISO 8601 time string without date and time zone components.
+* `time`: The value is a simplified [ECMAScript ISO 8601](https://www.ecma-international.org/ecma-262/5.1/#sec-15.9.1.15) time string _without_ date and time zone components (e.g. "18:57:35.328"). Additional parameters:
+  * `minimumValue`: Reject times that are less than this. Must be an ECMAScript ISO 8601 time string without date and time zone components. No restriction by default.
+  * `minimumValueExclusive`: Reject times that are less than or equal to this. Must be an ECMAScript ISO 8601 time string without date and time zone components. No restriction by default.
+  * `maximumValue`: Reject times that are greater than this. Must be an ECMAScript ISO 8601 time string without date and time zone components. No restriction by default.
+  * `maximumValueExclusive`: Reject times that are greater than or equal to this. Must be an ECMAScript ISO 8601 time string without date and time zone components. No restriction by default.
 * `timezone`: The value is a simplified [ECMAScript ISO 8601](https://www.ecma-international.org/ecma-262/5.1/#sec-15.9.1.15) time zone string _without_ date and zone components (e.g. "Z" or "-05:00"). Additional parameters:
-  * `minimumValue`: Reject time zones that are less than this. Must be an ECMAScript ISO 8601 time zone string.
-  * `minimumValueExclusive`: Reject time zones that are less than or equal to this. Must be an ECMAScript ISO 8601 time zone string.
-  * `maximumValue`: Reject time zones that are greater than this. Must be an ECMAScript ISO 8601 time zone string.
-  * `maximumValueExclusive`: Reject time zones that are greater than or equal to this. Must be an ECMAScript ISO 8601 time zone string.
+  * `minimumValue`: Reject time zones that are less than this. Must be an ECMAScript ISO 8601 time zone string. No restriction by default.
+  * `minimumValueExclusive`: Reject time zones that are less than or equal to this. Must be an ECMAScript ISO 8601 time zone string. No restriction by default.
+  * `maximumValue`: Reject time zones that are greater than this. Must be an ECMAScript ISO 8601 time zone string. No restriction by default.
+  * `maximumValueExclusive`: Reject time zones that are greater than or equal to this. Must be an ECMAScript ISO 8601 time zone string. No restriction by default.
 * `enum`: The value must be one of the specified predefined string and/or integer values. Additional parameters:
-  * `predefinedValues`: A list of strings and/or integers that are to be accepted. For example: `[ 1, 2, 3, 'a', 'b', 'c' ]`. If this parameter is omitted from an `enum` property's configuration, that property will not accept a value of any kind.
+  * `predefinedValues`: (required) A list of strings and/or integers that are to be accepted. For example: `[ 1, 2, 3, 'a', 'b', 'c' ]`. If this parameter is omitted from an `enum` property's configuration, that property will not accept a value of any kind.
 * `uuid`: The value must be a string representation of a [universally unique identifier](https://en.wikipedia.org/wiki/Universally_unique_identifier) (UUID). A UUID may contain either uppercase or lowercase letters so that, for example, both "1511fba4-e039-42cc-9ac2-9f2fa29eecfc" and "DFF421EA-0AB2-45C9-989C-12C76E7282B8" are valid. Additional parameters:
   * `minimumValue`: Reject UUIDs that are less than this. No restriction by default.
   * `minimumValueExclusive`: Reject UUIDs that are less than or equal to this. No restriction by default.
@@ -664,7 +664,7 @@ NOTE: couchster does not currently support CouchDB's implementation of [CommonJS
 
 Custom code (e.g. type filters, custom validation functions, custom actions) within document definitions have access to CouchDB's built in [utility functions](http://docs.couchdb.org/en/latest/query-server/javascript.html). In addition, couchster provides some predefined functions for common operations:
 
-* `isDocumentMissingOrDeleted(candidate)`: Determines whether the given `candidate` document is either missing (i.e. `null` or `undefined`) or deleted (i.e. its `_deleted` property is `true`). A useful alternative to testing the value of the new document's `_deleted` property or whether the old document is `null`.
+* `isDocumentMissingOrDeleted(candidate)`: Determines whether the given `candidate` document is either missing (i.e. `null`) or deleted (i.e. its `_deleted` property is `true`). A useful alternative to testing the value of the new document's `_deleted` property or whether the old document is `null`.
 * `isValueNullOrUndefined(value)`: Determines whether the given `value` parameter is either `null` or `undefined`. In many cases, it is useful to treat both states the same.
 
 # Testing
