@@ -1,6 +1,9 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/). All notable changes will be documented in this file.
 
+## [Unreleased]
+Nothing yet.
+
 ## [1.0.0] - 2018-05-10
 ### Added
 - [#8](https://github.com/OldSneerJaw/couchster/issues/8): Regular expression pattern constraint for document ID
