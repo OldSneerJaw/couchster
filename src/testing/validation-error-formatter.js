@@ -6,6 +6,16 @@
 exports.allowAttachmentsViolation = () => 'document type does not support attachments';
 
 /**
+ * Formats a message for the error that occurs when an attachment's filename does not match the expected regular
+ * expression pattern.
+ *
+ * @param {string} attachmentName The name of the attachment in question
+ * @param {RegExp} expectedRegex The regular expression pattern to which the attachment name must conform
+ */
+exports.attachmentFilenameRegexPatternViolation =
+  (attachmentName, expectedRegex) => `attachment "${attachmentName}" must conform to expected pattern ${expectedRegex}`;
+
+/**
  * Formats a message for the error that occurs when there is an attempt to delete a document that cannot be deleted.
  */
 exports.cannotDeleteDocViolation = () => 'documents of this type cannot be deleted';

@@ -32,6 +32,15 @@
       }
     }
   },
+  staticAttachmentFilenameRegexPatternDoc: {
+    typeFilter: simpleTypeFilter,
+    authorizedRoles: { write: 'write' },
+    allowAttachments: true,
+    attachmentConstraints: {
+      filenameRegexPattern: /^(foo|bar)\.(xls|xlsx)$/
+    },
+    propertyValidators: { }
+  },
   dynamicAttachmentsDoc: {
     typeFilter: simpleTypeFilter,
     authorizedRoles: { write: 'write' },

@@ -2,7 +2,8 @@
 This project adheres to [Semantic Versioning](http://semver.org/). All notable changes will be documented in this file.
 
 ## [Unreleased]
-Nothing yet.
+### Added
+- [#24](https://github.com/OldSneerJaw/couchster/issues/24): Attachment filename regular expression constraint
 
 ## [1.0.0] - 2018-05-10
 ### Added

@@ -49,7 +49,8 @@ module.exports = exports = joi.object().options({ convert: false }).keys({
               otherwise: integerSchema.min(1)
             })),
         supportedExtensions: dynamicConstraintSchema(joi.array().min(1).items(joi.string())),
-        supportedContentTypes: dynamicConstraintSchema(joi.array().min(1).items(nonEmptyStringSchema))
+        supportedContentTypes: dynamicConstraintSchema(joi.array().min(1).items(nonEmptyStringSchema)),
+        filenameRegexPattern: dynamicConstraintSchema(joi.object().type(RegExp))
       })),
 
   authorizedRoles: authorizationSchema,
