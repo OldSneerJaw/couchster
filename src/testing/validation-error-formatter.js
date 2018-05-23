@@ -92,15 +92,6 @@ exports.maximumAttachmentCountViolation =
   (maxCount) => `documents of this type must not have more than ${maxCount} attachments`;
 
 /**
- * Formats a message for the error that occurs when a document's attachment exceeds the maximum individual attachment size.
- *
- * @param {string} attachmentName The name of the attachment in question
- * @param {integer} maxSize The maximum size, in bytes, that is allowed
- */
-exports.maximumIndividualAttachmentSizeViolation =
-  (attachmentName, maxSize) => `attachment ${attachmentName} must not exceed ${maxSize} bytes`;
-
-/**
  * Formats a message for the error that occurs when a string or array's length is greater than the maximum allowed.
  *
  * @param {string} itemPath The full path of the property or element in which the error occurs (e.g. "objectProp.arrayProp[2].stringProp")
@@ -118,14 +109,6 @@ exports.maximumLengthViolation =
  */
 exports.maximumSizeAttachmentViolation =
   (itemPath, maxSize) => `attachment reference "${itemPath}" must not be larger than ${maxSize} bytes`;
-
-/**
- * Formats a message for the error that occurs when a document's attachments exceed the maximum total attachment size.
- *
- * @param {integer} maxSize The maximum size, in bytes, that is allowed
- */
-exports.maximumTotalAttachmentSizeViolation =
-  (maxSize) => `documents of this type must not have a combined attachment size greater than ${maxSize} bytes`;
 
 /**
  * Formats a message for the error that occurs when a value is greater than the maximum allowed.

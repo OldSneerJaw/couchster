@@ -55,58 +55,6 @@ describe('File attachment constraints:', () => {
         testFixture.verifyDocumentReplaced(doc, oldDoc);
       });
 
-      describe('maximum attachment size constraints', () => {
-        it('should block creation of a document whose attachments exceed the limits', () => {
-          const doc = {
-            _id: 'myDoc',
-            _attachments: {
-              'foo.pdf': {
-                length: 5,
-                content_type: 'application/pdf'
-              },
-              'bar.html': {
-                length: 35,
-                content_type: 'text/html'
-              },
-              'baz.txt': {
-                length: 1,
-                content_type: 'text/plain'
-              }
-            },
-            type: 'staticRegularAttachmentsDoc',
-            attachmentRefProp: 'bar.html' // The attachmentReference's maximum size of 40 overrides the document's maximum individual size of 25
-          };
-
-          testFixture.verifyDocumentNotCreated(doc, 'staticRegularAttachmentsDoc', errorFormatter.maximumTotalAttachmentSizeViolation(40));
-        });
-
-        it('should block replacement when document attachments exceed the limits', () => {
-          const doc = {
-            _id: 'myDoc',
-            _attachments: {
-              'foo.xml': {
-                length: 41,
-                content_type: 'application/xml'
-              }
-            },
-            type: 'staticRegularAttachmentsDoc'
-          };
-          const oldDoc = {
-            _id: 'myDoc',
-            type: 'staticRegularAttachmentsDoc'
-          };
-
-          testFixture.verifyDocumentNotReplaced(
-            doc,
-            oldDoc,
-            'staticRegularAttachmentsDoc',
-            [
-              errorFormatter.maximumTotalAttachmentSizeViolation(40),
-              errorFormatter.maximumIndividualAttachmentSizeViolation('foo.xml', 25)
-            ]);
-        });
-      });
-
       describe('maximum attachment count constraint', () => {
         it('should block creation of a document whose attachments exceed the limit', () => {
           const doc = {
@@ -404,8 +352,6 @@ describe('File attachment constraints:', () => {
         },
         type: 'dynamicAttachmentsDoc',
         attachmentsEnabled: true,
-        maximumIndividualSize: 20,
-        maximumTotalSize: 40,
         maximumAttachmentCount: 3,
         supportedExtensions: [ 'pdf', 'html', 'foo' ],
         supportedContentTypes: [ 'application/pdf', 'text/html', 'text/bar' ],
@@ -437,8 +383,6 @@ describe('File attachment constraints:', () => {
         },
         type: 'dynamicAttachmentsDoc',
         attachmentsEnabled: true,
-        maximumIndividualSize: 15,
-        maximumTotalSize: 30,
         maximumAttachmentCount: 2,
         supportedExtensions,
         supportedContentTypes,
@@ -451,8 +395,6 @@ describe('File attachment constraints:', () => {
         'dynamicAttachmentsDoc',
         [
           errorFormatter.requireAttachmentReferencesViolation('baz.foo'),
-          errorFormatter.maximumIndividualAttachmentSizeViolation('foo.pdf', 15),
-          errorFormatter.maximumTotalAttachmentSizeViolation(30),
           errorFormatter.maximumAttachmentCountViolation(2),
           errorFormatter.supportedExtensionsRawAttachmentViolation('bar.html', supportedExtensions),
           errorFormatter.supportedContentTypesRawAttachmentViolation('baz.foo', supportedContentTypes)

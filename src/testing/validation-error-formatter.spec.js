@@ -31,19 +31,6 @@ describe('Validation error formatter', () => {
         .to.equal(`documents of this type must not have more than ${maximumAttachmentCount} attachments`);
     });
 
-    it('produces attachments maximumIndividualSize violation messages', () => {
-      const fileName = 'my-attachment-file.jpg';
-      const maximumAttachmentSize = 2;
-      expect(errorFormatter.maximumIndividualAttachmentSizeViolation(fileName, maximumAttachmentSize))
-        .to.equal(`attachment ${fileName} must not exceed ${maximumAttachmentSize} bytes`);
-    });
-
-    it('produces attachments maximumTotalSize violation messages', () => {
-      const maximumSize = 2;
-      expect(errorFormatter.maximumTotalAttachmentSizeViolation(maximumSize))
-        .to.equal(`documents of this type must not have a combined attachment size greater than ${maximumSize} bytes`);
-    });
-
     it('produces requireAttachmentReferences violation messages', () => {
       const fileName = 'my-attachment-file.txt';
       expect(errorFormatter.requireAttachmentReferencesViolation(fileName))

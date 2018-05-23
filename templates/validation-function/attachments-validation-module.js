@@ -53,10 +53,6 @@ function attachmentsValidationModule(utils, buildItemPath, resolveItemConstraint
 
     var maximumAttachmentCount =
       attachmentConstraints ? utils.resolveDocumentConstraint(attachmentConstraints.maximumAttachmentCount) : null;
-    var maximumIndividualAttachmentSize =
-      attachmentConstraints ? utils.resolveDocumentConstraint(attachmentConstraints.maximumIndividualSize) : null;
-    var maximumTotalAttachmentSize =
-      attachmentConstraints ? utils.resolveDocumentConstraint(attachmentConstraints.maximumTotalSize) : null;
 
     var supportedExtensions =
       attachmentConstraints ? utils.resolveDocumentConstraint(attachmentConstraints.supportedExtensions) : null;
@@ -84,13 +80,6 @@ function attachmentsValidationModule(utils, buildItemPath, resolveItemConstraint
         validationErrors.push('attachment ' + attachmentName + ' must have a corresponding attachment reference property');
       }
 
-      if (utils.isValueAnInteger(maximumIndividualAttachmentSize) && attachmentSize > maximumIndividualAttachmentSize) {
-        // If this attachment is owned by an attachment reference property, that property's size constraint (if any) takes precedence
-        if (utils.isValueNullOrUndefined(attachmentRefValidator) || !utils.isValueAnInteger(attachmentRefValidator.maximumSize)) {
-          validationErrors.push('attachment ' + attachmentName + ' must not exceed ' + maximumIndividualAttachmentSize + ' bytes');
-        }
-      }
-
       if (supportedExtensionsRegex && !supportedExtensionsRegex.test(attachmentName)) {
         // If this attachment is owned by an attachment reference property, that property's extensions constraint (if any) takes
         // precedence
@@ -108,10 +97,6 @@ function attachmentsValidationModule(utils, buildItemPath, resolveItemConstraint
           validationErrors.push('attachment "' + attachmentName + '" must have a supported content type (' + supportedContentTypes.join(',') + ')');
         }
       }
-    }
-
-    if (utils.isValueAnInteger(maximumTotalAttachmentSize) && totalSize > maximumTotalAttachmentSize) {
-      validationErrors.push('documents of this type must not have a combined attachment size greater than ' + maximumTotalAttachmentSize + ' bytes');
     }
 
     if (utils.isValueAnInteger(maximumAttachmentCount) && attachmentCount > maximumAttachmentCount) {

@@ -38,16 +38,6 @@ module.exports = exports = joi.object().options({ convert: false }).keys({
       {
         requireAttachmentReferences: dynamicConstraintSchema(joi.boolean()),
         maximumAttachmentCount: dynamicConstraintSchema(integerSchema.min(1)),
-        maximumIndividualSize: dynamicConstraintSchema(integerSchema.min(1)),
-        maximumTotalSize: dynamicConstraintSchema(
-          integerSchema.when(
-            // This property must be greater or equal to "maximumIndividualSize" if it's defined
-            'maximumIndividualSize',
-            {
-              is: integerSchema.exist(),
-              then: integerSchema.min(joi.ref('maximumIndividualSize')),
-              otherwise: integerSchema.min(1)
-            })),
         supportedExtensions: dynamicConstraintSchema(joi.array().min(1).items(joi.string())),
         supportedContentTypes: dynamicConstraintSchema(joi.array().min(1).items(nonEmptyStringSchema))
       })),

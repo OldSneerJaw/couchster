@@ -62,8 +62,6 @@ describe('Document definitions validator:', () => {
           allowAttachments: false, // Must be true since "attachmentConstraints" is defined
           attachmentConstraints: {
             maximumAttachmentCount: 0, // Must be at least 1
-            maximumIndividualSize: -1500, // Must be a positive number
-            maximumTotalSize: -1501, // Must be greater or equal to "maximumIndividualSize"
             supportedExtensions: (doc, oldDoc, extraParam) => [ extraParam ], // Has too many params
             supportedContentTypes: [ ] // Must have at least one element
           },
@@ -213,8 +211,6 @@ describe('Document definitions validator:', () => {
         'myDoc1.immutable: \"immutable\" conflict with forbidden peer \"cannotReplace\"',
         'myDoc1.allowAttachments: \"allowAttachments\" must be one of [true]',
         'myDoc1.attachmentConstraints.maximumAttachmentCount: \"maximumAttachmentCount\" must be larger than or equal to 1',
-        'myDoc1.attachmentConstraints.maximumIndividualSize: \"maximumIndividualSize\" must be larger than or equal to 1',
-        'myDoc1.attachmentConstraints.maximumTotalSize: \"maximumTotalSize\" must be larger than or equal to -1500',
         'myDoc1.attachmentConstraints.supportedExtensions: "supportedExtensions" must have an arity lesser or equal to 2',
         'myDoc1.attachmentConstraints.supportedContentTypes: \"supportedContentTypes\" must contain at least 1 items',
         'myDoc1.customActions: \"customActions\" must have at least 1 children',
