@@ -4,8 +4,6 @@
     authorizedRoles: { write: 'write' },
     allowAttachments: true,
     attachmentConstraints: {
-      maximumIndividualSize: 25,
-      maximumTotalSize: 40,
       maximumAttachmentCount: 3,
       supportedExtensions: [ 'html', 'jpg', 'pdf', 'txt', 'xml' ],
       supportedContentTypes: [ 'text/html', 'image/jpeg', 'application/pdf', 'text/plain', 'application/xml' ]
@@ -40,12 +38,6 @@
     },
     attachmentConstraints: function(doc, oldDoc) {
       return {
-        maximumIndividualSize: function(doc, oldDoc) {
-          return doc.maximumIndividualSize;
-        },
-        maximumTotalSize: function(doc, oldDoc) {
-          return doc.maximumTotalSize;
-        },
         maximumAttachmentCount: function(doc, oldDoc) {
           return doc.maximumAttachmentCount;
         },
@@ -63,12 +55,6 @@
     propertyValidators: {
       attachmentsEnabled: {
         type: 'boolean'
-      },
-      maximumIndividualSize: {
-        type: 'integer'
-      },
-      maximumTotalSize: {
-        type: 'integer'
       },
       maximumAttachmentCount: {
         type: 'integer'

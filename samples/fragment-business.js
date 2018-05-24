@@ -16,8 +16,6 @@
   allowAttachments: true,
   attachmentConstraints: {
     maximumAttachmentCount: 1,
-    maximumTotalSize: 2097664,
-    maximumIndividualSize: 512,
     supportedExtensions: [ 'txt' ],
     supportedContentTypes: [ 'text/plain' ],
     requireAttachmentReferences: true
