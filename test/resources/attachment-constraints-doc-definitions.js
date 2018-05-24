@@ -30,6 +30,15 @@
       }
     }
   },
+  staticAttachmentFilenameRegexPatternDoc: {
+    typeFilter: simpleTypeFilter,
+    authorizedRoles: { write: 'write' },
+    allowAttachments: true,
+    attachmentConstraints: {
+      filenameRegexPattern: /^(foo|bar)\.(xls|xlsx)$/
+    },
+    propertyValidators: { }
+  },
   dynamicAttachmentsDoc: {
     typeFilter: simpleTypeFilter,
     authorizedRoles: { write: 'write' },
@@ -49,6 +58,9 @@
         },
         requireAttachmentReferences: function(doc, oldDoc) {
           return doc.requireAttachmentReferences;
+        },
+        filenameRegexPattern: function(doc, oldDoc) {
+          return doc.filenameRegexPattern ? new RegExp(doc.filenameRegexPattern) : null;
         }
       };
     },
@@ -73,6 +85,9 @@
         arrayElementsValidator: {
           type: 'attachmentReference'
         }
+      },
+      filenameRegexPattern: {
+        type: 'string'
       }
     }
   }

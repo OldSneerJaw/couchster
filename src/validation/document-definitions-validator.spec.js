@@ -63,7 +63,8 @@ describe('Document definitions validator:', () => {
           attachmentConstraints: {
             maximumAttachmentCount: 0, // Must be at least 1
             supportedExtensions: (doc, oldDoc, extraParam) => [ extraParam ], // Has too many params
-            supportedContentTypes: [ ] // Must have at least one element
+            supportedContentTypes: [ ], // Must have at least one element
+            filenameRegexPattern: { foo: 'bar' } // Must be a RegExp
           },
           customActions: { }, // Must have at least one property
           propertyValidators: {
@@ -213,6 +214,7 @@ describe('Document definitions validator:', () => {
         'myDoc1.attachmentConstraints.maximumAttachmentCount: \"maximumAttachmentCount\" must be larger than or equal to 1',
         'myDoc1.attachmentConstraints.supportedExtensions: "supportedExtensions" must have an arity lesser or equal to 2',
         'myDoc1.attachmentConstraints.supportedContentTypes: \"supportedContentTypes\" must contain at least 1 items',
+        'myDoc1.attachmentConstraints.filenameRegexPattern: \"filenameRegexPattern\" must be an instance of \"RegExp\"',
         'myDoc1.customActions: \"customActions\" must have at least 1 children',
         'myDoc1.propertyValidators.timeProperty.immutable: \"immutable\" must be a boolean',
         'myDoc1.propertyValidators.timeProperty.minimumValue: \"minimumValue\" with value \"15\" fails to match the required pattern: /^((([01]\\d|2[0-3])(:[0-5]\\d)(:[0-5]\\d(\\.\\d{1,3})?)?)|(24:00(:00(\\.0{1,3})?)?))$/',
