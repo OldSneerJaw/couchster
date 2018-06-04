@@ -2,6 +2,9 @@
 This project adheres to [Semantic Versioning](http://semver.org/). All notable changes will be documented in this file.
 
 ## [Unreleased]
+Nothing yet.
+
+## [1.1.0] - 2018-06-04
 ### Added
 - [#24](https://github.com/OldSneerJaw/couchster/issues/24): Attachment filename regular expression constraint
 - [#25](https://github.com/OldSneerJaw/couchster/issues/25): Attachment reference regular expression constraint
@@ -28,7 +31,8 @@ This project adheres to [Semantic Versioning](http://semver.org/). All notable c
 ## [0.1.0] - 2018-02-28
 Adapted from [synctos](https://github.com/Kashoo/synctos) for use with CouchDB
 
-[Unreleased]: https://github.com/OldSneerJaw/couchster/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/OldSneerJaw/couchster/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/OldSneerJaw/couchster/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/OldSneerJaw/couchster/compare/v0.2.0...v1.0.0
 [0.2.0]: https://github.com/OldSneerJaw/couchster/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/OldSneerJaw/couchster/compare/73ba6a5...v0.1.0
