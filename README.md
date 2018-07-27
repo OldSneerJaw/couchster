@@ -342,6 +342,7 @@ Validation for simple data types (e.g. strings, booleans, integers, floating poi
   * `supportedExtensions`: An array of case-insensitive file extensions that are allowed for the attachment's filename (e.g. "txt", "jpg", "pdf"). Takes precedence over the document-wide `supportedExtensions` constraint for the referenced attachment. No restriction by default.
   * `supportedContentTypes`: An array of content/MIME types that are allowed for the attachment's contents (e.g. "image/png", "text/html", "application/xml"). Takes precedence over the document-wide `supportedContentTypes` constraint for the referenced attachment. No restriction by default.
   * `regexPattern`: A regular expression pattern that must be satisfied by the value. Takes precedence over the document-wide `attachmentConstraints.filenameRegexPattern` constraint for the referenced attachment. No restriction by default.
+* `any`: The value may be any JSON data type: number, string, boolean, array or object. No additional parameters.
 
 ##### Complex type validation
 

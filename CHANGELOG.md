@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/). All notable c
 ## [Unreleased]
 ### Added
 - [#33](https://github.com/OldSneerJaw/couchster/issues/33): Option to ignore item validation errors when value is unchanged
+- [#34](https://github.com/OldSneerJaw/couchster/issues/34): Validation type that accepts any type of value
 
 ## [1.1.0] - 2018-06-04
 ### Added
