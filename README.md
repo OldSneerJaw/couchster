@@ -28,7 +28,8 @@ For validation of documents in Couchbase Sync Gateway, see the [synctos](https:/
       - [Document content validation](#document-content-validation)
         - [Simple type validation](#simple-type-validation)
         - [Complex type validation](#complex-type-validation)
-        - [Universal constraint validation](#universal-constraint-validation)
+        - [Multi-type validation](#multi-type-validation)
+        - [Universal validation constraints](#universal-validation-constraints)
         - [Predefined validators](#predefined-validators)
         - [Dynamic constraint validation](#dynamic-constraint-validation)
     - [Definition file](#definition-file)
@@ -342,7 +343,6 @@ Validation for simple data types (e.g. strings, booleans, integers, floating poi
   * `supportedExtensions`: An array of case-insensitive file extensions that are allowed for the attachment's filename (e.g. "txt", "jpg", "pdf"). Takes precedence over the document-wide `supportedExtensions` constraint for the referenced attachment. No restriction by default.
   * `supportedContentTypes`: An array of content/MIME types that are allowed for the attachment's contents (e.g. "image/png", "text/html", "application/xml"). Takes precedence over the document-wide `supportedContentTypes` constraint for the referenced attachment. No restriction by default.
   * `regexPattern`: A regular expression pattern that must be satisfied by the value. Takes precedence over the document-wide `attachmentConstraints.filenameRegexPattern` constraint for the referenced attachment. No restriction by default.
-* `any`: The value may be any JSON data type: number, string, boolean, array or object. No additional parameters.
 
 ##### Complex type validation
 
@@ -412,7 +412,64 @@ myHash1: {
 }
 ```
 
-##### Universal constraint validation
+##### Multi-type validation
+
+These validation types support more than a single data type:
+
+* `any`: The value may be any JSON data type: number, string, boolean, array or object. No additional parameters.
+* `conditional`: The value must match any one of some number of candidate validators. Each validator is accompanied by a condition that determines whether that validator should be applied to the value. Additional parameters:
+  * `validationCandidates`: A list of candidates to act as the property or element's validator if their conditions are satisfied. Each condition is defined as a function that returns a boolean and accepts as parameters (1) the new document, (2) the old document that is being replaced/deleted (if any; it will be `null` if it has been deleted or does not exist), (3) an object that contains metadata about the current item to validate and (4) a stack of the items (e.g. object properties, array elements, hashtable element values) that have gone through validation, where the last/top element contains metadata for the direct parent of the item currently being validated and the first/bottom element is metadata for the root (i.e. the document). Conditions are tested in the order they are defined; if two or more candidates' conditions would evaluate to `true`, only the first candidate's validator will be applied to the property or element value. When a matching validation candidate declares the same constraint as the containing `conditional` validator, the candidate validator's constraint takes precedence. An example:
+
+```javascript
+entries: {
+  type: 'hashtable',
+  hashtableValuesValidator: {
+    type: 'object',
+    required: true,
+    propertyValidators: {
+      entryType: {
+        type: 'enum',
+        required: true,
+        predefinedValues: [ 'name', 'codes' ]
+      },
+      entryValue: {
+        type: 'conditional',
+        required: true,
+        validationCandidates: [
+          {
+            condition: function(doc, oldDoc, currentItemEntry, validationItemStack) {
+              var parentEntry = validationItemStack[validationItemStack.length - 1];
+
+              return parentEntry.itemValue.entryType === 'name';
+            },
+            validator: {
+              type: 'string',
+              mustNotBeEmpty: true
+            }
+          },
+          {
+            condition: function(doc, oldDoc, currentItemEntry, validationItemStack) {
+              var parentEntry = validationItemStack[validationItemStack.length - 1];
+
+              return parentEntry.itemValue.entryType === 'codes';
+            },
+            validator: {
+              type: 'array',
+              arrayElementsValidator: {
+                type: 'integer',
+                required: true,
+                minimumValue: 1
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+##### Universal validation constraints
 
 Validation for all simple and complex data types support the following additional parameters:
 
