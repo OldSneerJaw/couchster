@@ -68,6 +68,32 @@ describe('Document definitions validator:', () => {
           },
           customActions: { }, // Must have at least one property
           propertyValidators: {
+            conditionalTypeProperty: {
+              type: 'conditional',
+              immutableWhenSetStrict: true,
+              minimumValue: -15, // Unsupported constraint for this validation type
+              validationCandidates: [
+                {
+                  condition: (a, b, c, d, extra) => extra, // Too many parameters and must have a "validator" property
+                  foobar: 'baz' // Unsupported property
+                },
+                {
+                  condition: true, // Must be a function
+                  validator: {
+                    type: 'float',
+                    maximumLength: 3, // Unsupported constraint for this validation type
+                    mustEqual: (a, b, c, d) => d
+                  }
+                },
+                {
+                  condition: () => true,
+                  validator: {
+                    type: 'object',
+                    allowUnknownProperties: 0 // Must be a boolean
+                  }
+                }
+              ]
+            },
             timeProperty: {
               type: 'time',
               immutable: 1, // Must be a boolean
@@ -228,6 +254,13 @@ describe('Document definitions validator:', () => {
         'myDoc1.attachmentConstraints.supportedContentTypes: \"supportedContentTypes\" must contain at least 1 items',
         'myDoc1.attachmentConstraints.filenameRegexPattern: \"filenameRegexPattern\" must be an instance of \"RegExp\"',
         'myDoc1.customActions: \"customActions\" must have at least 1 children',
+        'myDoc1.propertyValidators.conditionalTypeProperty.minimumValue: \"minimumValue\" is not allowed',
+        'myDoc1.propertyValidators.conditionalTypeProperty.validationCandidates.0.condition: \"condition\" must have an arity lesser or equal to 4',
+        'myDoc1.propertyValidators.conditionalTypeProperty.validationCandidates.0.foobar: \"foobar\" is not allowed',
+        'myDoc1.propertyValidators.conditionalTypeProperty.validationCandidates.0.validator: \"validator\" is required',
+        'myDoc1.propertyValidators.conditionalTypeProperty.validationCandidates.1.condition: \"condition\" must be a Function',
+        'myDoc1.propertyValidators.conditionalTypeProperty.validationCandidates.1.validator.maximumLength: \"maximumLength\" is not allowed',
+        'myDoc1.propertyValidators.conditionalTypeProperty.validationCandidates.2.validator.allowUnknownProperties: \"allowUnknownProperties\" must be a boolean',
         'myDoc1.propertyValidators.timeProperty.immutable: \"immutable\" must be a boolean',
         'myDoc1.propertyValidators.timeProperty.minimumValue: \"minimumValue\" with value \"15\" fails to match the required pattern: /^((([01]\\d|2[0-3])(:[0-5]\\d)(:[0-5]\\d(\\.\\d{1,3})?)?)|(24:00(:00(\\.0{1,3})?)?))$/',
         'myDoc1.propertyValidators.timeProperty.maximumValue: \"maximumValue\" with value \"23:49:52.1234\" fails to match the required pattern: /^((([01]\\d|2[0-3])(:[0-5]\\d)(:[0-5]\\d(\\.\\d{1,3})?)?)|(24:00(:00(\\.0{1,3})?)?))$/',
@@ -286,7 +319,7 @@ describe('Document definitions validator:', () => {
         'myDoc1.propertyValidators.nestedObject.propertyValidators.arrayProperty.arrayElementsValidator.propertyValidators.anyProperty.minimumValue: \"minimumValue\" is not allowed',
         'myDoc1.propertyValidators.nestedObject.propertyValidators.arrayProperty.arrayElementsValidator.propertyValidators.anyProperty.mustNotBeEmpty: \"mustNotBeEmpty\" is not allowed',
         'myDoc1.propertyValidators.nestedObject.propertyValidators.arrayProperty.arrayElementsValidator.propertyValidators.anyProperty.regexPattern: \"regexPattern\" is not allowed',
-        'myDoc1.propertyValidators.nestedObject.propertyValidators.unrecognizedTypeProperty.type: \"type\" must be one of [any, array, attachmentReference, boolean, date, datetime, enum, float, hashtable, integer, object, string, time, timezone, uuid]',
+        'myDoc1.propertyValidators.nestedObject.propertyValidators.unrecognizedTypeProperty.type: \"type\" must be one of [any, array, attachmentReference, boolean, conditional, date, datetime, enum, float, hashtable, integer, object, string, time, timezone, uuid]',
       ]);
   });
 });
