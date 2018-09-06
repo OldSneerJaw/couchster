@@ -59,13 +59,13 @@ It is for compatibility with this specific version of SpiderMonkey that couchste
 
 Once couchster is installed, you can run it from your project's directory as follows:
 
-```
+```bash
 node_modules/.bin/couchster /path/to/my-document-definitions.js /path/to/my-generated-validation-function.js
 ```
 
 Or as a custom [script](https://docs.npmjs.com/misc/scripts) in your project's `package.json` as follows:
 
-```
+```javascript
 "scripts": {
   "build": "couchster /path/to/my-document-definitions.js /path/to/my-generated-validation-function.js"
 }
@@ -75,7 +75,7 @@ This will take the document definitions that are defined in `/path/to/my-documen
 
 Also, for convenience, the validation function can instead be enclosed in a JSON-compatible string to make it easier to insert it directly as the value of the `validate_doc_update` property in a CouchDB [design document](http://docs.couchdb.org/en/latest/ddocs/ddocs.html). For example:
 
-```
+```bash
 node_modules/.bin/couchster --json-string /path/to/my-document-definitions.js /path/to/my-generated-validation-function-string.txt
 ```
 
@@ -83,13 +83,13 @@ node_modules/.bin/couchster --json-string /path/to/my-document-definitions.js /p
 
 To validate that your document definitions file is structured correctly and does not contain any obvious semantic violations, execute the built in schema validation script as follows:
 
-```
+```bash
 node_modules/.bin/couchster-validate /path/to/my-document-definitions.js
 ```
 
 Or as a custom [script](https://docs.npmjs.com/misc/scripts) in your project's `package.json` as follows:
 
-```
+```javascript
 "scripts": {
   "validate": "couchster-validate /path/to/my-document-definitions.js"
 }
@@ -105,7 +105,7 @@ Document definitions must conform to the following specification. See the `sampl
 
 At the top level, the document definitions object contains a property for each document type that is to be supported by the CouchDB database. For example:
 
-```
+```javascript
 {
   myDocType1: {
     typeFilter: ...,
@@ -132,13 +132,13 @@ The following properties include the basics necessary to build a document defini
 
 An example of the simple type filter:
 
-```
+```javascript
 typeFilter: simpleTypeFilter
 ```
 
 And an example of a more complex custom type filter:
 
-```
+```javascript
 typeFilter: function(newDoc, oldDoc, currentDocType) {
   var typePropertyMatches;
   if (oldDoc) {
@@ -171,7 +171,7 @@ typeFilter: function(newDoc, oldDoc, currentDocType) {
 
 For example, as a plain object:
 
-```
+```javascript
 authorizedRoles: {
   add: 'manager',
   replace: [ 'manager', 'employee' ],
@@ -181,7 +181,7 @@ authorizedRoles: {
 
 Or, as a function:
 
-```
+```javascript
 authorizedRoles: function(newDoc, oldDoc, dbName) {
   return {
     write: oldDoc ? oldDoc.roles : newDoc.roles
@@ -193,7 +193,7 @@ authorizedRoles: function(newDoc, oldDoc, dbName) {
 
 An example static definition:
 
-```
+```javascript
 propertyValidators: {
   myProp1: {
     type: 'boolean',
@@ -208,7 +208,7 @@ propertyValidators: {
 
 And a dynamic definition:
 
-```
+```javascript
 propertyValidators: function(newDoc, oldDoc) {
   var dynamicProp = (newDoc._id.indexOf('foobar') >= 0) ? { type: 'string' } : { type: 'float' }
 
@@ -243,7 +243,7 @@ Additional properties that provide finer grained control over documents:
 
 For example, as a plain object:
 
-```
+```javascript
 authorizedUsers: {
   add: [ 'sally', 'roger', 'samantha' ],
   replace: [ 'roger', 'samantha' ],
@@ -253,7 +253,7 @@ authorizedUsers: {
 
 Or, as a function:
 
-```
+```javascript
 authorizedUsers: function(newDoc, oldDoc, dbName) {
   return {
     write: oldDoc ? oldDoc.users : newDoc.users
@@ -271,7 +271,7 @@ authorizedUsers: function(newDoc, oldDoc, dbName) {
 
 An example of an `onValidationSucceeded` custom action that performs additional custom validation of document properties:
 
-```
+```javascript
 customActions: {
   onValidationSucceeded: function(newDoc, oldDoc, customActionMetadata, userContext, securityInfo) {
     // At least one of the "a" and "b" properties must have a value
@@ -354,7 +354,7 @@ Validation for complex data types (e.g. objects, arrays, hashtables):
   * `maximumLength`: The maximum number of elements (inclusive) allowed in the array. No restriction by default.
   * `arrayElementsValidator`: The validation that is applied to each element of the array. Any validation type, including those for complex data types, may be used. No restriction by default. An example:
 
-```
+```javascript
 myArray1: {
   type: 'array',
   mustNotBeEmpty: true,
@@ -369,7 +369,7 @@ myArray1: {
   * `allowUnknownProperties`: Whether to allow the existence of item properties that are not explicitly declared in the object definition. Not applied recursively to objects that are nested within this object. Defaults to `false` if the `propertyValidators` parameter is specified; otherwise, it defaults to `true`.
   * `propertyValidators`: An object/hash of validators to be applied to the properties that are explicitly supported by the object. Any validation type, including those for complex data types, may be used for each property validator. No restriction by default. If defined, then any item property that is not declared will be rejected by the validation function unless the `allowUnknownProperties` parameter is `true`. An example:
 
-```
+```javascript
 myObj1: {
   type: 'object',
   propertyValidators: {
@@ -393,7 +393,7 @@ myObj1: {
     * `regexPattern`: A regular expression pattern that must be satisfied for key strings to be accepted. No restriction by default.
   * `hashtableValuesValidator`: The validation that is applied to each of the values in the object/hash. No restriction by default. Any validation type, including those for complex data types, may be used. An example:
 
-```
+```javascript
 myHash1: {
   type: 'hashtable',
   hashtableKeysValidator: {
@@ -486,7 +486,7 @@ Validation for all simple and complex data types support the following additiona
 * `skipValidationWhenValueUnchangedStrict`: When set to `true`, the property or element is not validated if the document is being replaced and its value is _strictly_ equal to the same property or element value from the previous document revision. Useful if a change that is not backward compatible must be introduced to a property/element validator and existing values from documents that are already stored in the database should be preserved as they are. Differs from `skipValidationWhenValueUnchanged` in that specialized string validation types (e.g. `date`, `datetime`, `time`, `timezone`, `uuid`) are not compared semantically; for example, the two `datetime` values of "2018-06-23T14:30:00.000Z" and "2018-06-23T14:30+00:00" are _not_ considered equal because the strings are not strictly equal. Defaults to `false`.
 * `customValidation`: A function that accepts as parameters (1) the new document, (2) the old document that is being replaced/deleted (if any), (3) an object that contains metadata about the current item to validate, (4) a stack of the items (e.g. object properties, array elements, hashtable element values) that have gone through validation, where the last/top element contains metadata for the direct parent of the item currently being validated and the first/bottom element is metadata for the root (i.e. the document itself), (5) the CouchDB [user context](http://docs.couchdb.org/en/latest/json-structure.html#userctx-object) of the authenticated user (or `null` if the request is not authenticated), and (6) the CouchDB [security object](http://docs.couchdb.org/en/latest/json-structure.html#security-object) for the database. In cases where the document is in the process of being deleted, the first parameter's `_deleted` property will be `true` and, if the document does not yet exist or it was deleted, the second parameter will be `null`. Generally, custom validation should not throw exceptions; it's recommended to return an array/list of error descriptions so the validation function can compile a list of all validation errors that were encountered once full validation is complete. A return value of `null`, `undefined` or an empty array indicate there were no validation errors. An example:
 
-```
+```javascript
 propertyValidators: {
   myStringProp: {
     type: 'string'
@@ -530,7 +530,7 @@ The following predefined property or element validators may also be useful:
 
 * `typeIdValidator`: A property validator that is suitable for application to the top-level document property that specifies the type of a document. Its constraints include ensuring the value is a string, is neither null nor undefined, is not an empty string and cannot be modified. NOTE: If a document type specifies `simpleTypeFilter` as its type filter, it is not necessary to explicitly include a `type` property validator; it will be supported implicitly as a `typeIdValidator`. An example usage:
 
-```
+```javascript
 propertyValidators: {
   type: typeIdValidator,
   foobar: {
@@ -550,7 +550,7 @@ In addition to defining any of the item validation constraints above, including 
 
 For example:
 
-```
+```javascript
 propertyValidators: {
   sequence: {
     type: 'integer',
@@ -585,7 +585,7 @@ A document definitions file specifies all the document types that belong to a si
 
 For example, a document definitions file implemented as an object:
 
-```
+```javascript
 {
   myDocType1: {
     typeFilter: function(newDoc, oldDoc, docType) {
@@ -624,7 +624,7 @@ For example, a document definitions file implemented as an object:
 
 Or a functionally equivalent document definitions file implemented as a function:
 
-```
+```javascript
 function() {
   var authorizedRoles = {
     add: 'create',
@@ -669,7 +669,7 @@ Document definitions are also modular. By invoking the `importDocumentDefinition
 
 * `my-doc-type1-fragment.js`:
 
-```
+```javascript
 {
   authorizedRoles: authorizedRoles,
   typeFilter: myDocTypeFilter,
@@ -684,7 +684,7 @@ Document definitions are also modular. By invoking the `importDocumentDefinition
 
 * `my-doc-type2-fragment.js`:
 
-```
+```javascript
 {
   authorizedRoles: authorizedRoles,
   typeFilter: myDocTypeFilter,
@@ -699,7 +699,7 @@ Document definitions are also modular. By invoking the `importDocumentDefinition
 
 And then each fragment can be imported into the main document definitions file:
 
-```
+```javascript
 function() {
   var authorizedRoles = {
     add: 'create',
@@ -750,13 +750,13 @@ Install the testing libraries locally and add them as development dependencies i
 
 After that, create a new specification file in your project's `test/` directory (e.g. `test/foobar-spec.js`) and import the test-fixture-maker module into the empty spec:
 
-```
+```javascript
 var testFixtureMaker = require('couchster').testFixtureMaker;
 ```
 
 Create a new `describe` block to encapsulate the forthcoming test cases, initialize the couchster test fixture and also reset the state after each test case using the `afterEach` function. For example:
 
-```
+```javascript
 describe('My new validation function', function() {
   var testFixture = testFixtureMaker.initFromDocumentDefinitions('/path/to/my-doc-definitions.js');
 
@@ -770,7 +770,7 @@ describe('My new validation function', function() {
 
 Now you can begin writing specs/test cases inside the `describe` block using the test fixture's convenience functions to verify the behaviour of the generated validation function. For example, to verify that a new document passes validation and specifies the correct roles and usernames for authorization:
 
-```
+```javascript
 it('can create a myDocType document', function() {
   var newDoc = {
     _id: 'myDocId',
@@ -791,7 +791,7 @@ it('can create a myDocType document', function() {
 
 Or to verify that a document cannot be created because it fails validation:
 
-```
+```javascript
 it('cannot create a myDocType doc when required property foo is missing', function() {
   var newDoc = {
     _id: 'myDocId',
@@ -814,7 +814,7 @@ The `testFixture.validationErrorFormatter` object in the preceding example provi
 
 To execute the tests in the `test/` directory, ensure that the project's `package.json` file contains a "test" script. For example:
 
-```
+```javascript
 "scripts": {
   "test": "mocha test/"
 }
