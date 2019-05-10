@@ -310,7 +310,7 @@ function init(rawValidationFunction, validationFunctionFile) {
     }
 
     if (validationFuncError) {
-      assert.deepEqual(validationFuncError, { forbidden: 'Access denied' });
+      assert.equal(validationFuncError.forbidden, 'Access denied');
     } else {
       assert.fail('Document authorization succeeded when it was expected to fail');
     }
