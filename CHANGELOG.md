@@ -5,6 +5,9 @@ This project adheres to [Semantic Versioning](http://semver.org/). All notable c
 ### Fixed
 - [#46](https://github.com/OldSneerJaw/couchster/issues/46): Broken error equality test in Node.js 12
 
+### Security
+- [#43](https://github.com/OldSneerJaw/couchster/issues/43): Security vulnerability in lodash dev dependency
+
 ## [1.2.0] - 2018-09-06
 ### Added
 - [#33](https://github.com/OldSneerJaw/couchster/issues/33): Option to ignore item validation errors when value is unchanged
