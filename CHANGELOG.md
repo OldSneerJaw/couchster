@@ -1,7 +1,7 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/). All notable changes will be documented in this file.
 
-## [Unreleased]
+## [1.2.1] - 2019-05-21
 ### Fixed
 - [#46](https://github.com/OldSneerJaw/couchster/issues/46): Broken error equality test in Node.js 12
 
@@ -41,7 +41,8 @@ This project adheres to [Semantic Versioning](http://semver.org/). All notable c
 ## [0.1.0] - 2018-02-28
 Adapted from [synctos](https://github.com/Kashoo/synctos) for use with CouchDB
 
-[Unreleased]: https://github.com/OldSneerJaw/couchster/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/OldSneerJaw/couchster/compare/v1.2.1...HEAD
+[1.2.1]: https://github.com/OldSneerJaw/couchster/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/OldSneerJaw/couchster/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/OldSneerJaw/couchster/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/OldSneerJaw/couchster/compare/v0.2.0...v1.0.0
