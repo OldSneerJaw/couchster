@@ -1,6 +1,9 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/). All notable changes will be documented in this file.
 
+## [Unreleased]
+Nothing yet.
+
 ## [1.2.1] - 2019-05-21
 ### Fixed
 - [#46](https://github.com/OldSneerJaw/couchster/issues/46): Broken error equality test in Node.js 12
