@@ -1,0 +1,14 @@
+version: 2
+updates:
+
+  # Couchster project dependencies
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: daily
+
+  # GitHub Actions used in workflows
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: daily
