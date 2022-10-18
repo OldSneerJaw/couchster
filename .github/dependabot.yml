@@ -6,6 +6,7 @@ updates:
     directory: /
     schedule:
       interval: daily
+    versioning-strategy: increase
 
   # GitHub Actions used in workflows
   - package-ecosystem: github-actions
