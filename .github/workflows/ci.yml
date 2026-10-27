@@ -10,6 +10,9 @@ on:
 
   workflow_dispatch: # Allows the workflow to be triggered manually
 
+permissions:
+  contents: read
+
 jobs:
   unit-test:
     runs-on: ubuntu-latest
