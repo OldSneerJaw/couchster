@@ -84,7 +84,7 @@ describe('Time zone validation type:', () => {
       const doc = {
         _id: 'my-doc',
         type: 'timezoneDoc',
-        formatValidationProp: -0800
+        formatValidationProp: -800
       };
 
       testFixture.verifyDocumentNotCreated(doc, 'timezoneDoc', errorFormatter.typeConstraintViolation('formatValidationProp', 'timezone'));
