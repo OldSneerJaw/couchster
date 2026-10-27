@@ -8,6 +8,10 @@ updates:
       interval: daily
     cooldown:
       default-days: 10
+    groups:
+      node:
+        patterns:
+          - '*'
     versioning-strategy: increase
 
   # GitHub Actions used in workflows
@@ -17,3 +21,7 @@ updates:
       interval: daily
     cooldown:
       default-days: 10
+    groups:
+      github-actions:
+        patterns:
+          - '*'
